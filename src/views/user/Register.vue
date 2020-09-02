@@ -207,11 +207,24 @@ export default {
     },
 
     handleSubmit () {
-      const { form: { validateFields }, state, $router } = this
+      const { form: { validateFields } } = this
       validateFields({ force: true }, (err, values) => {
         if (!err) {
-          state.passwordLevelChecked = false
-          $router.push({ name: 'registerResult', params: { ...values } })
+          // $router.push({ name: 'registerResult', params: { ...values } })
+          console.log(values)
+          this.$axios({
+            method: 'post',
+            url: '/api/user/register',
+            data: {
+              email: values.email,
+              nickname: 'joker',
+              password: values.password,
+              username: 'joker',
+              sex: 0
+            }
+          }).then(res => {
+            console.log(res)
+          })
         }
       })
     },
