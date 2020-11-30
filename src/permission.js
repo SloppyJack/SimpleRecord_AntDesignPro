@@ -28,20 +28,18 @@ router.beforeEach((to, from, next) => {
         // request login userInfo
         store
           .dispatch('GetRoleMenus')
-          .then(res => {
+          .then(ret => {
             // const roles = res.result && res.result.role
             // generate dynamic router
-            store.dispatch('GenerateRoutes', res).then(() => {
+            store.dispatch('GenerateRoutes', ret).then(() => {
               // 根据roles权限生成可访问的路由表
               // 动态添加可访问路由表
-              console.log('路由菜单：', store.getters.addRouters)
               router.addRoutes(store.getters.addRouters)
               // 请求带有 redirect 重定向时，登录自动重定向到该地址
               const redirect = decodeURIComponent(from.query.redirect || to.path)
               if (to.path === redirect) {
                 // set the replace: true so the navigation will not leave a history record
-                // next({ ...to, replace: true })
-                next({ path: redirect })
+                next({ ...to, replace: true })
               } else {
                 // 跳转到目的路由
                 next({ path: redirect })

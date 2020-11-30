@@ -51,9 +51,9 @@ const user = {
     // 获取用户菜单
     GetRoleMenus ({ commit }) {
       return new Promise((resolve, reject) => {
-        getRoleMenus().then(result => {
-          console.log(result)
-          if (result.roles && result.menus.length > 0) {
+        getRoleMenus().then(ret => {
+          console.log(ret)
+          if (ret.roles && ret.menus.length > 0) {
             // const role = result.role
             // role.permissions = result.role.permissions
             // role.permissions.map(per => {
@@ -63,10 +63,11 @@ const user = {
             //   }
             // })
             // role.permissionList = role.permissions.map(permission => { return permission.permissionId })
+            commit('SET_ROLES', ret.roles)
           } else {
             reject(new Error('getInfo: roles must be a non-null array !'))
           }
-          resolve(result)
+          resolve(ret)
         }).catch(error => {
           reject(error)
         })
