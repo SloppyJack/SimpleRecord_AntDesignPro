@@ -53,21 +53,13 @@ const user = {
       return new Promise((resolve, reject) => {
         getRoleMenus().then(ret => {
           console.log(ret)
-          if (ret.roles && ret.menus.length > 0) {
-            // const role = result.role
-            // role.permissions = result.role.permissions
-            // role.permissions.map(per => {
-            //   if (per.actionEntitySet != null && per.actionEntitySet.length > 0) {
-            //     const action = per.actionEntitySet.map(action => { return action.action })
-            //     per.actionList = action
-            //   }
-            // })
-            // role.permissionList = role.permissions.map(permission => { return permission.permissionId })
+          // 如成功获取角色及菜单
+          if (ret.roles.length > 0 && ret.menus.length > 0) {
             commit('SET_ROLES', ret.roles)
           } else {
             reject(new Error('getInfo: roles must be a non-null array !'))
           }
-          resolve(ret)
+          resolve(ret.menus)
         }).catch(error => {
           reject(error)
         })
