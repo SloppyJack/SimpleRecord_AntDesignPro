@@ -61,11 +61,11 @@ const notFoundRouter = {
 
 // 根级菜单
 const rootRouter = {
-  menuName: 'index',
-  menuTitle: '首页',
+  menuName: 'menu',
+  menuTitle: '菜单',
   path: '/',
   component: 'BasicLayout',
-  redirect: '/dashboard/workplace',
+  redirect: '/home/Index',
   children: []
 }
 
@@ -120,6 +120,10 @@ export const generator = (routerMap, parent) => {
       }
       // 重定向
       // item.redirect && (currentRouter.redirect = item.redirect)
+      // 如当前节点为home则修改父节点的redirect
+      if (currentRouter.path === '/home') {
+        parent.redirect = currentRouter.path
+      }
       if (item.outerChain === 1) {
         currentRouter.redirect = item.path
       }
