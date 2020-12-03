@@ -105,11 +105,11 @@ export const generator = (routerMap, parent) => {
       }
       const currentRouter = {
         //  动态拼接路由地址
-        path: item.outerChain ? `${item.path}` : `${parent && parent.path || ''}/${item.path}`,
+        path: item.outerChain ? `${item.path}` : `${parent && parent.path !== '/' && parent.path || ''}/${item.path === '/' ? '' : item.path}`,
         // 路由名称
         name: item.menuName,
         // 动态加载该路由对应页面的组件
-        component: item.outerChain ? undefined : (constantRouterComponents[item.component]) || (() => import(`@/views/${parent && parent.path || ''}/${item.component}`)),
+        component: item.outerChain ? undefined : (constantRouterComponents[item.component]) || (() => import(`@/views${parent && parent.path !== '/' && parent.path || ''}/${item.component}`)),
         meta: {
           title: item.menuTitle,
           icon: item.iconName || undefined,
@@ -117,10 +117,6 @@ export const generator = (routerMap, parent) => {
           target: item.outerChain ? '_blank' : undefined,
           permission: item.permissionSign
         }
-      }
-      // 为了防止出现后端返回结果不规范，处理有可能出现拼接出两个 反斜杠
-      if (!currentRouter.path.startsWith('http')) {
-        currentRouter.path = currentRouter.path.replace('//', '/')
       }
       // 重定向
       // item.redirect && (currentRouter.redirect = item.redirect)
