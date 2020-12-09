@@ -75,14 +75,11 @@ const rootRouter = {
  */
 export const generatorDynamicRouter = (ret) => {
   return new Promise((resolve, reject) => {
-    console.log('res', ret)
     const menuNav = []
     rootRouter.children = ret
     menuNav.push(rootRouter)
-    console.log('menuNav', menuNav)
     const routers = generator(menuNav)
     routers.push(notFoundRouter)
-    console.log('routers', routers)
     resolve(routers)
   })
 }
@@ -102,6 +99,13 @@ export const generator = (routerMap, parent) => {
       // 判断是否为目录
       if (item.menuType === 'M') {
         item.component = 'RouteView'
+      }
+      // 如果为菜单，则找到孩子节点的所有权限，并组成数组
+      if (item.menuType === 'C') {
+        const arr = findMenuPermissions(item.children)
+        if (arr.length > 0) {
+          item.permissionSign = arr
+        }
       }
       const currentRouter = {
         //  动态拼接路由地址
@@ -138,4 +142,15 @@ export const generator = (routerMap, parent) => {
     }
   })
   return children
+}
+
+// 则找到孩子节点的所有权限，并组成数组
+export const findMenuPermissions = (list) => {
+  const arr = []
+  list.forEach(n => {
+    if (n.permissionSign) {
+      arr.push(n.permissionSign)
+    }
+  })
+  return arr
 }

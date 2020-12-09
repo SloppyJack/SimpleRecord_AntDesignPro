@@ -7,7 +7,7 @@
         </div>
         <div class="content">
           <div class="content-title">
-            {{ timeFix }}，{{ user.name }}<span class="welcome-text">，{{ welcome }}</span>
+            {{ timeFix }}，{{ user.name }}
           </div>
           <div>前端工程师 | 蚂蚁金服 - 某某某事业群 - VUE平台</div>
         </div>
@@ -35,19 +35,19 @@
             :loading="loading"
             style="margin-bottom: 24px;"
             :bordered="false"
-            title="进行中的项目"
+            title="本月消费前三"
             :body-style="{ padding: 0 }">
-            <a slot="extra">全部项目</a>
+            <a slot="extra">全部</a>
             <div>
-              <a-card-grid class="project-card-grid" :key="i" v-for="(item, i) in projects">
+              <a-card-grid class="project-card-grid">
                 <a-card :bordered="false" :body-style="{ padding: 0 }">
                   <a-card-meta>
                     <div slot="title" class="card-title">
-                      <a-avatar size="small" :src="item.cover"/>
-                      <a>{{ item.title }}</a>
+                      <a-avatar size="small"/>
+                      <a>占位符</a>
                     </div>
                     <div slot="description" class="card-description">
-                      {{ item.description }}
+                      just4Test
                     </div>
                   </a-card-meta>
                   <div class="project-item">
@@ -85,36 +85,8 @@
           :xs="24">
           <a-card title="快速开始 / 便捷导航" style="margin-bottom: 24px" :bordered="false" :body-style="{padding: 0}">
             <div class="item-group">
-              <a>操作一</a>
-              <a>操作二</a>
-              <a>操作三</a>
-              <a>操作四</a>
-              <a>操作五</a>
-              <a>操作六</a>
-              <a-button size="small" type="primary" ghost icon="plus">添加</a-button>
-            </div>
-          </a-card>
-          <a-card
-            title="XX 指数"
-            style="margin-bottom: 24px"
-            :loading="radarLoading"
-            :bordered="false"
-            :body-style="{ padding: 0 }">
-            <div style="min-height: 400px;">
-              <!-- :scale="scale" :axis1Opts="axis1Opts" :axis2Opts="axis2Opts"  -->
-              <radar :data="radarData"/>
-            </div>
-          </a-card>
-          <a-card :loading="loading" title="团队" :bordered="false">
-            <div class="members">
-              <a-row>
-                <a-col :span="12" v-for="(item, index) in teams" :key="index">
-                  <a>
-                    <a-avatar size="small" :src="item.avatar"/>
-                    <span class="member">{{ item.name }}</span>
-                  </a>
-                </a-col>
-              </a-row>
+              <a>记账</a>
+              <a>图标分析</a>
             </div>
           </a-card>
         </a-col>
@@ -144,7 +116,7 @@ export default {
       user: {},
 
       projects: [],
-      loading: true,
+      loading: false,
       radarLoading: true,
       activities: [],
       teams: [],
@@ -190,8 +162,7 @@ export default {
   },
   computed: {
     ...mapState({
-      nickname: (state) => state.user.nickname,
-      welcome: (state) => state.user.welcome
+      nickname: (state) => state.user.nike
     }),
     currentUser () {
       return {

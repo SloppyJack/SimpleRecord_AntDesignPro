@@ -31,6 +31,9 @@ const user = {
     },
     SET_ROLES: (state, roles) => {
       state.roles = roles
+    },
+    SET_MENUS: (state, menus) => {
+      state.menus = menus
     }
   },
 
@@ -52,10 +55,10 @@ const user = {
     GetRoleMenus ({ commit }) {
       return new Promise((resolve, reject) => {
         getRoleMenus().then(ret => {
-          console.log(ret)
           // 如成功获取角色及菜单
           if (ret.roles.length > 0 && ret.menus.length > 0) {
             commit('SET_ROLES', ret.roles)
+            commit('SET_MENUS', ret.menus)
           } else {
             reject(new Error('getInfo: roles must be a non-null array !'))
           }

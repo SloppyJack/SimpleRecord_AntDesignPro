@@ -6,7 +6,7 @@
       <a href="https://www.github.com/sendya/" target="_blank">@Sendya</a>
     </template>
     <template v-slot:copyright>
-      <a href="https://github.com/vueComponent" target="_blank">vueComponent</a>
+      <a href="http://jackbin.cn" target="_blank">简账@2019~2020</a>
     </template>
   </global-footer>
 </template>

@@ -1,5 +1,4 @@
 import Vue from 'vue'
-import store from '@/store'
 
 /**
  * Action 权限指令
@@ -12,22 +11,23 @@ import store from '@/store'
  *  - 当前用户没有权限时，组件上使用了该指令则会被隐藏
  *  - 当后台权限跟 pro 提供的模式不同时，只需要针对这里的权限过滤进行修改即可
  *
- *  @see https://github.com/vueComponent/ant-design-vue-pro/pull/53
+ *  tips：此处已根据后台返回值做了修改
  */
 const action = Vue.directive('action', {
   inserted: function (el, binding, vnode) {
     const actionName = binding.arg
-    const roles = store.getters.roles
-    const elVal = vnode.context.$route.meta.permission
-    const permissionId = elVal instanceof String && [elVal] || elVal
-    roles.permissions.forEach(p => {
-      if (!permissionId.includes(p.permissionId)) {
-        return
+    // 当前用户菜单列表，含权限
+    const permissions = vnode.context.$route.meta.permission
+    let hasPermission = false
+    for (let i = 0; i < permissions.length; i++) {
+      if (permissions[i] && permissions[i] === actionName) {
+        hasPermission = true
+        break
       }
-      if (p.actionList && !p.actionList.includes(actionName)) {
-        el.parentNode && el.parentNode.removeChild(el) || (el.style.display = 'none')
-      }
-    })
+    }
+    if (!hasPermission) {
+      el.parentNode && el.parentNode.removeChild(el) || (el.style.display = 'none')
+    }
   }
 })
 
