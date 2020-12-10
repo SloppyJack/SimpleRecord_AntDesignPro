@@ -84,13 +84,20 @@
 
       <create-form
         ref="createModal"
-        :visible="visible"
-        :loading="confirmLoading"
+        :visible="createFormShow"
+        :loading="confirmCreateLoading"
         :model="mdl"
-        @cancel="handleCancel"
-        @ok="handleOk"
+        @cancel="handleCreateCancel"
+        @ok="handleCreateOk"
       />
-      <step-by-step-modal ref="modal" @ok="handleOk"/>
+      <edit-form
+        ref="editModal"
+        :visible="editFormShow"
+        :loading="confirmEditLoading"
+        :model="mdl"
+        @cancel="handleEditCancel"
+        @ok="handleEditOk"
+      />
     </a-card>
   </page-header-wrapper>
 </template>
@@ -98,9 +105,9 @@
 <script>
 import moment from 'moment'
 import { Ellipsis, STable } from '@/components'
-import { getRoleList } from '@/api/manage'
+import { getRoleList, addRole } from '@/api/manage'
 
-import StepByStepModal from './modules/StepByStepModal'
+import EditForm from './modules/EditForm'
 import CreateForm from './modules/CreateForm'
 
 const columns = [
@@ -155,14 +162,17 @@ export default {
     STable,
     Ellipsis,
     CreateForm,
-    StepByStepModal
+    EditForm
   },
   data () {
     this.columns = columns
     return {
       // create model
-      visible: false,
-      confirmLoading: false,
+      createFormShow: false,
+      confirmCreateLoading: false,
+      // edit model
+      editFormShow: false,
+      confirmEditLoading: false,
       mdl: null,
       // 高级搜索 展开/关闭
       advanced: false,
@@ -219,68 +229,65 @@ export default {
   methods: {
     handleAdd () {
       this.mdl = null
-      this.visible = true
+      this.createFormShow = true
     },
     handleEdit (record) {
-      this.visible = true
+      this.editFormShow = true
       this.mdl = { ...record }
     },
-    handleOk () {
+    handleCreateOk () {
       const form = this.$refs.createModal.form
-      this.confirmLoading = true
+      this.confirmCreateLoading = true
       form.validateFields((errors, values) => {
         if (!errors) {
           console.log('values', values)
-          if (values.id > 0) {
             // 修改 e.g.
-            new Promise((resolve, reject) => {
-              setTimeout(() => {
-                resolve()
-              }, 1000)
-            }).then(res => {
-              this.visible = false
-              this.confirmLoading = false
+          addRole(values).then(res => {
+              this.createFormShow = false
+              this.confirmCreateLoading = false
               // 重置表单数据
               form.resetFields()
               // 刷新表格
               this.$refs.table.refresh()
-
-              this.$message.info('修改成功')
-            })
-          } else {
-            // 新增
-            new Promise((resolve, reject) => {
-              setTimeout(() => {
-                resolve()
-              }, 1000)
-            }).then(res => {
-              this.visible = false
-              this.confirmLoading = false
-              // 重置表单数据
-              form.resetFields()
-              // 刷新表格
-              this.$refs.table.refresh()
-
               this.$message.info('新增成功')
-            })
           }
+          ).catch(() => {
+            this.confirmCreateLoading = false
+          })
         } else {
-          this.confirmLoading = false
+          this.confirmCreateLoading = false
         }
       })
     },
-    handleCancel () {
-      this.visible = false
-
-      const form = this.$refs.createModal.form
-      form.resetFields() // 清理表单数据（可不做）
+    handleEditOk () {
+      const form = this.$refs.editModal.form
+      this.confirmEditLoading = true
+      form.validateFields((errors, values) => {
+        if (!errors) {
+          console.log('values', values)
+          // 修改 e.g.
+          addRole(values).then(res => {
+              this.editFormShow = false
+              this.confirmEditLoading = false
+              // 重置表单数据
+              form.resetFields()
+              // 刷新表格
+              this.$refs.table.refresh()
+              this.$message.info('新增成功')
+            }
+          ).catch(() => {
+            this.confirmEditLoading = false
+          })
+        } else {
+          this.confirmEditLoading = false
+        }
+      })
     },
-    handleSub (record) {
-      if (record.status !== 0) {
-        this.$message.info(`${record.no} 订阅成功`)
-      } else {
-        this.$message.error(`${record.no} 订阅失败，规则已关闭`)
-      }
+    handleCreateCancel () {
+      this.createFormShow = false
+    },
+    handleEditCancel () {
+      this.editFormShow = false
     },
     onSelectChange (selectedRowKeys, selectedRows) {
       this.selectedRowKeys = selectedRowKeys

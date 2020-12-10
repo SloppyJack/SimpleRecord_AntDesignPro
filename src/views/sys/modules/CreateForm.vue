@@ -1,6 +1,6 @@
 <template>
   <a-modal
-    title="新建规则"
+    title="新建角色"
     :width="640"
     :visible="visible"
     :confirmLoading="loading"
@@ -9,12 +9,11 @@
   >
     <a-spin :spinning="loading">
       <a-form :form="form" v-bind="formLayout">
-        <!-- 检查是否有 id 并且大于0，大于0是修改。其他是新增，新增不显示主键ID -->
-        <a-form-item v-show="model && model.id > 0" label="主键ID">
-          <a-input v-decorator="['id', { initialValue: 0 }]" disabled />
+        <a-form-item label="名称">
+          <a-input v-decorator="['name', {rules: [{required: true, min: 5, message: '请输入至少四个字符的规则描述！'}]}]" />
         </a-form-item>
         <a-form-item label="描述">
-          <a-input v-decorator="['description', {rules: [{required: true, min: 5, message: '请输入至少五个字符的规则描述！'}]}]" />
+          <a-input v-decorator="['info', {rules: [{required: true, min: 5, message: '请输入至少五个字符的规则描述！'}]}]" />
         </a-form-item>
       </a-form>
     </a-spin>
@@ -25,7 +24,7 @@
 import pick from 'lodash.pick'
 
 // 表单字段
-const fields = ['description', 'id']
+const fields = ['name', 'info']
 
 export default {
   props: {
@@ -43,23 +42,21 @@ export default {
     }
   },
   data () {
-    this.formLayout = {
-      labelCol: {
-        xs: { span: 24 },
-        sm: { span: 7 }
-      },
-      wrapperCol: {
-        xs: { span: 24 },
-        sm: { span: 13 }
-      }
-    }
     return {
+      formLayout: {
+        labelCol: {
+          xs: { span: 24 },
+          sm: { span: 7 }
+        },
+        wrapperCol: {
+          xs: { span: 24 },
+          sm: { span: 13 }
+        }
+      },
       form: this.$form.createForm(this)
     }
   },
   created () {
-    console.log('custom modal created')
-
     // 防止表单未注册
     fields.forEach(v => this.form.getFieldDecorator(v))
 
