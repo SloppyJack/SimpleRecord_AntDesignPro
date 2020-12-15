@@ -3,7 +3,8 @@ import request from '@/utils/request'
 const api = {
   user: '/user',
   roleList: '/role/list',
-  addRole: '/role/add'
+  addRole: '/role/add',
+  ownedMenus: 'role/ownedMenus'
 }
 
 export default api
@@ -29,5 +30,12 @@ export function addRole (parameter) {
     url: api.addRole,
     method: 'post',
     data: parameter
+  })
+}
+
+export function getOwnedMenus (roleId) {
+  return request({
+    url: api.ownedMenus + '/' + roleId,
+    method: 'get'
   })
 }

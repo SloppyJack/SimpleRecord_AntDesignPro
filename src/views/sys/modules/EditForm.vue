@@ -16,17 +16,18 @@
         <a-form-item label="描述">
           <a-input v-decorator="['info', {rules: [{required: true, min: 5, message: '请输入至少五个字符的规则描述！'}]}]" />
         </a-form-item>
+        <a-form-item label="角色权限">
+          <a-tree
+            checkable
+            v-model="checkedKeys"
+            :tree-data="treeData"
+            @check="onCheck"
+          >
+            <span slot="title0010" style="color: #1890ff">sss</span>
+          </a-tree>
+        </a-form-item>
       </a-form>
     </a-spin>
-    <a-tree
-      v-model="checkedKeys"
-      :expanded-keys="expandedKeys"
-      :auto-expand-parent="autoExpandParent"
-      :selected-keys="selectedKeys"
-      :tree-data="treeData"
-      @expand="onExpand"
-      @select="onSelect"
-    />
   </a-modal>
 </template>
 
@@ -34,53 +35,10 @@
 import pick from 'lodash.pick'
 
 import { Tree } from 'ant-design-vue'
+import { getOwnedMenus } from '@/api/manage'
 
 // 表单字段
 const fields = ['id', 'info']
-
-const treeData = [
-  {
-    title: '0-0',
-    key: '0-0',
-    children: [
-      {
-        title: '0-0-0',
-        key: '0-0-0',
-        children: [
-          { title: '0-0-0-0', key: '0-0-0-0' },
-          { title: '0-0-0-1', key: '0-0-0-1' },
-          { title: '0-0-0-2', key: '0-0-0-2' }
-        ]
-      },
-      {
-        title: '0-0-1',
-        key: '0-0-1',
-        children: [
-          { title: '0-0-1-0', key: '0-0-1-0' },
-          { title: '0-0-1-1', key: '0-0-1-1' },
-          { title: '0-0-1-2', key: '0-0-1-2' }
-        ]
-      },
-      {
-        title: '0-0-2',
-        key: '0-0-2'
-      }
-    ]
-  },
-  {
-    title: '0-1',
-    key: '0-1',
-    children: [
-      { title: '0-1-0-0', key: '0-1-0-0' },
-      { title: '0-1-0-1', key: '0-1-0-1' },
-      { title: '0-1-0-2', key: '0-1-0-2' }
-    ]
-  },
-  {
-    title: '0-2',
-    key: '0-2'
-  }
-]
 
 export default {
   components: {
@@ -113,33 +71,39 @@ export default {
         }
       },
       form: this.$form.createForm(this),
-      expandedKeys: ['0-0-0', '0-0-1'],
-      autoExpandParent: true,
-      checkedKeys: ['0-0-0'],
-      selectedKeys: [],
-      treeData
-    }
-  },
-  watch: {
-    checkedKeys (val) {
-      console.log('onCheck', val)
+      checkedKeys: [],
+      treeData: []
     }
   },
   methods: {
-    onExpand (expandedKeys) {
-      console.log('onExpand', expandedKeys)
-      // if not set autoExpandParent to false, if children expanded, parent can not collapse.
-      // or, you can remove all expanded children keys.
-      this.expandedKeys = expandedKeys
-      this.autoExpandParent = false
-    },
-    onCheck (checkedKeys) {
-      console.log('onCheck', checkedKeys)
+    onCheck (checkedKeys, info) {
+      console.log(info.halfCheckedKeys)
       this.checkedKeys = checkedKeys
     },
-    onSelect (selectedKeys, info) {
-      console.log('onSelect', info)
-      this.selectedKeys = selectedKeys
+    handleTree (tree) {
+      const children = []
+      tree.forEach(item => {
+        // 如果为按钮，则终止此次循环
+        if (item.menuType !== 'F') {
+          const parent = {
+            //  标题
+            title: item.menuTitle,
+            key: item.id
+          }
+          if (item.owned) {
+            this.checkedKeys.push(item.id)
+          }
+          // 是否有子菜单，并递归处理
+          if (item.children && item.children.length > 0) {
+            // Recursion
+            const t = this.handleTree(item.children, parent)
+            // 如果没有孩子，则不赋值
+            if (t.length > 0) parent.children = t
+          }
+          children.push(parent)
+        }
+      })
+      return children
     }
   },
   created () {
@@ -149,6 +113,13 @@ export default {
     // 当 model 发生改变时，为表单设置值
     this.$watch('model', () => {
       this.model && this.form.setFieldsValue(pick(this.model, fields))
+      this.checkedKeys = []
+      this.treeData = []
+      // 获取当前角色所拥有的菜单权限
+      getOwnedMenus(this.model.id).then(res => {
+        this.treeData = this.handleTree(res)
+        console.log('checked', this.checkedKeys)
+      })
     })
   }
 }
