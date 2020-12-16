@@ -4,7 +4,7 @@
     :width="640"
     :visible="visible"
     :confirmLoading="loading"
-    @ok="() => { $emit('ok') }"
+    @ok="() => { $emit('ok', finalCheckedKeys) }"
     @cancel="() => { $emit('cancel') }"
   >
     <a-spin :spinning="loading">
@@ -14,7 +14,10 @@
           <a-input v-decorator="['id', { initialValue: 0 }]" disabled />
         </a-form-item>
         <a-form-item label="描述">
-          <a-input v-decorator="['info', {rules: [{required: true, min: 5, message: '请输入至少五个字符的规则描述！'}]}]" />
+          <a-input v-decorator="['name', {rules: [{required: true, min: 2, message: '请输入至少两个字符的规则描述！'}]}]" />
+        </a-form-item>
+        <a-form-item label="描述">
+          <a-input v-decorator="['info', {rules: [{required: true, min: 4, message: '请输入至少四个字符的规则描述！'}]}]" />
         </a-form-item>
         <a-form-item label="角色权限">
           <a-tree
@@ -38,7 +41,7 @@ import { Tree } from 'ant-design-vue'
 import { getOwnedMenus } from '@/api/manage'
 
 // 表单字段
-const fields = ['id', 'info']
+const fields = ['id', 'name', 'info']
 
 export default {
   components: {
@@ -72,13 +75,14 @@ export default {
       },
       form: this.$form.createForm(this),
       checkedKeys: [],
+      finalCheckedKeys: [], // 需要的checkedKeys
       treeData: []
     }
   },
   methods: {
     onCheck (checkedKeys, info) {
-      console.log(info.halfCheckedKeys)
       this.checkedKeys = checkedKeys
+      this.finalCheckedKeys = [...checkedKeys, ...info.halfCheckedKeys]
     },
     handleTree (tree) {
       const children = []
@@ -114,6 +118,7 @@ export default {
     this.$watch('model', () => {
       this.model && this.form.setFieldsValue(pick(this.model, fields))
       this.checkedKeys = []
+      this.finalCheckedKeys = []
       this.treeData = []
       // 获取当前角色所拥有的菜单权限
       getOwnedMenus(this.model.id).then(res => {

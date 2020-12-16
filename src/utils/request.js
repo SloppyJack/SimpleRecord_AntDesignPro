@@ -66,6 +66,7 @@ request.interceptors.response.use((response) => {
       }, 1500)
     })
   } else {
+    console.log('error', res)
     notification.error({
       message: '错误',
       description: res.message

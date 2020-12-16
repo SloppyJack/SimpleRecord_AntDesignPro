@@ -4,7 +4,8 @@ const api = {
   user: '/user',
   roleList: '/role/list',
   addRole: '/role/add',
-  ownedMenus: 'role/ownedMenus'
+  ownedMenus: 'role/ownedMenus',
+  editRole: '/role/edit'
 }
 
 export default api
@@ -37,5 +38,13 @@ export function getOwnedMenus (roleId) {
   return request({
     url: api.ownedMenus + '/' + roleId,
     method: 'get'
+  })
+}
+
+export function editRole (parameter) {
+  return request({
+    url: api.editRole,
+    method: 'put',
+    data: parameter
   })
 }

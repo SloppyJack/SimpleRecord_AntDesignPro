@@ -105,7 +105,7 @@
 <script>
 import moment from 'moment'
 import { Ellipsis, STable } from '@/components'
-import { getRoleList, addRole } from '@/api/manage'
+import { getRoleList, addRole, editRole } from '@/api/manage'
 
 import EditForm from './modules/EditForm'
 import CreateForm from './modules/CreateForm'
@@ -241,7 +241,6 @@ export default {
       form.validateFields((errors, values) => {
         if (!errors) {
           console.log('values', values)
-            // 修改 e.g.
           addRole(values).then(res => {
               this.createFormShow = false
               this.confirmCreateLoading = false
@@ -259,14 +258,19 @@ export default {
         }
       })
     },
-    handleEditOk () {
+    handleEditOk (finalCheckedKeys) {
       const form = this.$refs.editModal.form
       this.confirmEditLoading = true
       form.validateFields((errors, values) => {
         if (!errors) {
           console.log('values', values)
-          // 修改 e.g.
-          addRole(values).then(res => {
+          console.log('finalCheckedKeys', finalCheckedKeys)
+          editRole({
+            id: values.id,
+            name: values.name,
+            info: values.info,
+            menuIds: finalCheckedKeys
+          }).then(res => {
               this.editFormShow = false
               this.confirmEditLoading = false
               // 重置表单数据
