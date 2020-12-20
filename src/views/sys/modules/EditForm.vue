@@ -84,27 +84,31 @@ export default {
       this.checkedKeys = checkedKeys
       this.finalCheckedKeys = [...checkedKeys, ...info.halfCheckedKeys]
     },
-    handleTree (tree) {
+    handleTree (tree, parent) {
       const children = []
       tree.forEach(item => {
         // 如果为按钮，则终止此次循环
         if (item.menuType !== 'F') {
-          const parent = {
+          const node = {
             //  标题
             title: item.menuTitle,
             key: item.id
           }
           if (item.owned) {
             this.checkedKeys.push(item.id)
+          } else if (parent && !item.owned) {
+            if (this.checkedKeys.indexOf(parent.key) > 0) {
+              this.checkedKeys.splice(this.checkedKeys.indexOf(parent.key), 1)
+            }
           }
           // 是否有子菜单，并递归处理
           if (item.children && item.children.length > 0) {
             // Recursion
-            const t = this.handleTree(item.children, parent)
+            const t = this.handleTree(item.children, node)
             // 如果没有孩子，则不赋值
-            if (t.length > 0) parent.children = t
+            if (t.length > 0) node.children = t
           }
-          children.push(parent)
+          children.push(node)
         }
       })
       return children
@@ -123,7 +127,6 @@ export default {
       // 获取当前角色所拥有的菜单权限
       getOwnedMenus(this.model.id).then(res => {
         this.treeData = this.handleTree(res)
-        console.log('checked', this.checkedKeys)
       })
     })
   }

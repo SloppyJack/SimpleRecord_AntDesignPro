@@ -180,7 +180,6 @@ export default {
       queryParam: {},
       // 加载数据方法 必须为 Promise 对象
       loadData: parameter => {
-        console.log(this.queryParam)
         let deleted = null
         if (this.queryParam.status === '1') {
           deleted = false
@@ -240,7 +239,6 @@ export default {
       this.confirmCreateLoading = true
       form.validateFields((errors, values) => {
         if (!errors) {
-          console.log('values', values)
           addRole(values).then(res => {
               this.createFormShow = false
               this.confirmCreateLoading = false
@@ -263,8 +261,6 @@ export default {
       this.confirmEditLoading = true
       form.validateFields((errors, values) => {
         if (!errors) {
-          console.log('values', values)
-          console.log('finalCheckedKeys', finalCheckedKeys)
           editRole({
             id: values.id,
             name: values.name,
