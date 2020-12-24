@@ -21,7 +21,7 @@
             <template v-if="advanced">
               <a-col :md="8" :sm="24">
                 <a-form-item label="创建日期">
-                  <a-date-picker v-model="queryParam.date" style="width: 100%" placeholder="请输入更新日期"/>
+                  <a-date-picker v-model="queryParam.date" style="width: 100%" placeholder="请输入创建日期"/>
                 </a-form-item>
               </a-col>
             </template>
@@ -77,7 +77,7 @@
           <template>
             <a @click="handleEdit(record)">修改</a>
             <a-divider type="vertical" />
-            <a @click="handleSub(record)">删除</a>
+            <a @click="handleDel(record)">删除</a>
           </template>
         </span>
       </s-table>
@@ -155,71 +155,6 @@ const statusMap = {
     text: '已停用'
   }
 }
-
-const data = [
-  {
-    key: 1,
-    name: 'John Brown sr.',
-    age: 60,
-    address: 'New York No. 1 Lake Park',
-    children: [
-      {
-        key: 11,
-        name: 'John Brown',
-        age: 42,
-        address: 'New York No. 2 Lake Park'
-      },
-      {
-        key: 12,
-        name: 'John Brown jr.',
-        age: 30,
-        address: 'New York No. 3 Lake Park',
-        children: [
-          {
-            key: 121,
-            name: 'Jimmy Brown',
-            age: 16,
-            address: 'New York No. 3 Lake Park'
-          }
-        ]
-      },
-      {
-        key: 13,
-        name: 'Jim Green sr.',
-        age: 72,
-        address: 'London No. 1 Lake Park',
-        children: [
-          {
-            key: 131,
-            name: 'Jim Green',
-            age: 42,
-            address: 'London No. 2 Lake Park',
-            children: [
-              {
-                key: 1311,
-                name: 'Jim Green jr.',
-                age: 25,
-                address: 'London No. 3 Lake Park'
-              },
-              {
-                key: 1312,
-                name: 'Jimmy Green sr.',
-                age: 18,
-                address: 'London No. 4 Lake Park'
-              }
-            ]
-          }
-        ]
-      }
-    ]
-  },
-  {
-    key: 2,
-    name: 'Joe Black',
-    age: 32,
-    address: 'Sidney No. 1 Lake Park'
-  }
-]
 
 export default {
   components: {
@@ -346,6 +281,9 @@ export default {
           this.confirmEditLoading = false
         }
       })
+    },
+    handleDel (record) {
+      this.$message.info(record.name)
     },
     handleCreateCancel () {
       this.createFormShow = false

@@ -101,7 +101,7 @@ export const generator = (routerMap, parent) => {
         item.component = 'RouteView'
       }
       // 如果为菜单，则找到孩子节点的所有权限，并组成数组
-      if (item.menuType === 'C') {
+      if (item.menuType === 'C' && item.children) {
         const arr = findMenuPermissions(item.children)
         if (arr.length > 0) {
           item.permissionSign = arr

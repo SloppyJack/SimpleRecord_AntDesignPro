@@ -5,8 +5,8 @@
         <a-form layout="inline">
           <a-row :gutter="48">
             <a-col :md="8" :sm="24">
-              <a-form-item label="角色名称">
-                <a-input v-model="queryParam.name" placeholder=""/>
+              <a-form-item label="菜单标题">
+                <a-input v-model="queryParam.title" placeholder=""/>
               </a-form-item>
             </a-col>
             <a-col :md="8" :sm="24">
@@ -21,7 +21,7 @@
             <template v-if="advanced">
               <a-col :md="8" :sm="24">
                 <a-form-item label="创建日期">
-                  <a-date-picker v-model="queryParam.date" style="width: 100%" placeholder="请输入更新日期"/>
+                  <a-date-picker v-model="queryParam.date" style="width: 100%" placeholder="请输入创建日期"/>
                 </a-form-item>
               </a-col>
             </template>
@@ -38,96 +38,64 @@
           </a-row>
         </a-form>
       </div>
-      <a-table :columns="columns" :data-source="data" :row-selection="rowSelection" />
+      <s-table
+        ref="table"
+        size="default"
+        rowKey="id"
+        :columns="columns"
+        :data="loadData"
+        :alert="true"
+        :rowSelection="rowSelection"
+        showPagination="auto"
+      >
+        <span slot="serial" slot-scope="text, record, index">
+          {{ index + 1 }}
+        </span>
+        <span slot="outerChain" slot-scope="text">
+          <a-tag :color="text ? 'green' : 'orange'">{{ text ? '是' : '否' }}</a-tag>
+        </span>
+      </s-table>
     </a-card>
   </page-header-wrapper>
 </template>
 
 <script>
-import { Ellipsis } from '@/components'
+import { getMenus } from '@/api/manage'
+import { Ellipsis, STable } from '@/components'
 
 const columns = [
   {
-    title: 'Name',
-    dataIndex: 'name',
-    key: 'name'
+    title: '标题',
+    dataIndex: 'menuTitle'
   },
   {
-    title: 'Age',
-    dataIndex: 'age',
-    key: 'age',
-    width: '12%'
+    title: '名称',
+    dataIndex: 'menuName'
   },
   {
-    title: 'Address',
-    dataIndex: 'address',
-    width: '30%',
-    key: 'address'
-  }
-]
-
-const data = [
-  {
-    key: 1,
-    name: 'John Brown sr.',
-    age: 60,
-    address: 'New York No. 1 Lake Park',
-    children: [
-      {
-        key: 11,
-        name: 'John Brown',
-        age: 42,
-        address: 'New York No. 2 Lake Park'
-      },
-      {
-        key: 12,
-        name: 'John Brown jr.',
-        age: 30,
-        address: 'New York No. 3 Lake Park',
-        children: [
-          {
-            key: 121,
-            name: 'Jimmy Brown',
-            age: 16,
-            address: 'New York No. 3 Lake Park'
-          }
-        ]
-      },
-      {
-        key: 13,
-        name: 'Jim Green sr.',
-        age: 72,
-        address: 'London No. 1 Lake Park',
-        children: [
-          {
-            key: 131,
-            name: 'Jim Green',
-            age: 42,
-            address: 'London No. 2 Lake Park',
-            children: [
-              {
-                key: 1311,
-                name: 'Jim Green jr.',
-                age: 25,
-                address: 'London No. 3 Lake Park'
-              },
-              {
-                key: 1312,
-                name: 'Jimmy Green sr.',
-                age: 18,
-                address: 'London No. 4 Lake Park'
-              }
-            ]
-          }
-        ]
-      }
-    ]
+    title: '类型',
+    dataIndex: 'menuType'
   },
   {
-    key: 2,
-    name: 'Joe Black',
-    age: 32,
-    address: 'Sidney No. 1 Lake Park'
+    title: '是否外链',
+    dataIndex: 'outerChain',
+    scopedSlots: { customRender: 'outerChain' }
+  },
+  {
+    title: '路径',
+    dataIndex: 'path'
+  },
+  {
+    title: '组件',
+    dataIndex: 'component'
+  },
+  {
+    title: '图标',
+    dataIndex: 'iconName'
+  },
+  {
+    title: '排序',
+    dataIndex: 'orderNo'
   }
 ]
 
@@ -145,13 +113,38 @@ const rowSelection = {
 
 export default {
   components: {
+    STable,
     Ellipsis
   },
   data () {
     return {
       // 查询参数
       queryParam: {},
-      data,
+      // 高级搜索 展开/关闭
+      advanced: false,
+      loadData: parameter => {
+        let deleted = null
+        if (this.queryParam.status === '1') {
+          deleted = false
+        } else if (this.queryParam.status === '2') {
+          deleted = true
+        }
+        const params = {
+          'title': this.queryParam.title,
+          'deleted': deleted,
+          'date': this.queryParam.date,
+          'pageNo': parameter.pageNo,
+          'pageSize': parameter.pageSize
+        }
+        return getMenus(params).then((res) => {
+          // 封装返回的数据，供s-table使用
+          return {
+            'pageNo': parameter.pageNo,
+            'totalCount': res.total,
+            'data': res.list
+          }
+        })
+      },
       columns,
       rowSelection
     }
@@ -161,6 +154,9 @@ export default {
   computed: {
   },
   methods: {
+    toggleAdvanced () {
+      this.advanced = !this.advanced
+    }
   }
 }
 </script>
