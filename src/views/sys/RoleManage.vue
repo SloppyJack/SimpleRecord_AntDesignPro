@@ -107,8 +107,8 @@ import moment from 'moment'
 import { Ellipsis, STable } from '@/components'
 import { getRoleList, addRole, editRole } from '@/api/manage'
 
-import EditForm from './modules/EditForm'
-import CreateForm from './modules/CreateForm'
+import EditForm from './modules/EditRoleForm'
+import CreateForm from './modules/CreateRoleForm'
 
 const columns = [
   {

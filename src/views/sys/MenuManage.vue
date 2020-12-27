@@ -38,6 +38,9 @@
           </a-row>
         </a-form>
       </div>
+      <div class="table-operator">
+        <a-button type="primary" icon="plus" @click="handleAdd">新建</a-button>
+      </div>
       <s-table
         ref="table"
         size="default"
@@ -51,8 +54,28 @@
         <span slot="serial" slot-scope="text, record, index">
           {{ index + 1 }}
         </span>
+        <span slot="menuType" slot-scope="text">
+          <a-tag>{{ text | menuTypeFilter }}</a-tag>
+        </span>
         <span slot="outerChain" slot-scope="text">
           <a-tag :color="text ? 'green' : 'orange'">{{ text ? '是' : '否' }}</a-tag>
+        </span>
+        <span slot="deleteTime" slot-scope="text">
+          <a-badge :status="text | statusTypeFilter" :text="text | statusFilter" />
+        </span>
+        <span slot="action" slot-scope="text, record">
+          <template>
+            <a @click="handleEdit(record)">修改</a>
+            <a-divider type="vertical" />
+            <a-popconfirm
+              title="确定要删除吗?"
+              ok-text="确定"
+              cancel-text="取消"
+              @confirm="handleDel(record)"
+            >
+              <a href="#">删除</a>
+            </a-popconfirm>
+          </template>
         </span>
       </s-table>
     </a-card>
@@ -74,7 +97,8 @@ const columns = [
   },
   {
     title: '类型',
-    dataIndex: 'menuType'
+    dataIndex: 'menuType',
+    scopedSlots: { customRender: 'menuType' }
   },
   {
     title: '是否外链',
@@ -96,8 +120,41 @@ const columns = [
   {
     title: '排序',
     dataIndex: 'orderNo'
+  },
+  {
+    title: '状态',
+    dataIndex: 'deleteTime',
+    scopedSlots: { customRender: 'deleteTime' }
+  },
+  {
+    title: '操作',
+    dataIndex: 'action',
+    scopedSlots: { customRender: 'action' }
   }
 ]
+
+const menuTypeMap = {
+  'M': {
+    text: '目录'
+  },
+  'C': {
+    text: '菜单'
+  },
+  'F': {
+    text: '按钮'
+  }
+}
+
+const statusMap = {
+  1: {
+    status: 'success',
+    text: '已启用'
+  },
+  2: {
+    status: 'default',
+    text: '已停用'
+  }
+}
 
 const rowSelection = {
   onChange: (selectedRowKeys, selectedRows) => {
@@ -151,11 +208,30 @@ export default {
   },
   created () {
   },
+  filters: {
+    menuTypeFilter (menuType) {
+      return menuType ? menuTypeMap[menuType].text : ''
+    },
+    statusFilter (deleteTime) {
+      return deleteTime ? statusMap[2].text : statusMap[1].text
+    },
+    statusTypeFilter (deleteTime) {
+      return deleteTime ? statusMap[2].status : statusMap[1].status
+    }
+  },
   computed: {
   },
   methods: {
     toggleAdvanced () {
       this.advanced = !this.advanced
+    },
+    handleAdd () {
+    },
+    handleDel (record) {
+      this.$message.info(record.name)
+    },
+    handleEdit (record) {
+      this.$message.info(record.name)
     }
   }
 }
