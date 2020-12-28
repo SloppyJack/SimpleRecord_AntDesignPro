@@ -78,13 +78,25 @@
           </template>
         </span>
       </s-table>
+
+      <menu-form
+        ref="createModal"
+        :visible="createFormShow"
+        :loading="confirmCreateLoading"
+        :model="mdl"
+        :tree-data="treeData"
+        @cancel="handleCreateCancel"
+        @ok="handleCreateOk"
+      />
     </a-card>
   </page-header-wrapper>
 </template>
 
 <script>
-import { getMenus } from '@/api/manage'
+import { getAllMenus, getMenus } from '@/api/manage'
 import { Ellipsis, STable } from '@/components'
+
+import MenuForm from './modules/MenuForm'
 
 const columns = [
   {
@@ -171,7 +183,8 @@ const rowSelection = {
 export default {
   components: {
     STable,
-    Ellipsis
+    Ellipsis,
+    MenuForm
   },
   data () {
     return {
@@ -203,7 +216,11 @@ export default {
         })
       },
       columns,
-      rowSelection
+      rowSelection,
+      createFormShow: false,
+      confirmCreateLoading: false,
+      mdl: null,
+      treeData: []
     }
   },
   created () {
@@ -226,12 +243,54 @@ export default {
       this.advanced = !this.advanced
     },
     handleAdd () {
+      this.mdl = null
+      this.treeData = []
+      getAllMenus().then(res => {
+        console.log(res)
+        this.treeData = this.handleTree(res)
+        console.log(this.treeData)
+        this.createFormShow = true
+      })
     },
     handleDel (record) {
       this.$message.info(record.name)
     },
     handleEdit (record) {
       this.$message.info(record.name)
+    },
+    handleCreateCancel () {
+      this.createFormShow = false
+    },
+    handleCreateOk () {
+      const form = this.$refs.createModal.form
+      this.confirmCreateLoading = true
+      form.validateFields((errors, values) => {
+        if (!errors) {
+        } else {
+          this.confirmCreateLoading = false
+        }
+      })
+    },
+    handleTree (tree) {
+      const children = []
+      tree.forEach(item => {
+        const node = {
+          //  标题
+          title: item.menuTitle,
+          value: item.id,
+          key: item.id,
+          disabled: item.deleteTime || item.menuType === 'F'
+        }
+        // 是否有子菜单，并递归处理
+        if (item.children && item.children.length > 0) {
+          // Recursion
+          const t = this.handleTree(item.children)
+          // 如果没有孩子，则不赋值
+          if (t.length > 0) node.children = t
+        }
+        children.push(node)
+      })
+      return children
     }
   }
 }
