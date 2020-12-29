@@ -7,7 +7,8 @@ const api = {
   ownedMenus: 'role/ownedMenus',
   editRole: '/role/edit',
   menuList: '/menu/page',
-  allMenus: '/menu/all'
+  allMenus: '/menu/all',
+  addMenu: '/menu/add'
 }
 
 export default api
@@ -63,5 +64,13 @@ export function getAllMenus () {
   return request({
     url: api.allMenus,
     method: 'get'
+  })
+}
+
+export function addMenu (parameter) {
+  return request({
+    url: api.addMenu,
+    method: 'post',
+    data: parameter
   })
 }

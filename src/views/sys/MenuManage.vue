@@ -49,6 +49,7 @@
         :data="loadData"
         :alert="true"
         :rowSelection="rowSelection"
+        :scroll="{ x: 1000 }"
         showPagination="auto"
       >
         <span slot="serial" slot-scope="text, record, index">
@@ -80,7 +81,7 @@
       </s-table>
 
       <menu-form
-        ref="createModal"
+        ref="menuModal"
         :visible="createFormShow"
         :loading="confirmCreateLoading"
         :model="mdl"
@@ -93,7 +94,7 @@
 </template>
 
 <script>
-import { getAllMenus, getMenus } from '@/api/manage'
+import { getAllMenus, getMenus, addMenu } from '@/api/manage'
 import { Ellipsis, STable } from '@/components'
 
 import MenuForm from './modules/MenuForm'
@@ -101,7 +102,9 @@ import MenuForm from './modules/MenuForm'
 const columns = [
   {
     title: '标题',
-    dataIndex: 'menuTitle'
+    dataIndex: 'menuTitle',
+    width: 100,
+    fixed: 'left'
   },
   {
     title: '名称',
@@ -141,6 +144,8 @@ const columns = [
   {
     title: '操作',
     dataIndex: 'action',
+    width: 100,
+    fixed: 'right',
     scopedSlots: { customRender: 'action' }
   }
 ]
@@ -246,9 +251,7 @@ export default {
       this.mdl = null
       this.treeData = []
       getAllMenus().then(res => {
-        console.log(res)
         this.treeData = this.handleTree(res)
-        console.log(this.treeData)
         this.createFormShow = true
       })
     },
@@ -262,10 +265,19 @@ export default {
       this.createFormShow = false
     },
     handleCreateOk () {
-      const form = this.$refs.createModal.form
+      const form = this.$refs.menuModal.form
       this.confirmCreateLoading = true
       form.validateFields((errors, values) => {
         if (!errors) {
+          addMenu(values).then((res) => {
+            this.createFormShow = false
+            this.confirmCreateLoading = false
+            // 重置表单数据
+            form.resetFields()
+            // 刷新表格
+            this.$refs.table.refresh()
+            this.$message.info('新增成功')
+          })
         } else {
           this.confirmCreateLoading = false
         }
