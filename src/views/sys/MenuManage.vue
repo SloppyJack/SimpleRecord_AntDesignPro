@@ -69,12 +69,22 @@
             <a @click="handleEdit(record)">修改</a>
             <a-divider type="vertical" />
             <a-popconfirm
+              v-if="record.deleteTime === null"
               title="确定要删除吗?"
               ok-text="确定"
               cancel-text="取消"
               @confirm="handleDel(record)"
             >
               <a href="#">删除</a>
+            </a-popconfirm>
+            <a-popconfirm
+              v-else
+              title="确定要启用吗?"
+              ok-text="确定"
+              cancel-text="取消"
+              @confirm="handleReset(record)"
+            >
+              <a href="#">启用</a>
             </a-popconfirm>
           </template>
         </span>
@@ -94,7 +104,7 @@
 </template>
 
 <script>
-import { getAllMenus, getMenus, addMenu } from '@/api/manage'
+import { getAllMenus, getMenus, addMenu, delMenu, resetMenu } from '@/api/manage'
 import { Ellipsis, STable } from '@/components'
 
 import MenuForm from './modules/MenuForm'
@@ -256,10 +266,27 @@ export default {
       })
     },
     handleDel (record) {
-      this.$message.info(record.name)
+      delMenu(record.id).then(res => {
+        // 刷新表格
+        this.$refs.table.refresh()
+        this.$message.info('删除成功')
+      })
+    },
+    handleReset (record) {
+      resetMenu(record.id).then(res => {
+        // 刷新表格
+        this.$refs.table.refresh()
+        this.$message.info('启用成功')
+      })
     },
     handleEdit (record) {
-      this.$message.info(record.name)
+      this.mdl = this.buildModel(record)
+      console.log(record)
+      this.treeData = []
+      getAllMenus().then(res => {
+        this.treeData = this.handleTree(res)
+        this.createFormShow = true
+      })
     },
     handleCreateCancel () {
       this.createFormShow = false
@@ -291,7 +318,7 @@ export default {
           title: item.menuTitle,
           value: item.id,
           key: item.id,
-          disabled: item.deleteTime || item.menuType === 'F'
+          disabled: item.deleteTime !== null || item.menuType === 'F'
         }
         // 是否有子菜单，并递归处理
         if (item.children && item.children.length > 0) {
@@ -303,6 +330,20 @@ export default {
         children.push(node)
       })
       return children
+    },
+    buildModel (record) {
+      return {
+        parentId: record.parentId,
+        menuType: record.menuType,
+        menuTitle: record.menuTitle,
+        menuName: record.menuName,
+        path: record.path,
+        permissionSign: record.permissionSign,
+        component: record.component,
+        iconName: record.iconName,
+        isOuterChain: record.outerChain,
+        orderNo: record.orderNo
+      }
     }
   }
 }

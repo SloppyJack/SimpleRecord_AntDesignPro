@@ -8,7 +8,9 @@ const api = {
   editRole: '/role/edit',
   menuList: '/menu/page',
   allMenus: '/menu/all',
-  addMenu: '/menu/add'
+  addMenu: '/menu/add',
+  delMenu: '/menu/del',
+  resetMenu: '/menu/reset'
 }
 
 export default api
@@ -72,5 +74,19 @@ export function addMenu (parameter) {
     url: api.addMenu,
     method: 'post',
     data: parameter
+  })
+}
+
+export function delMenu (id) {
+  return request({
+    url: api.delMenu + '/' + id,
+    method: 'get'
+  })
+}
+
+export function resetMenu (id) {
+  return request({
+    url: api.resetMenu + '/' + id,
+    method: 'get'
   })
 }

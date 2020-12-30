@@ -27,23 +27,23 @@
         <a-form-item label="菜单名称">
           <a-input v-decorator="['menuName', {rules: [{required: true, min: 4, message: '请输入至少四个字符的名称！'}]}]" />
         </a-form-item>
-        <a-form-item label="路径">
+        <a-form-item v-if="menuType !== 'F'" label="路径">
           <a-input v-decorator="['path', {rules: [{required: true}]}]" />
         </a-form-item>
-        <a-form-item label="权限标识">
+        <a-form-item v-if="menuType === 'F'" label="权限标识">
           <a-input v-decorator="['permissionSign']" />
         </a-form-item>
-        <a-form-item label="组件地址">
+        <a-form-item v-if="menuType === 'M'" label="组件地址">
           <a-input v-decorator="['component', {rules: [{required: true}]}]" />
         </a-form-item>
-        <a-form-item label="图标">
+        <a-form-item v-if="menuType !== 'F'" label="图标">
           <a-input v-decorator="['iconName']" />
         </a-form-item>
-        <a-form-item label="是否为外链">
+        <a-form-item v-if="menuType === 'M'" label="是否为外链">
           <a-switch v-decorator="['isOuterChain', {rules: [{required: true, message: '请输入选择'}],initialValue: false,valuePropName: 'checked'}]" @change="onChangeSwitch" />
         </a-form-item>
         <a-form-item label="排序">
-          <a-input-number :min="1" v-decorator="['orderNo']"/>
+          <a-input-number :min="1" v-decorator="['orderNo', {initialValue: 1}]"/>
         </a-form-item>
       </a-form>
     </a-spin>
@@ -87,14 +87,6 @@ export default {
     treeData: {
       type: Array,
       default: () => null
-    },
-    parentId: {
-      type: Number,
-      default: () => null
-    },
-    menuType: {
-      type: String,
-      default: () => ''
     }
   },
   data () {
@@ -110,7 +102,8 @@ export default {
         }
       },
       form: this.$form.createForm(this),
-      options
+      options,
+      menuType: ''
     }
   },
   created () {
@@ -119,19 +112,22 @@ export default {
 
     // 当 model 发生改变时，为表单设置值
     this.$watch('model', () => {
+      this.menuType = this.model.menuType
       this.model && this.form.setFieldsValue(pick(this.model, fields))
     })
   },
   methods: {
     changeMenuType (e) {
+      this.menuType = e.target.value
       this.form.setFieldsValue({ menuType: e.target.value })
-      console.log(this.form.getFieldsValue())
     },
     onChangeSwitch (checked) {
-      console.log(checked)
       this.form.setFieldsValue({ isOuterChain: checked })
       console.log(this.form.getFieldsValue())
     }
+  },
+  computed: {
+
   }
 }
 </script>
