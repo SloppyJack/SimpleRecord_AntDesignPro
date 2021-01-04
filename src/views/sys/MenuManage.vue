@@ -262,6 +262,8 @@ export default {
       this.treeData = []
       getAllMenus().then(res => {
         this.treeData = this.handleTree(res)
+        // 重置表单
+        this.$refs.menuModal.form.resetFields()
         this.createFormShow = true
       })
     },
@@ -281,7 +283,6 @@ export default {
     },
     handleEdit (record) {
       this.mdl = this.buildModel(record)
-      console.log(record)
       this.treeData = []
       getAllMenus().then(res => {
         this.treeData = this.handleTree(res)
@@ -304,6 +305,8 @@ export default {
             // 刷新表格
             this.$refs.table.refresh()
             this.$message.info('新增成功')
+          }).catch(() => {
+            this.confirmCreateLoading = false
           })
         } else {
           this.confirmCreateLoading = false
