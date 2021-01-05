@@ -6,7 +6,7 @@ const api = {
   addRole: '/role/add',
   ownedMenus: 'role/ownedMenus',
   editRole: '/role/edit',
-  menuList: '/menu/page',
+  menuTree: '/menu/tree',
   allMenus: '/menu/all',
   addMenu: '/menu/add',
   delMenu: '/menu/del',
@@ -54,9 +54,9 @@ export function editRole (parameter) {
   })
 }
 
-export function getMenus (parameter) {
+export function getTreeMenus (parameter) {
   return request({
-    url: api.menuList,
+    url: api.menuTree,
     method: 'post',
     data: parameter
   })

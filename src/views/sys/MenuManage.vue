@@ -50,7 +50,7 @@
         :alert="true"
         :rowSelection="rowSelection"
         :scroll="{ x: 1000 }"
-        showPagination="auto"
+        :showPagination="false"
       >
         <span slot="serial" slot-scope="text, record, index">
           {{ index + 1 }}
@@ -104,7 +104,7 @@
 </template>
 
 <script>
-import { getAllMenus, getMenus, addMenu, delMenu, resetMenu } from '@/api/manage'
+import { getAllMenus, getTreeMenus, addMenu, delMenu, resetMenu } from '@/api/manage'
 import { Ellipsis, STable } from '@/components'
 
 import MenuForm from './modules/MenuForm'
@@ -217,16 +217,12 @@ export default {
         const params = {
           'title': this.queryParam.title,
           'deleted': deleted,
-          'date': this.queryParam.date,
-          'pageNo': parameter.pageNo,
-          'pageSize': parameter.pageSize
+          'date': this.queryParam.date
         }
-        return getMenus(params).then((res) => {
+        return getTreeMenus(params).then((res) => {
           // 封装返回的数据，供s-table使用
           return {
-            'pageNo': parameter.pageNo,
-            'totalCount': res.total,
-            'data': res.list
+            'data': res
           }
         })
       },
@@ -335,6 +331,7 @@ export default {
       return children
     },
     buildModel (record) {
+      console.log('record', record)
       return {
         parentId: record.parentId,
         menuType: record.menuType,

@@ -54,6 +54,8 @@
 import pick from 'lodash.pick'
 import { TreeSelect } from 'ant-design-vue'
 
+import { rmNullItem } from '@/utils/objUtil'
+
 // 表单字段
 const fields = ['parentId', 'menuType', 'menuTitle', 'menuName', 'path', 'permissionSign', 'component', 'iconName', 'isOuterChain', 'orderNo']
 
@@ -111,8 +113,12 @@ export default {
 
     // 当 model 发生改变时，为表单设置值
     this.$watch('model', () => {
-      console.log('pick', pick(this.model, fields))
-      this.model && this.form.setFieldsValue(pick(this.model, fields))
+      console.log('model', this.model)
+      const obj = pick(this.model, fields)
+      // 去除对象中的空值，防止报错
+      rmNullItem(obj)
+      console.log('obj', obj)
+      this.model && this.form.setFieldsValue(obj)
     })
   },
   methods: {
