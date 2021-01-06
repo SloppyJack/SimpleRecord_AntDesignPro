@@ -49,7 +49,7 @@
         :data="loadData"
         :alert="true"
         :rowSelection="rowSelection"
-        :scroll="{ x: 1000 }"
+        :scroll="{ x: 1400 }"
         :showPagination="false"
       >
         <span slot="serial" slot-scope="text, record, index">
@@ -104,7 +104,7 @@
 </template>
 
 <script>
-import { getAllMenus, getTreeMenus, addMenu, delMenu, resetMenu } from '@/api/manage'
+import { getAllMenus, getTreeMenus, addMenu, delMenu, resetMenu, editMenu } from '@/api/manage'
 import { Ellipsis, STable } from '@/components'
 
 import MenuForm from './modules/MenuForm'
@@ -113,12 +113,13 @@ const columns = [
   {
     title: '标题',
     dataIndex: 'menuTitle',
-    width: 100,
+    width: 200,
     fixed: 'left'
   },
   {
     title: '名称',
-    dataIndex: 'menuName'
+    dataIndex: 'menuName',
+    width: 150
   },
   {
     title: '类型',
@@ -132,15 +133,23 @@ const columns = [
   },
   {
     title: '路径',
-    dataIndex: 'path'
+    dataIndex: 'path',
+    width: 150
   },
   {
     title: '组件',
-    dataIndex: 'component'
+    dataIndex: 'component',
+    width: 150
   },
   {
     title: '图标',
-    dataIndex: 'iconName'
+    dataIndex: 'iconName',
+    width: 150
+  },
+  {
+    title: '权限标识',
+    dataIndex: 'permissionSign',
+    width: 150
   },
   {
     title: '排序',
@@ -149,7 +158,8 @@ const columns = [
   {
     title: '状态',
     dataIndex: 'deleteTime',
-    scopedSlots: { customRender: 'deleteTime' }
+    scopedSlots: { customRender: 'deleteTime' },
+    fixed: 'right'
   },
   {
     title: '操作',
@@ -293,17 +303,32 @@ export default {
       this.confirmCreateLoading = true
       form.validateFields((errors, values) => {
         if (!errors) {
-          addMenu(values).then((res) => {
-            this.createFormShow = false
-            this.confirmCreateLoading = false
-            // 重置表单数据
-            form.resetFields()
-            // 刷新表格
-            this.$refs.table.refresh()
-            this.$message.info('新增成功')
-          }).catch(() => {
-            this.confirmCreateLoading = false
-          })
+          // 修改
+          if (values.id > 0) {
+            editMenu(values).then((res) => {
+              this.createFormShow = false
+              this.confirmCreateLoading = false
+              // 重置表单数据
+              form.resetFields()
+              // 刷新表格
+              this.$refs.table.refresh()
+              this.$message.info('修改成功')
+            }).catch(() => {
+              this.confirmCreateLoading = false
+            })
+          } else {
+            addMenu(values).then((res) => {
+              this.createFormShow = false
+              this.confirmCreateLoading = false
+              // 重置表单数据
+              form.resetFields()
+              // 刷新表格
+              this.$refs.table.refresh()
+              this.$message.info('新增成功')
+            }).catch(() => {
+              this.confirmCreateLoading = false
+            })
+          }
         } else {
           this.confirmCreateLoading = false
         }
@@ -333,6 +358,7 @@ export default {
     buildModel (record) {
       console.log('record', record)
       return {
+        id: record.id,
         parentId: record.parentId,
         menuType: record.menuType,
         menuTitle: record.menuTitle,

@@ -9,12 +9,17 @@
   >
     <a-spin :spinning="loading">
       <a-form :form="form" v-bind="formLayout">
+        <!-- 检查是否有 id 并且大于0，大于0是修改。其他是新增，新增不显示主键ID -->
+        <a-form-item v-show="model && model.id > 0" label="主键ID">
+          <a-input v-decorator="['id', { initialValue: 0 }]" disabled />
+        </a-form-item>
         <a-form-item label="上级菜单">
           <a-tree-select
             v-decorator="['parentId']"
             style="width: 100%"
             :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }"
             :tree-data="treeData"
+            :allowClear="true"
             placeholder="请选择父级菜单"
           />
         </a-form-item>
@@ -27,20 +32,20 @@
         <a-form-item label="菜单名称">
           <a-input v-decorator="['menuName', {rules: [{required: true, min: 4, message: '请输入至少四个字符的名称！'}]}]" />
         </a-form-item>
-        <a-form-item v-if="menuTypeRule() !== 'F'" label="路径">
-          <a-input v-decorator="['path', {rules: [{required: true}]}]" />
+        <a-form-item v-show="menuTypeRule() !== 'F'" label="路径">
+          <a-input v-decorator="menuTypeRule() !== 'F' ? ['path', {rules: [{required: true}]}] : ['path']" />
         </a-form-item>
-        <a-form-item v-if="menuTypeRule() === 'F'" label="权限标识">
+        <a-form-item v-show="menuTypeRule() === 'F'" label="权限标识">
           <a-input v-decorator="['permissionSign']" />
         </a-form-item>
-        <a-form-item v-if="menuTypeRule() === 'C'" label="组件地址">
-          <a-input v-decorator="['component', {rules: [{required: true}]}]" />
+        <a-form-item v-show="menuTypeRule() === 'C'" label="组件地址">
+          <a-input v-decorator="menuTypeRule() !== 'F' ? ['component', {rules: [{required: true}]}] : ['component']" />
         </a-form-item>
-        <a-form-item v-if="menuTypeRule() !== 'F'" label="图标">
+        <a-form-item v-show="menuTypeRule() !== 'F'" label="图标">
           <a-input v-decorator="['iconName']" />
         </a-form-item>
-        <a-form-item v-if="menuTypeRule() === 'C'" label="是否为外链">
-          <a-switch v-decorator="['isOuterChain', {rules: [{required: true, message: '请输入选择'}],initialValue: false,valuePropName: 'checked'}]"/>
+        <a-form-item v-show="menuTypeRule() === 'C'" label="是否为外链">
+          <a-switch v-decorator="menuTypeRule() !== 'F' ? ['isOuterChain', {rules: [{required: true, message: '请输入选择'}],initialValue: false,valuePropName: 'checked'}]:['isOuterChain', {initialValue: false,valuePropName: 'checked'}]"/>
         </a-form-item>
         <a-form-item label="排序">
           <a-input-number :min="1" v-decorator="['orderNo', {initialValue: 1}]"/>
@@ -57,7 +62,7 @@ import { TreeSelect } from 'ant-design-vue'
 import { rmNullItem } from '@/utils/objUtil'
 
 // 表单字段
-const fields = ['parentId', 'menuType', 'menuTitle', 'menuName', 'path', 'permissionSign', 'component', 'iconName', 'isOuterChain', 'orderNo']
+const fields = ['id', 'parentId', 'menuType', 'menuTitle', 'menuName', 'path', 'permissionSign', 'component', 'iconName', 'isOuterChain', 'orderNo']
 
 const options = [
   { label: '目录', value: 'M' },

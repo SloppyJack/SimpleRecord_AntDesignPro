@@ -10,7 +10,8 @@ const api = {
   allMenus: '/menu/all',
   addMenu: '/menu/add',
   delMenu: '/menu/del',
-  resetMenu: '/menu/reset'
+  resetMenu: '/menu/reset',
+  editMenu: '/menu/edit'
 }
 
 export default api
@@ -88,5 +89,13 @@ export function resetMenu (id) {
   return request({
     url: api.resetMenu + '/' + id,
     method: 'get'
+  })
+}
+
+export function editMenu (parameter) {
+  return request({
+    url: api.editMenu,
+    method: 'put',
+    data: parameter
   })
 }
