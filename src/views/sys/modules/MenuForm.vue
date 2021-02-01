@@ -27,7 +27,7 @@
           <a-radio-group v-decorator="['menuType']" :options="options"/>
         </a-form-item>
         <a-form-item label="菜单标题">
-          <a-input v-decorator="['menuTitle', {rules: [{required: true, min: 4, message: '请输入至少四个字符的标题！'}]}]" />
+          <a-input v-decorator="['menuTitle', {rules: [{required: true, min: 2, message: '请输入至少两个字符的标题！'}]}]" />
         </a-form-item>
         <a-form-item label="菜单名称">
           <a-input v-decorator="['menuName', {rules: [{required: true, min: 4, message: '请输入至少四个字符的名称！'}]}]" />
