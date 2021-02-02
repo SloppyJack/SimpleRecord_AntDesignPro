@@ -38,7 +38,7 @@
 import pick from 'lodash.pick'
 
 import { Tree } from 'ant-design-vue'
-import { getOwnedMenus } from '@/api/manage'
+import { getOwnedMenus } from '@/api/core/menuManage'
 
 // 表单字段
 const fields = ['id', 'name', 'info']
@@ -87,8 +87,6 @@ export default {
     handleTree (tree, parent) {
       const children = []
       tree.forEach(item => {
-        // 如果为按钮，则终止此次循环
-        if (item.menuType !== 'F') {
           const node = {
             //  标题
             title: item.menuTitle,
@@ -109,7 +107,6 @@ export default {
             if (t.length > 0) node.children = t
           }
           children.push(node)
-        }
       })
       return children
     }

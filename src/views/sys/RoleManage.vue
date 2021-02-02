@@ -105,7 +105,7 @@
 <script>
 import moment from 'moment'
 import { Ellipsis, STable } from '@/components'
-import { getRoleList, addRole, editRole } from '@/api/manage'
+import { getRolePage, addRole, editRole } from '@/api/core/roleManage'
 
 import EditForm from './modules/EditRoleForm'
 import CreateForm from './modules/CreateRoleForm'
@@ -192,7 +192,7 @@ export default {
           'pageNo': parameter.pageNo,
           'pageSize': parameter.pageSize
         }
-        return getRoleList(params)
+        return getRolePage(params)
           .then(res => {
             // 封装返回的数据，供s-table使用
             return {

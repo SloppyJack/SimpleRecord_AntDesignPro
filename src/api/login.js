@@ -29,15 +29,6 @@ export function login (parameter) {
     data: parameter
   })
 }
-
-export function getSmsCaptcha (parameter) {
-  return request({
-    url: userApi.SendSms,
-    method: 'post',
-    data: parameter
-  })
-}
-
 export function getRoleMenus () {
   return request({
     url: userApi.RoleMenus,
@@ -45,17 +36,5 @@ export function getRoleMenus () {
     headers: {
       'Content-Type': 'application/json;charset=UTF-8'
     }
-  })
-}
-
-/**
- * get user 2step code open?
- * @param parameter {*}
- */
-export function get2step (parameter) {
-  return request({
-    url: userApi.twoStepCode,
-    method: 'post',
-    data: parameter
   })
 }

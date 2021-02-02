@@ -164,7 +164,7 @@
 <script>
 import pick from 'lodash.pick'
 import { STable } from '@/components'
-import { getRoleList, getServiceList } from '@/api/manage'
+import { getRoleList, getServiceList } from '@/api/core/userManage'
 import { PERMISSION_ENUM } from '@/core/permission/permission'
 
 const STATUS = {

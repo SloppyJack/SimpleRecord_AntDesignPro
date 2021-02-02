@@ -129,7 +129,7 @@ import { mapState } from 'vuex'
 import { PageHeaderWrapper } from '@ant-design-vue/pro-layout'
 import { Radar } from '@/components'
 
-import { getRoleList, getServiceList } from '@/api/manage'
+import { getRoleList, getServiceList } from '@/api/core/userManage'
 
 const DataSet = require('@antv/data-set')
 

@@ -59,7 +59,7 @@
         <span slot="deleteTime" slot-scope="text">
           <a-badge :status="text | statusTypeFilter" :text="text | statusFilter" />
         </span>
-        <span slot="info" slot-scope="text">
+        <span slot="nickname" slot-scope="text">
           <ellipsis :length="8" tooltip>{{ text }}</ellipsis>
         </span>
 
@@ -95,7 +95,7 @@
 <script>
 import moment from 'moment'
 import { Ellipsis, STable } from '@/components'
-import { getRoleList, addRole, editRole } from '@/api/manage'
+import { getUserByPage, addRole, editRole } from '@/api/core/userManage'
 
 import EditForm from './modules/EditRoleForm'
 import CreateForm from './modules/CreateRoleForm'
@@ -106,17 +106,17 @@ const columns = [
     scopedSlots: { customRender: 'serial' }
   },
   {
-    title: '角色Id',
+    title: '用户Id',
     dataIndex: 'id'
   },
   {
-    title: '角色名',
-    dataIndex: 'name'
+    title: '用户名',
+    dataIndex: 'username'
   },
   {
-    title: '描述',
-    dataIndex: 'info',
-    scopedSlots: { customRender: 'info' }
+    title: '昵称',
+    dataIndex: 'nickname',
+    scopedSlots: { customRender: 'nickname' }
   },
   {
     title: '状态',
@@ -182,7 +182,7 @@ export default {
           'pageNo': parameter.pageNo,
           'pageSize': parameter.pageSize
         }
-        return getRoleList(params)
+        return getUserByPage(params)
           .then(res => {
             // 封装返回的数据，供s-table使用
             return {

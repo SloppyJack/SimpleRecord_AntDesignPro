@@ -67,7 +67,7 @@
 </template>
 
 <script>
-import { getAllMenus, getTreeMenus, addMenu, delMenu, resetMenu, editMenu } from '@/api/manage'
+import { getAllMenus, getTreeMenus, addMenu, delMenu, resetMenu, editMenu } from '@/api/core/menuManage'
 import { Ellipsis, STable } from '@/components'
 
 import MenuForm from './modules/MenuForm'
