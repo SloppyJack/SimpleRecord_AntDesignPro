@@ -13,7 +13,7 @@
         <a-form-item v-show="model && model.id > 0" label="主键ID">
           <a-input v-decorator="['id', { initialValue: 0 }]" disabled />
         </a-form-item>
-        <a-form-item label="描述">
+        <a-form-item label="名称">
           <a-input v-decorator="['name', {rules: [{required: true, min: 2, message: '请输入至少两个字符的规则描述！'}]}]" />
         </a-form-item>
         <a-form-item label="描述">
@@ -38,7 +38,7 @@
 import pick from 'lodash.pick'
 
 import { Tree } from 'ant-design-vue'
-import { getOwnedMenus } from '@/api/core/menuManage'
+import { getOwnedMenus } from '@/api/core/roleManage'
 
 // 表单字段
 const fields = ['id', 'name', 'info']

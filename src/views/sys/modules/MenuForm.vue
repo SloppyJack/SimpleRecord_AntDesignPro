@@ -118,7 +118,6 @@ export default {
 
     // 当 model 发生改变时，为表单设置值
     this.$watch('model', () => {
-      console.log('model', this.model)
       const obj = pick(this.model, fields)
       // 去除对象中的空值，防止报错
       rmNullItem(obj)

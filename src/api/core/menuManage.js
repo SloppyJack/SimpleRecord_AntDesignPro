@@ -11,13 +11,6 @@ const api = {
 
 export default api
 
-export function getOwnedMenus (roleId) {
-  return request({
-    url: api.ownedMenus + '/' + roleId,
-    method: 'get'
-  })
-}
-
 export function getTreeMenus () {
   return request({
     url: api.menuTree,

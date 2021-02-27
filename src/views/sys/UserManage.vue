@@ -62,6 +62,9 @@
         <span slot="nickname" slot-scope="text">
           <ellipsis :length="8" tooltip>{{ text }}</ellipsis>
         </span>
+        <span slot="sex" slot-scope="text">
+          {{ text | sexFilter }}
+        </span>
 
         <span slot="action" slot-scope="text, record">
           <template>
@@ -71,15 +74,6 @@
           </template>
         </span>
       </s-table>
-
-      <create-form
-        ref="createModal"
-        :visible="createFormShow"
-        :loading="confirmCreateLoading"
-        :model="mdl"
-        @cancel="handleCreateCancel"
-        @ok="handleCreateOk"
-      />
       <edit-form
         ref="editModal"
         :visible="editFormShow"
@@ -95,9 +89,9 @@
 <script>
 import moment from 'moment'
 import { Ellipsis, STable } from '@/components'
-import { getUserByPage, addRole, editRole } from '@/api/core/userManage'
+import { getUserByPage, getUser, editUser } from '@/api/core/userManage'
 
-import EditForm from './modules/EditRoleForm'
+import EditForm from './modules/EditUserForm'
 import CreateForm from './modules/CreateRoleForm'
 
 const columns = [
@@ -117,6 +111,15 @@ const columns = [
     title: '昵称',
     dataIndex: 'nickname',
     scopedSlots: { customRender: 'nickname' }
+  },
+  {
+    title: '性别',
+    dataIndex: 'sex',
+    scopedSlots: { customRender: 'sex' }
+  },
+  {
+    title: '邮箱',
+    dataIndex: 'email'
   },
   {
     title: '状态',
@@ -143,6 +146,18 @@ const statusMap = {
   2: {
     status: 'default',
     text: '已停用'
+  }
+}
+
+const sexMap = {
+  1: {
+    text: '男'
+  },
+  2: {
+    text: '女'
+  },
+  3: {
+    text: '未知'
   }
 }
 
@@ -202,6 +217,9 @@ export default {
     },
     statusTypeFilter (deleteTime) {
       return deleteTime ? statusMap[2].status : statusMap[1].status
+    },
+    sexFilter (sex) {
+      return sex ? sexMap[sex].text : sexMap[3].text
     }
   },
   created () {
@@ -217,44 +235,35 @@ export default {
   methods: {
     handleAdd () {
       this.mdl = null
-      this.createFormShow = true
+      this.editFormShow = true
     },
     handleEdit (record) {
-      this.editFormShow = true
-      this.mdl = { ...record }
-    },
-    handleCreateOk () {
-      const form = this.$refs.createModal.form
-      this.confirmCreateLoading = true
-      form.validateFields((errors, values) => {
-        if (!errors) {
-          addRole(values).then(res => {
-              this.createFormShow = false
-              this.confirmCreateLoading = false
-              // 重置表单数据
-              form.resetFields()
-              // 刷新表格
-              this.$refs.table.refresh()
-              this.$message.info('新增成功')
-          }
-          ).catch(() => {
-            this.confirmCreateLoading = false
-          })
-        } else {
-          this.confirmCreateLoading = false
-        }
+      // 获取用户信息
+      getUser(record.id).then(res => {
+        this.mdl = { ...res }
+        // 找到拥有的角色Id
+        this.mdl.ownedRoleIds = []
+        this.mdl.ownedRoles.forEach(n => {
+          this.mdl.ownedRoleIds.push(n.id.toString())
+        })
+        // 将性别变为String
+        this.mdl.sex = this.mdl.sex.toString()
+        this.editFormShow = true
       })
     },
-    handleEditOk (finalCheckedKeys) {
+    handleEditOk () {
       const form = this.$refs.editModal.form
       this.confirmEditLoading = true
       form.validateFields((errors, values) => {
         if (!errors) {
-          editRole({
+          // 如果有Id则为编辑
+          console.log(values)
+          editUser({
             id: values.id,
-            name: values.name,
-            info: values.info,
-            menuIds: finalCheckedKeys
+            sex: values.sex,
+            nickname: values.nickname,
+            email: values.email,
+            roles: values.ownedRoleIds
           }).then(res => {
               this.editFormShow = false
               this.confirmEditLoading = false
@@ -262,7 +271,7 @@ export default {
               form.resetFields()
               // 刷新表格
               this.$refs.table.refresh()
-              this.$message.info('新增成功')
+              this.$message.info('修改成功')
             }
           ).catch(() => {
             this.confirmEditLoading = false
