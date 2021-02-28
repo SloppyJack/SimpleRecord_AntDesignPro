@@ -13,6 +13,9 @@
         <a-form-item v-show="model && model.id > 0" label="主键ID">
           <a-input v-decorator="['id', { initialValue: 0 }]" disabled />
         </a-form-item>
+        <a-form-item v-show="model && model.id == null" label="用户名">
+          <a-input v-decorator="model && model.id == null ? ['username', {rules: [{required: true, message: '请输入用户名！'}]}] : ['username']" />
+        </a-form-item>
         <a-form-item label="昵称">
           <a-input v-decorator="['nickname', {rules: [{required: true, message: '请输入昵称！'}]}]" />
         </a-form-item>
@@ -27,7 +30,10 @@
                 {required: true,message: '请输入Email!',}
               ]}]" />
         </a-form-item>
-        <a-form-item v-if="model != null" label="角色权限">
+        <a-form-item v-show="model && model.id == null" label="密码">
+          <a-input v-decorator="model && model.id == null ? ['credential', {rules: [{required: true, message: '请输入密码！'}]}] : ['credential']" />
+        </a-form-item>
+        <a-form-item v-if="model != null && model.allRoles != null" label="角色权限">
           <a-select mode="tags" style="width: 100%" v-decorator="['ownedRoleIds']" placeholder="请选择角色">
             <a-select-option v-for="item in model.allRoles" :key="item.id.toString()" :value="item.id.toString()">
               {{ item.info }}
@@ -45,7 +51,7 @@ import pick from 'lodash.pick'
 import { Tree } from 'ant-design-vue'
 
 // 表单字段
-const fields = ['id', 'nickname', 'sex', 'email', 'ownedRoleIds']
+const fields = ['id', 'nickname', 'sex', 'email', 'credential', 'ownedRoleIds']
 
 const sexOptions = [
   { label: '男', value: `1` },
@@ -96,7 +102,10 @@ export default {
 
     // 当 model 发生改变时，为表单设置值
     this.$watch('model', () => {
-      this.model && this.form.setFieldsValue(pick(this.model, fields))
+      console.log('model', this.model)
+      this.$nextTick(() => {
+        this.model && this.form.setFieldsValue(pick(this.model, fields))
+      })
     })
   }
 }

@@ -74,7 +74,7 @@
           </template>
         </span>
       </s-table>
-      <edit-form
+      <user-form
         ref="editModal"
         :visible="editFormShow"
         :loading="confirmEditLoading"
@@ -89,9 +89,9 @@
 <script>
 import moment from 'moment'
 import { Ellipsis, STable } from '@/components'
-import { getUserByPage, getUser, editUser } from '@/api/core/userManage'
+import { getUserByPage, getUser, editUser, addUser } from '@/api/core/userManage'
 
-import EditForm from './modules/EditUserForm'
+import UserForm from './modules/UserForm'
 import CreateForm from './modules/CreateRoleForm'
 
 const columns = [
@@ -166,7 +166,7 @@ export default {
     STable,
     Ellipsis,
     CreateForm,
-    EditForm
+    UserForm
   },
   data () {
     this.columns = columns
@@ -234,8 +234,13 @@ export default {
   },
   methods: {
     handleAdd () {
-      this.mdl = null
-      this.editFormShow = true
+      this.mdl = {}
+      // 重置表格内容
+      this.$refs.editModal.form.resetFields()
+      getUser(0).then(res => {
+        this.mdl.allRoles = res.allRoles
+        this.editFormShow = true
+      })
     },
     handleEdit (record) {
       // 获取用户信息
@@ -248,6 +253,7 @@ export default {
         })
         // 将性别变为String
         this.mdl.sex = this.mdl.sex.toString()
+        console.log(this.mdl)
         this.editFormShow = true
       })
     },
@@ -256,26 +262,48 @@ export default {
       this.confirmEditLoading = true
       form.validateFields((errors, values) => {
         if (!errors) {
-          // 如果有Id则为编辑
-          console.log(values)
-          editUser({
-            id: values.id,
-            sex: values.sex,
-            nickname: values.nickname,
-            email: values.email,
-            roles: values.ownedRoleIds
-          }).then(res => {
-              this.editFormShow = false
+          if (values.id > 0) {
+            // 如果有Id则为编辑
+            editUser({
+              id: values.id,
+              sex: values.sex,
+              nickname: values.nickname,
+              email: values.email,
+              roles: values.ownedRoleIds
+            }).then(res => {
+                this.editFormShow = false
+                this.confirmEditLoading = false
+                // 重置表单数据
+                form.resetFields()
+                // 刷新表格
+                this.$refs.table.refresh()
+                this.$message.info('修改成功')
+              }
+            ).catch(() => {
               this.confirmEditLoading = false
-              // 重置表单数据
-              form.resetFields()
-              // 刷新表格
-              this.$refs.table.refresh()
-              this.$message.info('修改成功')
-            }
-          ).catch(() => {
-            this.confirmEditLoading = false
-          })
+            })
+          } else {
+            addUser({
+              username: values.username,
+              sex: values.sex,
+              nickname: values.nickname,
+              email: values.email,
+              credential: values.credential,
+              roles: values.ownedRoleIds
+            }).then(res => {
+                this.editFormShow = false
+                this.confirmEditLoading = false
+                // 重置表单数据
+                form.resetFields()
+                // 刷新表格
+                this.$refs.table.refresh()
+                this.$message.info('新增成功')
+              }
+            ).catch(() => {
+              this.confirmEditLoading = false
+            })
+            // addUser
+          }
         } else {
           this.confirmEditLoading = false
         }

@@ -3,7 +3,8 @@ import request from '@/utils/request'
 const api = {
   userByPage: '/user/page',
   getUser: '/user/',
-  edit: '/user/edit'
+  edit: '/user/edit',
+  add: '/user/add'
 }
 
 export default api
@@ -27,6 +28,14 @@ export function editUser (parameter) {
   return request({
     url: api.edit,
     method: 'put',
+    data: parameter
+  })
+}
+
+export function addUser (parameter) {
+  return request({
+    url: api.add,
+    method: 'post',
     data: parameter
   })
 }
