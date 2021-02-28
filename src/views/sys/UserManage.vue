@@ -70,7 +70,24 @@
           <template>
             <a @click="handleEdit(record)">修改</a>
             <a-divider type="vertical" />
-            <a @click="handleDel(record)">删除</a>
+            <a-popconfirm
+              v-if="record.deleteTime === null"
+              title="确定要删除吗?"
+              ok-text="确定"
+              cancel-text="取消"
+              @confirm="handleDel(record)"
+            >
+              <a href="#">删除</a>
+            </a-popconfirm>
+            <a-popconfirm
+              v-else
+              title="确定要启用吗?"
+              ok-text="确定"
+              cancel-text="取消"
+              @confirm="handleReset(record)"
+            >
+              <a href="#">启用</a>
+            </a-popconfirm>
           </template>
         </span>
       </s-table>
@@ -89,7 +106,7 @@
 <script>
 import moment from 'moment'
 import { Ellipsis, STable } from '@/components'
-import { getUserByPage, getUser, editUser, addUser } from '@/api/core/userManage'
+import { getUserByPage, getUser, editUser, addUser, delUser, resetUser } from '@/api/core/userManage'
 
 import UserForm from './modules/UserForm'
 import CreateForm from './modules/CreateRoleForm'
@@ -310,7 +327,18 @@ export default {
       })
     },
     handleDel (record) {
-      this.$message.info(record.name)
+      delUser(record.id).then(res => {
+        // 刷新表格
+        this.$refs.table.refresh()
+        this.$message.info('删除成功')
+      })
+    },
+    handleReset (record) {
+      resetUser(record.id).then(res => {
+        // 刷新表格
+        this.$refs.table.refresh()
+        this.$message.info('启用成功')
+      })
     },
     handleCreateCancel () {
       this.createFormShow = false
