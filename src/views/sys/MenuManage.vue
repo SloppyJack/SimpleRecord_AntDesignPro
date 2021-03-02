@@ -251,6 +251,7 @@ export default {
       this.confirmCreateLoading = true
       form.validateFields((errors, values) => {
         if (!errors) {
+          console.log('test')
           // 修改
           if (values.id > 0) {
             editMenu(values).then((res) => {

@@ -77,7 +77,24 @@
           <template>
             <a @click="handleEdit(record)">修改</a>
             <a-divider type="vertical" />
-            <a @click="handleDel(record)">删除</a>
+            <a-popconfirm
+              v-if="record.deleteTime === null"
+              title="确定要删除吗?"
+              ok-text="确定"
+              cancel-text="取消"
+              @confirm="handleDel(record)"
+            >
+              <a href="#">删除</a>
+            </a-popconfirm>
+            <a-popconfirm
+              v-else
+              title="确定要启用吗?"
+              ok-text="确定"
+              cancel-text="取消"
+              @confirm="handleReset(record)"
+            >
+              <a href="#">启用</a>
+            </a-popconfirm>
           </template>
         </span>
       </s-table>
@@ -86,7 +103,7 @@
         ref="createModal"
         :visible="createFormShow"
         :loading="confirmCreateLoading"
-        :model="mdl"
+        :model="createMdl"
         @cancel="handleCreateCancel"
         @ok="handleCreateOk"
       />
@@ -94,7 +111,7 @@
         ref="editModal"
         :visible="editFormShow"
         :loading="confirmEditLoading"
-        :model="mdl"
+        :model="editMdl"
         @cancel="handleEditCancel"
         @ok="handleEditOk"
       />
@@ -105,7 +122,7 @@
 <script>
 import moment from 'moment'
 import { Ellipsis, STable } from '@/components'
-import { getRolePage, addRole, editRole } from '@/api/core/roleManage'
+import { getRolePage, addRole, editRole, delRole, resetRole } from '@/api/core/roleManage'
 
 import EditForm from './modules/EditRoleForm'
 import CreateForm from './modules/CreateRoleForm'
@@ -172,7 +189,8 @@ export default {
       // edit model
       editFormShow: false,
       confirmEditLoading: false,
-      mdl: null,
+      createMdl: null,
+      editMdl: null,
       // 高级搜索 展开/关闭
       advanced: false,
       // 查询参数
@@ -226,12 +244,13 @@ export default {
   },
   methods: {
     handleAdd () {
-      this.mdl = null
+      this.createMdl = null
       this.createFormShow = true
     },
     handleEdit (record) {
+      this.editMdl = null
       this.editFormShow = true
-      this.mdl = { ...record }
+      this.editMdl = { ...record }
     },
     handleCreateOk () {
       const form = this.$refs.createModal.form
@@ -272,7 +291,7 @@ export default {
               form.resetFields()
               // 刷新表格
               this.$refs.table.refresh()
-              this.$message.info('新增成功')
+              this.$message.info('修改成功')
             }
           ).catch(() => {
             this.confirmEditLoading = false
@@ -283,7 +302,18 @@ export default {
       })
     },
     handleDel (record) {
-      this.$message.info(record.name)
+      delRole(record.id).then(res => {
+        // 刷新表格
+        this.$refs.table.refresh()
+        this.$message.info('删除成功')
+      })
+    },
+    handleReset (record) {
+      resetRole(record.id).then(res => {
+        // 刷新表格
+        this.$refs.table.refresh()
+        this.$message.info('启用成功')
+      })
     },
     handleCreateCancel () {
       this.createFormShow = false

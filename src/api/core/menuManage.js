@@ -4,7 +4,7 @@ const api = {
   menuTree: '/menu/allTree',
   allMenus: '/menu/all',
   addMenu: '/menu/add',
-  delMenu: '/menu/del',
+  delMenu: '/menu/',
   resetMenu: '/menu/reset',
   editMenu: '/menu/edit'
 }
@@ -36,14 +36,14 @@ export function addMenu (parameter) {
 export function delMenu (id) {
   return request({
     url: api.delMenu + '/' + id,
-    method: 'get'
+    method: 'delete'
   })
 }
 
 export function resetMenu (id) {
   return request({
     url: api.resetMenu + '/' + id,
-    method: 'get'
+    method: 'put'
   })
 }
 

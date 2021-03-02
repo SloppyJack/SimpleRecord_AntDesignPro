@@ -10,7 +10,7 @@
     <a-spin :spinning="loading">
       <a-form :form="form" v-bind="formLayout">
         <a-form-item label="名称">
-          <a-input v-decorator="['name', {rules: [{required: true, min: 5, message: '请输入至少四个字符的规则描述！'}]}]" />
+          <a-input v-decorator="['name', {rules: [{required: true, min: 4, message: '请输入至少四个字符的规则描述！'}]}]" />
         </a-form-item>
         <a-form-item label="描述">
           <a-input v-decorator="['info', {rules: [{required: true, min: 5, message: '请输入至少五个字符的规则描述！'}]}]" />

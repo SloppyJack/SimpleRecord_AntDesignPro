@@ -85,30 +85,28 @@ export default {
       this.finalCheckedKeys = [...checkedKeys, ...info.halfCheckedKeys]
     },
     handleTree (tree, parent) {
-      const children = []
+      const ret = []
       tree.forEach(item => {
           const node = {
             //  标题
             title: item.menuTitle,
             key: item.id
           }
-          if (item.owned) {
-            this.checkedKeys.push(item.id)
-          } else if (parent && !item.owned) {
-            if (this.checkedKeys.indexOf(parent.key) > 0) {
-              this.checkedKeys.splice(this.checkedKeys.indexOf(parent.key), 1)
-            }
-          }
-          // 是否有子菜单，并递归处理
+          // 是否有子节点，并递归处理
           if (item.children && item.children.length > 0) {
             // Recursion
             const t = this.handleTree(item.children, node)
             // 如果没有孩子，则不赋值
             if (t.length > 0) node.children = t
+          } else {
+            // 没有子节点，且拥有
+            if (item.owned) {
+              this.checkedKeys.push(item.id)
+            }
           }
-          children.push(node)
+        ret.push(node)
       })
-      return children
+      return ret
     }
   },
   created () {
