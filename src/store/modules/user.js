@@ -1,34 +1,14 @@
 import storage from 'store'
 import { login, getRoleMenus } from '@/api/login'
-import { ACCESS_TOKEN } from '@/store/mutation-types'
+import { ACCESS_TOKEN, USER_INFO } from '@/store/mutation-types'
 
 const user = {
   state: {
-    userInfo: {
-      id: '',
-      name: '',
-      nike: '',
-      token: '',
-      email: '',
-      sex: '',
-      avatarUrl: '',
-      openId: ''
-    },
     roles: [],
     menus: {}
   },
 
   mutations: {
-    SET_USERINFO: (state, userInfo) => {
-      state.userInfo.id = userInfo.id
-      state.userInfo.name = userInfo.name
-      state.userInfo.nike = userInfo.nike
-      state.userInfo.email = userInfo.email
-      state.userInfo.sex = userInfo.sex
-      state.userInfo.avatarUrl = userInfo.avatarUrl
-      state.userInfo.openId = userInfo.openId
-      state.userInfo.token = userInfo.token
-    },
     SET_ROLES: (state, roles) => {
       state.roles = roles
     },
@@ -43,7 +23,15 @@ const user = {
       return new Promise((resolve, reject) => {
         login(userInfo).then(result => {
           storage.set(ACCESS_TOKEN, result.token)
-          commit('SET_USERINFO', result)
+          storage.set(USER_INFO, {
+            id: result.id,
+            username: result.username,
+            nickname: result.nickname,
+            email: result.email,
+            sex: result.sex,
+            avatarUrl: result.avatarUrl,
+            openId: result.openId
+          })
           resolve()
         }).catch(error => {
           reject(error)
@@ -74,6 +62,7 @@ const user = {
       return new Promise((resolve) => {
         commit('SET_ROLES', [])
         storage.remove(ACCESS_TOKEN)
+        storage.remove(USER_INFO)
         resolve()
       })
     }

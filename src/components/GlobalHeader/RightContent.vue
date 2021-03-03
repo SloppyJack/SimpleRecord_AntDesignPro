@@ -8,6 +8,8 @@
 <script>
 import AvatarDropdown from './AvatarDropdown'
 import SelectLang from '@/components/SelectLang'
+import storage from 'store'
+import { USER_INFO } from '@/store/mutation-types'
 
 export default {
   name: 'RightContent',
@@ -48,10 +50,9 @@ export default {
     }
   },
   mounted () {
+    const userInfo = storage.get(USER_INFO)
     setTimeout(() => {
-      this.currentUser = {
-        name: 'Serati Ma'
-      }
+      this.currentUser = userInfo || { nickname: 'SimpleRecord' }
     }, 1500)
   }
 }
