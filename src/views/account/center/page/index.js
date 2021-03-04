@@ -1,5 +1,5 @@
-import AppPage from './App'
-import ArticlePage from './Article'
-import ProjectPage from './Project'
+import BadgePage from './Badge'
+import AchievementPage from './Achievement'
+import CareerPage from './Career'
 
-export { AppPage, ArticlePage, ProjectPage }
+export { BadgePage, AchievementPage, CareerPage }

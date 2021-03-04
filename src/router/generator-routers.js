@@ -13,10 +13,6 @@ const constantRouterComponents = {
   '404': () => import(/* webpackChunkName: "error" */ '@/views/exception/404'),
   '500': () => import(/* webpackChunkName: "error" */ '@/views/exception/500'),
 
-  // 你需要动态引入的页面组件
-  'Workplace': () => import('@/views/dashboard/Workplace'),
-  'Analysis': () => import('@/views/dashboard/Analysis'),
-
   // form
   'BasicForm': () => import('@/views/form/basicForm'),
   'StepForm': () => import('@/views/form/stepForm/StepForm'),
@@ -40,18 +36,7 @@ const constantRouterComponents = {
   // exception
   'Exception403': () => import(/* webpackChunkName: "fail" */ '@/views/exception/403'),
   'Exception404': () => import(/* webpackChunkName: "fail" */ '@/views/exception/404'),
-  'Exception500': () => import(/* webpackChunkName: "fail" */ '@/views/exception/500'),
-
-  // account
-  'AccountCenter': () => import('@/views/account/center'),
-  'AccountSettings': () => import('@/views/account/settings/Index'),
-  'BaseSettings': () => import('@/views/account/settings/BaseSetting'),
-  'SecuritySettings': () => import('@/views/account/settings/Security'),
-  'CustomSettings': () => import('@/views/account/settings/Custom'),
-  'BindingSettings': () => import('@/views/account/settings/Binding'),
-  'NotificationSettings': () => import('@/views/account/settings/Notification')
-
-  // 'TestWork': () => import(/* webpackChunkName: "TestWork" */ '@/views/dashboard/TestWork')
+  'Exception500': () => import(/* webpackChunkName: "fail" */ '@/views/exception/500')
 }
 
 // 前端未找到页面路由（固定不用改）
@@ -96,10 +81,6 @@ export const generator = (routerMap, parent) => {
   routerMap.forEach(item => {
     // 如果为按钮，则终止此次循环
     if (item.menuType !== 'F') {
-      // 判断是否为目录
-      if (item.menuType === 'M') {
-        item.component = 'RouteView'
-      }
       // 如果为菜单，则找到孩子节点的所有权限，并组成数组
       if (item.menuType === 'C' && item.children) {
         const arr = findMenuPermissions(item.children)
@@ -107,9 +88,14 @@ export const generator = (routerMap, parent) => {
           item.permissionSign = arr
         }
       }
+      const path = item.outerChain ? `${item.path}` : `${parent && parent.path !== '/' && parent.path || ''}/${item.path === '/' ? '' : item.path}`
+      // 判断是否为目录
+      if (item.menuType === 'M') {
+        item.component = 'RouteView'
+      }
       const currentRouter = {
         //  动态拼接路由地址
-        path: item.outerChain ? `${item.path}` : `${parent && parent.path !== '/' && parent.path || ''}/${item.path === '/' ? '' : item.path}`,
+        path: path,
         // 路由名称
         name: item.menuName,
         // 动态加载该路由对应页面的组件

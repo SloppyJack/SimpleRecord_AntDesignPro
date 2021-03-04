@@ -3,11 +3,11 @@
     <template v-slot:content>
       <div class="page-header-content">
         <div class="avatar">
-          <a-avatar size="large" :src="currentUser.avatar"/>
+          <a-avatar size="large" :src="currentUser.avatarUrl"/>
         </div>
         <div class="content">
           <div class="content-title">
-            {{ timeFix }}，{{ user.name }}
+            {{ timeFix }}，{{ currentUser.username }}
           </div>
           <div>让记账简简单单！</div>
         </div>
@@ -16,13 +16,13 @@
     <template v-slot:extraContent>
       <div class="extra-content">
         <div class="stat-item">
-          <a-statistic title="项目数" :value="56" />
+          <a-statistic title="已连续打卡" value="--" />
         </div>
         <div class="stat-item">
-          <a-statistic title="团队内排名" :value="8" suffix="/ 24" />
+          <a-statistic title="记账总天数" value="--"/>
         </div>
         <div class="stat-item">
-          <a-statistic title="项目访问" :value="2223" />
+          <a-statistic title="记账总笔数" value="--" />
         </div>
       </div>
     </template>
@@ -97,9 +97,10 @@
 
 <script>
 import { timeFix } from '@/utils/util'
-import { mapState } from 'vuex'
 import { PageHeaderWrapper } from '@ant-design-vue/pro-layout'
 import { Radar } from '@/components'
+import storage from 'store'
+import { USER_INFO } from '@/store/mutation-types'
 
 const DataSet = require('@antv/data-set')
 
@@ -112,9 +113,6 @@ export default {
   data () {
     return {
       timeFix: timeFix(),
-      avatar: '',
-      user: {},
-
       projects: [],
       loading: false,
       radarLoading: true,
@@ -161,17 +159,8 @@ export default {
     }
   },
   computed: {
-    ...mapState({
-      nickname: (state) => state.user.nike
-    }),
     currentUser () {
-      return {
-        name: 'Serati Ma',
-        avatar: 'https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png'
-      }
-    },
-    userInfo () {
-      return this.$store.getters.userInfo
+      return storage.get(USER_INFO)
     }
   },
   created () {

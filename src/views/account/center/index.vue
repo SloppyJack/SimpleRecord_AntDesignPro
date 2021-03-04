@@ -5,22 +5,21 @@
         <a-card :bordered="false">
           <div class="account-center-avatarHolder">
             <div class="avatar">
-              <img :src="avatar">
+              <img :src="currentUser.avatarUrl">
             </div>
-            <div class="username">{{ nickname }}</div>
-            <div class="bio">海纳百川，有容乃大</div>
+            <div class="username">{{ currentUser.nickname }}</div>
+            <div class="bio">心有猛虎，细嗅蔷薇</div>
           </div>
           <div class="account-center-detail">
             <p>
               <i class="title"></i>交互专家
             </p>
             <p>
-              <i class="group"></i>蚂蚁金服－某某某事业群－某某平台部－某某技术部－UED
+              <i class="group"></i>京西－UED
             </p>
             <p>
               <i class="address"></i>
-              <span>浙江省</span>
-              <span>杭州市</span>
+              <span>China</span>
             </p>
           </div>
           <a-divider/>
@@ -60,22 +59,6 @@
             </div>
           </div>
           <a-divider :dashed="true"/>
-
-          <div class="account-center-team">
-            <div class="teamTitle">团队</div>
-            <a-spin :spinning="teamSpinning">
-              <div class="members">
-                <a-row>
-                  <a-col :span="12" v-for="(item, index) in teams" :key="index">
-                    <a>
-                      <a-avatar size="small" :src="item.avatar"/>
-                      <span class="member">{{ item.name }}</span>
-                    </a>
-                  </a-col>
-                </a-row>
-              </div>
-            </a-spin>
-          </div>
         </a-card>
       </a-col>
       <a-col :md="24" :lg="17">
@@ -86,9 +69,9 @@
           :activeTabKey="noTitleKey"
           @tabChange="key => handleTabChange(key, 'noTitleKey')"
         >
-          <article-page v-if="noTitleKey === 'article'"></article-page>
-          <app-page v-else-if="noTitleKey === 'app'"></app-page>
-          <project-page v-else-if="noTitleKey === 'project'"></project-page>
+          <achievement-page v-if="noTitleKey === 'achievement'"></achievement-page>
+          <badge-page v-else-if="noTitleKey === 'badge'"></badge-page>
+          <career-page v-else-if="noTitleKey === 'career'"></career-page>
         </a-card>
       </a-col>
     </a-row>
@@ -97,66 +80,54 @@
 
 <script>
 import { PageView, RouteView } from '@/layouts'
-import { AppPage, ArticlePage, ProjectPage } from './page'
-
-import { mapGetters } from 'vuex'
+import { BadgePage, AchievementPage, CareerPage } from './page'
+import storage from 'store'
+import { USER_INFO } from '@/store/mutation-types'
 
 export default {
   components: {
     RouteView,
     PageView,
-    AppPage,
-    ArticlePage,
-    ProjectPage
+    BadgePage,
+    AchievementPage,
+    CareerPage
   },
   data () {
     return {
-      tags: ['很有想法的', '专注设计', '辣~', '大长腿', '川妹子', '海纳百川'],
+      tags: ['永远的热泪盈眶', 'In me the tiger sniffs the rose.'],
 
       tagInputVisible: false,
       tagInputValue: '',
 
-      teams: [],
-      teamSpinning: true,
-
       tabListNoTitle: [
         {
-          key: 'article',
-          tab: '文章(8)'
+          key: 'achievement',
+          tab: '成就'
         },
         {
-          key: 'app',
-          tab: '应用(8)'
+          key: 'badge',
+          tab: '徽章'
         },
         {
-          key: 'project',
-          tab: '项目(8)'
+          key: 'career',
+          tab: '生涯'
         }
       ],
-      noTitleKey: 'app'
+      noTitleKey: 'badge',
+      currentUser: {}
     }
   },
-  computed: {
-    ...mapGetters(['nickname', 'avatar'])
-  },
   mounted () {
-    this.getTeams()
+    this.currentUser = storage.get(USER_INFO)
   },
   methods: {
-    getTeams () {
-      this.$http.get('/workplace/teams').then(res => {
-        this.teams = res.result
-        this.teamSpinning = false
-      })
-    },
 
     handleTabChange (key, type) {
       this[type] = key
     },
 
     handleTagClose (removeTag) {
-      const tags = this.tags.filter(tag => tag !== removeTag)
-      this.tags = tags
+      this.tags = this.tags.filter(tag => tag !== removeTag)
     },
 
     showTagInput () {

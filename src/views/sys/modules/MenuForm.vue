@@ -39,7 +39,7 @@
           <a-input v-decorator="['permissionSign']" />
         </a-form-item>
         <a-form-item v-show="menuTypeRule() === 'C'" label="组件地址">
-          <a-input v-decorator="menuTypeRule() !== 'F' ? ['component', {rules: [{required: true}]}] : ['component']" />
+          <a-input v-decorator="menuTypeRule() === 'C' ? ['component', {rules: [{required: true}]}] : ['component']" />
         </a-form-item>
         <a-form-item v-show="menuTypeRule() !== 'F'" label="图标">
           <a-input v-decorator="['iconName']" />
@@ -121,7 +121,6 @@ export default {
       const obj = pick(this.model, fields)
       // 去除对象中的空值，防止报错
       rmNullItem(obj)
-      console.log('obj', obj)
       this.model && this.form.setFieldsValue(obj)
     })
   },
