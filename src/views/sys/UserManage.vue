@@ -270,7 +270,6 @@ export default {
         })
         // 将性别变为String
         this.mdl.sex = this.mdl.sex.toString()
-        console.log(this.mdl)
         this.editFormShow = true
       })
     },

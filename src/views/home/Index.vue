@@ -99,8 +99,6 @@
 import { timeFix } from '@/utils/util'
 import { PageHeaderWrapper } from '@ant-design-vue/pro-layout'
 import { Radar } from '@/components'
-import storage from 'store'
-import { USER_INFO } from '@/store/mutation-types'
 
 const DataSet = require('@antv/data-set')
 
@@ -160,7 +158,7 @@ export default {
   },
   computed: {
     currentUser () {
-      return storage.get(USER_INFO)
+      return this.$store.getters.userInfo
     }
   },
   created () {

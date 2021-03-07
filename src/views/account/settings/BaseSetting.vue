@@ -9,33 +9,8 @@
           >
             <a-input placeholder="给自己起个名字" />
           </a-form-item>
-          <a-form-item
-            label="Bio"
-          >
-            <a-textarea rows="4" placeholder="You are not alone."/>
-          </a-form-item>
-
-          <a-form-item
-            label="电子邮件"
-            :required="false"
-          >
-            <a-input placeholder="exp@admin.com"/>
-          </a-form-item>
-          <a-form-item
-            label="加密方式"
-            :required="false"
-          >
-            <a-select defaultValue="aes-256-cfb">
-              <a-select-option value="aes-256-cfb">aes-256-cfb</a-select-option>
-              <a-select-option value="aes-128-cfb">aes-128-cfb</a-select-option>
-              <a-select-option value="chacha20">chacha20</a-select-option>
-            </a-select>
-          </a-form-item>
-          <a-form-item
-            label="连接密码"
-            :required="false"
-          >
-            <a-input placeholder="h3gSbecd"/>
+          <a-form-item label="性别">
+            <a-radio-group v-decorator="['sex', {rules: [{type: 'enum', enum: [`1`, `2`], message: '请选择性别！'}]}]" :options="sexOptions"/>
           </a-form-item>
           <a-form-item
             label="登录密码"
@@ -71,6 +46,11 @@
 <script>
 import AvatarModal from './AvatarModal'
 
+const sexOptions = [
+  { label: '男', value: `1` },
+  { label: '女', value: `2` }
+]
+
 export default {
   components: {
     AvatarModal
@@ -93,7 +73,8 @@ export default {
         // 开启宽度和高度比例
         fixed: true,
         fixedNumber: [1, 1]
-      }
+      },
+      sexOptions
     }
   },
   methods: {

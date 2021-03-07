@@ -3,6 +3,7 @@ const getters = {
   lang: state => state.app.lang,
   theme: state => state.app.theme,
   color: state => state.app.color,
+  userInfo: state => state.user.userInfo,
   roles: state => state.user.roles,
   addRouters: state => state.permission.addRouters,
   multiTab: state => state.app.multiTab

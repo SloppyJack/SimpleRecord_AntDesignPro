@@ -81,8 +81,6 @@
 <script>
 import { PageView, RouteView } from '@/layouts'
 import { BadgePage, AchievementPage, CareerPage } from './page'
-import storage from 'store'
-import { USER_INFO } from '@/store/mutation-types'
 
 export default {
   components: {
@@ -118,7 +116,7 @@ export default {
     }
   },
   mounted () {
-    this.currentUser = storage.get(USER_INFO)
+    this.currentUser = this.$store.getters.userInfo
   },
   methods: {
 

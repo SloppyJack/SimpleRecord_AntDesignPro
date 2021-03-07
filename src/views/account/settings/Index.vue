@@ -98,7 +98,7 @@ export default {
       this.selectedKeys = [ routes.pop().path ]
       // 如果从个人设置过来的，则默认为基本设置
       if (this.selectedKeys[0] === '/account/settings') {
-        this.$router.push({ path: '/account/settings/base' })
+        this.$router.push({ name: 'baseSettings' })
       }
     }
   },
