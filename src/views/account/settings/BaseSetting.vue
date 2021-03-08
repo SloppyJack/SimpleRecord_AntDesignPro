@@ -1,50 +1,45 @@
 <template>
-  <div class="account-settings-info-view">
-    <a-row :gutter="16">
-      <a-col :md="24" :lg="16">
-
-        <a-form layout="vertical">
-          <a-form-item
-            label="昵称"
-          >
-            <a-input placeholder="给自己起个名字" />
-          </a-form-item>
-          <a-form-item label="性别">
-            <a-radio-group v-decorator="['sex', {rules: [{type: 'enum', enum: [`1`, `2`], message: '请选择性别！'}]}]" :options="sexOptions"/>
-          </a-form-item>
-          <a-form-item
-            label="登录密码"
-            :required="false"
-          >
-            <a-input placeholder="密码"/>
-          </a-form-item>
-
-          <a-form-item>
-            <a-button type="primary">提交</a-button>
-            <a-button style="margin-left: 8px">保存</a-button>
-          </a-form-item>
-        </a-form>
-
-      </a-col>
-      <a-col :md="24" :lg="8" :style="{ minHeight: '180px' }">
-        <div class="ant-upload-preview" @click="$refs.modal.edit(1)" >
-          <a-icon type="cloud-upload-o" class="upload-icon"/>
-          <div class="mask">
-            <a-icon type="plus" />
+  <a-spin :spinning="loading">
+    <div class="account-settings-info-view">
+      <a-row :gutter="16">
+        <a-col :md="24" :lg="16">
+          <a-spin :spinning="loading">
+            <a-form :form="form" layout="vertical">
+              <a-form-item label="昵称">
+                <a-input v-decorator="['nickname', {rules: [{required: true, min: 2, message: '请输入正确昵称！'}]}]" placeholder="给自己起个名字" />
+              </a-form-item>
+              <a-form-item label="性别">
+                <a-radio-group v-decorator="['sex', {rules: [{type: 'enum', enum: [`1`, `2`], message: '请选择性别！'}]}]" :options="sexOptions"/>
+              </a-form-item>
+              <a-form-item>
+                <a-button type="primary" @click="submit">保存</a-button>
+              </a-form-item>
+            </a-form>
+          </a-spin>
+        </a-col>
+        <a-col :md="24" :lg="8" :style="{ minHeight: '180px' }">
+          <div class="ant-upload-preview" @click="$refs.modal.edit(1)" >
+            <a-icon type="cloud-upload-o" class="upload-icon"/>
+            <div class="mask">
+              <a-icon type="plus" />
+            </div>
+            <img :src="model.avatarUrl"/>
           </div>
-          <img :src="option.img"/>
-        </div>
-      </a-col>
+        </a-col>
+      </a-row>
+      <avatar-modal ref="modal" @ok="setAvatar"/>
 
-    </a-row>
-
-    <avatar-modal ref="modal" @ok="setavatar"/>
-
-  </div>
+    </div>
+  </a-spin>
 </template>
 
 <script>
 import AvatarModal from './AvatarModal'
+import pick from 'lodash.pick'
+import { baseSetting } from '@/api/core/acountManage'
+
+// 表单字段
+const fields = ['nickname', 'sex']
 
 const sexOptions = [
   { label: '男', value: `1` },
@@ -57,30 +52,56 @@ export default {
   },
   data () {
     return {
-      // cropper
-      preview: {},
-      option: {
-        img: '/avatar2.jpg',
-        info: true,
-        size: 1,
-        outputType: 'jpeg',
-        canScale: false,
-        autoCrop: true,
-        // 只有自动截图开启 宽度高度才生效
-        autoCropWidth: 180,
-        autoCropHeight: 180,
-        fixedBox: true,
-        // 开启宽度和高度比例
-        fixed: true,
-        fixedNumber: [1, 1]
+      fields,
+      sexOptions,
+      loading: false,
+      model: {
+        nickname: '',
+        sex: '',
+        avatarUrl: ''
       },
-      sexOptions
+      form: this.$form.createForm(this)
+    }
+  },
+  mounted () {
+    const currentUser = this.$store.getters.userInfo
+    this.model = {
+      nickname: currentUser.nickname,
+      sex: currentUser.sex.toString(),
+      avatarUrl: currentUser.avatarUrl
     }
   },
   methods: {
-    setavatar (url) {
-      this.option.img = url
+    setAvatar (url) {
+      // this.option.img = url
+    },
+    submit () {
+      this.form.validateFields((errors, values) => {
+        if (!errors) {
+            // 如果有Id则为编辑
+            baseSetting({
+              sex: values.sex,
+              nickname: values.nickname
+            }).then(res => {
+                this.loading = false
+                this.$message.info('保存成功')
+              }
+            ).catch(() => {
+              this.loading = false
+            })
+        } else {
+          this.loading = false
+        }
+      })
     }
+  },
+  created () {
+    // 防止表单未注册
+    fields.forEach(v => this.form.getFieldDecorator(v))
+    // 当 model 发生改变时，为表单设置值
+    this.$watch('model', () => {
+      this.model && this.form.setFieldsValue(pick(this.model, fields))
+    })
   }
 }
 </script>
