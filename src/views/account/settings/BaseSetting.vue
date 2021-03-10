@@ -78,7 +78,6 @@ export default {
     submit () {
       this.form.validateFields((errors, values) => {
         if (!errors) {
-            // 如果有Id则为编辑
             baseSetting({
               sex: values.sex,
               nickname: values.nickname
