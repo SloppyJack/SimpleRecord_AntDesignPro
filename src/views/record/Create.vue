@@ -43,7 +43,7 @@
           </a-form-item>
           <a-form-item label="备注">
             <a-textarea
-              v-decorator="['remarks', { rules: [{ required: true, message: '请填写备注!' }] }]"
+              v-decorator="['remarks']"
               placeholder="备注可选填"
               auto-size
             />
@@ -55,14 +55,15 @@
           </a-form-item>
         </a-form>
       </a-spin>
-      <a slot="tabBarExtraContent" href="#">More</a>
+      <a-button slot="tabBarExtraContent" type="primary" icon="right" @click="toMonthList">月账单</a-button>
     </a-card>
   </div>
 </template>
 
 <script>
 import moment from 'moment'
-import { getRecordTypes, getSpendCategory, createRecord } from '@/api/record/recordManage'
+import { getRecordTypes, createRecord } from '@/api/record/recordManage'
+import { getSpendCategory } from '@/api/record/spendCategoryManage'
 
 export default {
   data () {
@@ -86,6 +87,7 @@ export default {
   methods: {
     async onTabChange (key) {
       this.loading = true
+      this.form.resetFields()
       this.titleKey = key
       // 从tabList中取出Id
       const recordTypeId = this.getRecordTypeId(this.tabList)
@@ -106,6 +108,7 @@ export default {
           }
           createRecord(data).then(res => {
             this.$message.success('记账成功')
+            this.form.resetFields()
             this.loading = false
           })
         }
@@ -152,6 +155,10 @@ export default {
     },
     onDateChange (date, str) {
       // do nothing
+    },
+    toMonthList () {
+      // 跳转到月账单
+      this.$router.push({ name: 'monthRecordList' })
     }
   }
 }

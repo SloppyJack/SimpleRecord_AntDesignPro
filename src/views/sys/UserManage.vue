@@ -109,7 +109,6 @@ import { Ellipsis, STable } from '@/components'
 import { getUserByPage, getUser, editUser, addUser, delUser, resetUser } from '@/api/core/userManage'
 
 import UserForm from './modules/UserForm'
-import CreateForm from './modules/CreateRoleForm'
 
 const columns = [
   {
@@ -182,7 +181,6 @@ export default {
   components: {
     STable,
     Ellipsis,
-    CreateForm,
     UserForm
   },
   data () {
