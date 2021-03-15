@@ -42,7 +42,17 @@
           <a-input v-decorator="menuTypeRule() === 'C' ? ['component', {rules: [{required: true}]}] : ['component']" />
         </a-form-item>
         <a-form-item v-show="menuTypeRule() !== 'F'" label="图标">
-          <a-input v-decorator="['iconName']" />
+          <a-input ref="menuIconInput" v-decorator="['iconName']" @click="() => {this.showIconSelect=true}" read-only>
+            <a-icon slot="prefix" :type="(this.model && this.model.iconName)||''" />
+          </a-input>
+          <a-modal
+            title="图标选择"
+            :visible="showIconSelect"
+            @cancel="() => {this.showIconSelect=false}"
+            :footer="null"
+          >
+            <icon-selector @change="handleIconChange"/>
+          </a-modal>
         </a-form-item>
         <a-form-item v-show="menuTypeRule() === 'C'" label="是否为外链">
           <a-switch v-decorator="menuTypeRule() !== 'F' ? ['isOuterChain', {rules: [{required: true, message: '请输入选择'}],initialValue: false,valuePropName: 'checked'}]:['isOuterChain', {initialValue: false,valuePropName: 'checked'}]"/>
@@ -57,8 +67,8 @@
 
 <script>
 import pick from 'lodash.pick'
+import IconSelector from '@/components/IconSelector/IconSelector'
 import { TreeSelect } from 'ant-design-vue'
-
 import { rmNullItem } from '@/utils/objUtil'
 
 // 表单字段
@@ -72,7 +82,8 @@ const options = [
 
 export default {
   components: {
-    ATreeSelect: TreeSelect
+    ATreeSelect: TreeSelect,
+    IconSelector
   },
   props: {
     title: {
@@ -109,7 +120,9 @@ export default {
         }
       },
       form: this.$form.createForm(this),
-      options
+      options,
+      showIconSelect: false,
+      readonly: true
     }
   },
   created () {
@@ -127,6 +140,11 @@ export default {
   methods: {
     menuTypeRule () {
       return this.form.getFieldValue('menuType')
+    },
+    handleIconChange (icon) {
+      this.model.iconName = icon
+      this.form.setFieldsValue({ 'iconName': this.model.iconName })
+      this.showIconSelect = false
     }
   },
   filters: {

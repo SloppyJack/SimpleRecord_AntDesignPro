@@ -5,7 +5,7 @@
         <a-row :gutter="48">
           <a-col :md="8" :sm="24">
             <a-form-item v-model="queryParam.date" label="月份">
-              <a-month-picker placeholder="选择月份" :defaultValue="queryParam.date"/>
+              <a-month-picker placeholder="选择月份" :defaultValue="queryParam.date" :allowClear="false"/>
             </a-form-item>
           </a-col>
           <a-col :md="8" :sm="24">
@@ -166,7 +166,6 @@ export default {
       // 格式化时间
       record.occurTime = moment(record.occurTime)
       this.mdl = { ...record }
-      console.log(this.mdl)
       this.editFormShow = true
     },
     handleEditOk () {
@@ -174,7 +173,6 @@ export default {
       this.confirmEditLoading = true
       form.validateFields((errors, values) => {
         if (!errors) {
-          console.log(values)
           editRecord(values.id, {
             amount: values.amount,
             spendCategoryId: values.spendCategoryId,
