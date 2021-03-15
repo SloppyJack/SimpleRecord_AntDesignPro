@@ -1,5 +1,5 @@
 <template>
-  <page-header-wrapper>
+  <page-header-wrapper :breadcrumb="false">
     <template v-slot:content>
       <div class="page-header-content">
         <div class="avatar">
