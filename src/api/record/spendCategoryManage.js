@@ -1,8 +1,8 @@
 import request from '@/utils/request'
 
 const api = {
-  spendCategory: '/v1/spendCategory/recordTypeId/',
-  getSpendCategoryList: '/v1/spendCategory'
+  spendCategory: '/spendCategory/recordTypeId/',
+  getSpendCategoryList: '/spendCategory'
 }
 
 export default api

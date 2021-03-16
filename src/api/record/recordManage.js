@@ -1,11 +1,11 @@
 import request from '@/utils/request'
 
 const api = {
-  recordType: '/v1/recordType',
-  createRecord: '/v1/record',
-  monthList: '/v1/record/listByMonth',
-  delRecord: '/v1/record/',
-  editRecord: '/v1/record/'
+  recordType: '/recordType',
+  createRecord: '/record',
+  monthList: '/record/listByMonth',
+  delRecord: '/record/',
+  editRecord: '/record/'
 }
 
 export default api
