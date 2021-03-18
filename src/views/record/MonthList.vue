@@ -4,15 +4,15 @@
       <a-form layout="inline">
         <a-row :gutter="48">
           <a-col :md="8" :sm="24">
-            <a-form-item v-model="queryParam.date" label="月份">
-              <a-month-picker placeholder="选择月份" :defaultValue="queryParam.date" :allowClear="false"/>
+            <a-form-item label="月份">
+              <a-month-picker placeholder="选择月份" v-model="queryParam.date" :defaultValue="queryParam.date" :allowClear="false"/>
             </a-form-item>
           </a-col>
           <a-col :md="8" :sm="24">
             <a-form-item label="类型">
               <a-select v-model="queryParam.recordTypeCode" placeholder="请选择">
-                <a-select-option value="expendType">支出</a-select-option>
-                <a-select-option value="incomeType">收入</a-select-option>
+                <a-select-option key="expendType">支出</a-select-option>
+                <a-select-option key="incomeType">收入</a-select-option>
               </a-select>
             </a-form-item>
           </a-col>
@@ -122,7 +122,11 @@ export default {
       confirmEditLoading: false,
       mdl: null,
       // 查询参数
-      queryParam: {},
+      queryParam: {
+        // 对象内部属性需先定义，不然不会刷新
+        recordTypeCode: '',
+        date: ''
+      },
       // 加载数据方法 必须为 Promise 对象
       loadData: parameter => {
         const params = {
