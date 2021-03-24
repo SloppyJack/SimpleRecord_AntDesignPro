@@ -43,7 +43,7 @@
         </a-form-item>
         <a-form-item v-show="menuTypeRule() !== 'F'" label="图标">
           <a-input ref="menuIconInput" v-decorator="['iconName']" @click="() => {this.showIconSelect=true}" read-only>
-            <a-icon slot="prefix" :type="(this.model && this.model.iconName)||''" />
+            <a-icon v-if="this.model && this.model.iconName" slot="prefix" :type="(this.model && this.model.iconName)||''" />
           </a-input>
           <a-modal
             title="图标选择"

@@ -11,8 +11,8 @@
           <a-col :md="8" :sm="24">
             <a-form-item label="类型">
               <a-select v-model="queryParam.recordTypeCode" placeholder="请选择">
-                <a-select-option key="expendType">支出</a-select-option>
-                <a-select-option key="incomeType">收入</a-select-option>
+                <a-select-option value="expendType">支出</a-select-option>
+                <a-select-option value="incomeType">收入</a-select-option>
               </a-select>
             </a-form-item>
           </a-col>

@@ -71,11 +71,12 @@
 
       <a-form-item>
         <a-checkbox v-decorator="['rememberMe', { valuePropName: 'checked' }]">自动登录</a-checkbox>
-        <router-link
-          :to="{ name: 'recover', params: { user: 'aaa'} }"
-          class="forge-password"
-          style="float: right;"
-        >忘记密码</router-link>
+        <!-- FIXME 忘记密码功能 -->
+<!--        <router-link-->
+<!--          :to="{ name: 'recover', params: { user: 'aaa'} }"-->
+<!--          class="forge-password"-->
+<!--          style="float: right;"-->
+<!--        >忘记密码</router-link>-->
       </a-form-item>
 
       <a-form-item style="margin-top:24px">
@@ -91,9 +92,12 @@
 
       <div class="user-login-other">
         <span>其他登录方式</span>
-        <a>
-          <a-icon class="item-icon" title="简账微信小程序" type="wechat"/>
-        </a>
+        <a-tooltip>
+          <template slot="title">
+            微信搜索简账小程序-扫码登录
+          </template>
+          <a-icon class="item-icon" type="wechat"/>
+        </a-tooltip>
         <router-link class="register" :to="{ name: 'register' }">注册账户</router-link>
       </div>
     </a-form>

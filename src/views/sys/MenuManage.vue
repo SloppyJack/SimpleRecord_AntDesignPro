@@ -212,7 +212,7 @@ export default {
       this.advanced = !this.advanced
     },
     handleAdd () {
-      this.mdl = null
+      this.mdl = {}
       this.treeData = []
       getAllMenus().then(res => {
         this.treeData = this.handleTree(res)
