@@ -2,7 +2,7 @@
 > 一款基于AntDesignVue的记账软件  
 > 欢迎Star或者Fork，如有问题可以给我提Issue
 
-##预览
+## 预览
 线上预览地址：[简账](http://jz.jackbin.cn)
 
 ## 环境
