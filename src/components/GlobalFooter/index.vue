@@ -4,7 +4,7 @@
       <a href="https://github.com/SloppyJack/SimpleRecord_AntDesignPro" target="_blank">Github</a>
     </template>
     <template v-slot:copyright>
-      <a href="http://jackbin.cn" target="_blank">简账@2019~2021</a>
+      <a href="http://www.jackbin.cn" target="_blank">简账@2019~2021</a>
     </template>
   </global-footer>
 </template>
