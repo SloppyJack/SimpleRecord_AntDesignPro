@@ -125,6 +125,7 @@ export default {
             count: item.total
           })
         })
+        // FIXME 饼图显示为百分比+数值
         const dv = new DataSet.View().source(sourceData)
         dv.transform({
           type: 'percent',
@@ -133,7 +134,6 @@ export default {
           as: 'percent'
         })
         this.pieData = dv.rows
-        console.log(this.pieData)
       })
     },
     async getLatestSixMonth (recordType) {
@@ -173,7 +173,6 @@ export default {
       this.pieLoading = false
     },
     handleTabChange (activeKey) {
-      console.log(this.barQueryParam)
       this.getLatestSixMonth(activeKey)
     }
   },
