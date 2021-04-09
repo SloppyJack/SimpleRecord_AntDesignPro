@@ -3,7 +3,7 @@
 > 欢迎Star或者Fork，如有问题可以给我提Issue
 
 ## 预览
-线上预览地址：[简账](http://jz.jackbin.cn)
+线上预览地址：[简账](http://jz.jackbin.cn)（账号:root,密码:Abcd1234）  
 
 ## 环境
 - Vue 2.6.x
