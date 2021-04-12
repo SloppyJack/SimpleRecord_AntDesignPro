@@ -138,7 +138,7 @@ export default {
     },
     async getLatestSixMonth (recordType) {
       const data = {
-        beginDate: moment(new Date()).subtract(6, 'months').format('YYYY-MM'),
+        beginDate: moment(new Date()).subtract(5, 'months').format('YYYY-MM'),
         recordTypeCode: recordType
       }
       await getLatestSixMonthList(data).then(res => {
