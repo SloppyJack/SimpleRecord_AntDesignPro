@@ -1,9 +1,11 @@
 import request from '@/utils/request'
 
-const userApi = {
+const loginApi = {
   Login: '/user/login',
   // get my info
-  RoleMenus: '/user/roleMenus'
+  RoleMenus: '/user/roleMenus',
+  UUID: '/qrcode/uuid',
+  MinAppQrcode: '/qrcode'
 }
 
 /**
@@ -17,17 +19,35 @@ const userApi = {
  */
 export function login (parameter) {
   return request({
-    url: userApi.Login,
+    url: loginApi.Login,
     method: 'post',
     data: parameter
   })
 }
 export function getRoleMenus () {
   return request({
-    url: userApi.RoleMenus,
+    url: loginApi.RoleMenus,
     method: 'get',
     headers: {
       'Content-Type': 'application/json;charset=UTF-8'
     }
+  })
+}
+
+// get uuid
+export function getUUID () {
+  return request({
+    url: loginApi.UUID,
+    method: 'get'
+  })
+}
+
+// get wechat min app qrcode
+export function getMinAppQrcode (params) {
+  return request({
+    url: loginApi.MinAppQrcode,
+    method: 'get',
+    params: params,
+    responseType: 'arraybuffer'
   })
 }
