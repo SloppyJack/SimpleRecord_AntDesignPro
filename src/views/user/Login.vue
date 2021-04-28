@@ -87,7 +87,6 @@ export default {
   data () {
     return {
       customActiveKey: 'tab1',
-      loginBtn: false,
       isLoginError: false,
       form: this.$form.createForm(this),
       state: {
@@ -124,10 +123,10 @@ export default {
 
       validateFields(validateFieldsKey, { force: true }, (err, values) => {
         if (!err) {
-          const loginParams = { ...values }
-          delete loginParams.username
-          loginParams['username'] = values.username
-          loginParams.password = values.password
+          const loginParams = {
+              username: values.username,
+              password: values.password
+          }
           Login(loginParams)
             .then((res) => this.loginSuccess(res))
             .finally(() => {

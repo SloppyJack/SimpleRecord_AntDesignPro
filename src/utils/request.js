@@ -56,7 +56,7 @@ request.interceptors.request.use(config => {
 request.interceptors.response.use((response) => {
   // not handle type except json
   const type = response.headers['content-type']
-  if (type !== 'application/json') {
+  if (type.indexOf('application/json') === -1) {
     return response
   }
   const res = response.data
