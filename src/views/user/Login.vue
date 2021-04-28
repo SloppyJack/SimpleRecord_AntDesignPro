@@ -14,8 +14,9 @@
       >
         <a-tab-pane key="tab1" tab="小程序登录">
           <a-row type="flex" justify="center">
-            <a-col>
-              <a-avatar :size="200" shape="square" :src="auth.minAppQrcode" />
+            <a-col class="avator-wrap">
+              <div class="mask" v-show="qrcodeMaskShow" v-html="qrcodeMaskTips" @click="refresQrcode"></div>
+              <a-avatar :size="200" shape="square" :src="auth.minAppQrcode" :class="{'bgc-opacity': qrcodeMaskShow}" />
             </a-col>
           </a-row>
         </a-tab-pane>
@@ -81,7 +82,7 @@
 <script>
 import { mapActions } from 'vuex'
 import { timeFix } from '@/utils/util'
-import { getUUID, getMinAppQrcode } from '@/api/login'
+import { getUUID, getMinAppQrcode, getQrcodeInfo } from '@/api/login'
 
 export default {
   data () {
@@ -97,17 +98,27 @@ export default {
       auth: {
         uuid: null,
         minAppQrcode: null
-      }
+      },
+      timer: null,
+      qrcodeMaskShow: false,
+      qrcodeMaskTips: '',
+      qrcodeInfo: {}
     }
   },
   async created () {
     await this.getMiniAppQrcode()
+    this.getQrcodeInfo()
     console.log(this.auth.uuid)
   },
   methods: {
     ...mapActions(['Login', 'Logout']),
     handleTabClick (key) {
       this.customActiveKey = key
+      if (key !== 'tab1') {
+        clearInterval(this.timer)
+      } else {
+        this.getQrcodeInfo()
+      }
     },
     handleSubmit (e) {
       e.preventDefault()
@@ -164,6 +175,35 @@ export default {
       }).then(data => {
         this.auth.minAppQrcode = data
       })
+    },
+    async getQrcodeInfo () {
+      clearInterval(this.timer)
+      this.timer = setInterval(() => {
+          getQrcodeInfo({ uuid: this.auth.uuid }).then(res => {
+            this.qrcodeInfo = res
+            if (!res.isExpired && res.isScanned) {
+              this.qrcodeMaskTips = '已扫描<br>请确认'
+              this.qrcodeMaskShow = true
+            }
+            if (res.isExpired) {
+              this.qrcodeMaskTips = '二维码失效<br>请点击刷新'
+              this.qrcodeMaskShow = true
+              clearInterval(this.timer)
+            }
+            if (res.token) {
+              // 跳转登录
+              clearInterval(this.timer)
+            }
+          })
+      }, 800)
+    },
+    async refresQrcode () {
+      if (this.qrcodeInfo.isExpired) {
+        clearInterval(this.timer)
+        await this.getMiniAppQrcode()
+        this.qrcodeMaskShow = false
+        this.getQrcodeInfo()
+      }
     }
   }
 }
@@ -171,6 +211,29 @@ export default {
 
 <style lang="less" scoped>
 .user-layout-login {
+
+  .avator-wrap {
+    position: relative;
+
+    .mask {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #fff;
+      font-size: 16px;
+      cursor: pointer;
+    }
+  }
+
+  .bgc-opacity {
+    opacity: 0.2;
+  }
+
   label {
     font-size: 14px;
   }

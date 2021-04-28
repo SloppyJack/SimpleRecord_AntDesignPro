@@ -5,7 +5,8 @@ const loginApi = {
   // get my info
   RoleMenus: '/user/roleMenus',
   UUID: '/qrcode/uuid',
-  MinAppQrcode: '/qrcode'
+  MinAppQrcode: '/qrcode',
+  QrcodeInfo: '/qrcode/info'
 }
 
 /**
@@ -49,5 +50,14 @@ export function getMinAppQrcode (params) {
     method: 'get',
     params: params,
     responseType: 'arraybuffer'
+  })
+}
+
+// get qrcode info
+export function getQrcodeInfo (params) {
+  return request({
+    url: loginApi.QrcodeInfo,
+    method: 'get',
+    params: params
   })
 }
