@@ -46,6 +46,14 @@ const user = {
       })
     },
 
+    // 授权
+    Auth ({ commit }, token) {
+      return new Promise((resolve, reject) => {
+          storage.set(ACCESS_TOKEN, token)
+          resolve()
+      })
+    },
+
     // 获取用户菜单
     GetRoleMenus ({ commit }) {
       return new Promise((resolve, reject) => {

@@ -15,7 +15,7 @@
         <a-tab-pane key="tab1" tab="小程序登录">
           <a-row type="flex" justify="center">
             <a-col class="avator-wrap">
-              <div class="mask" v-show="qrcodeMaskShow" v-html="qrcodeMaskTips" @click="refresQrcode"></div>
+              <div class="mask" v-show="qrcodeMaskShow" v-html="qrcodeMaskTips" @click="refreshQrcode"></div>
               <a-avatar :size="200" shape="square" :src="auth.minAppQrcode" :class="{'bgc-opacity': qrcodeMaskShow}" />
             </a-col>
           </a-row>
@@ -107,11 +107,10 @@ export default {
   },
   async created () {
     await this.getMiniAppQrcode()
-    this.getQrcodeInfo()
-    console.log(this.auth.uuid)
+    await this.getQrcodeInfo()
   },
   methods: {
-    ...mapActions(['Login', 'Logout']),
+    ...mapActions(['Login', 'Logout', 'Auth']),
     handleTabClick (key) {
       this.customActiveKey = key
       if (key !== 'tab1') {
@@ -139,7 +138,7 @@ export default {
               password: values.password
           }
           Login(loginParams)
-            .then((res) => this.loginSuccess(res))
+            .then((res) => this.loginSuccess())
             .finally(() => {
               state.loginBtn = false
             })
@@ -150,7 +149,7 @@ export default {
         }
       })
     },
-    loginSuccess (res) {
+    loginSuccess () {
       this.$router.push({ path: '/' })
       // 延迟 1 秒显示欢迎信息
       setTimeout(() => {
@@ -193,16 +192,18 @@ export default {
             if (res.token) {
               // 跳转登录
               clearInterval(this.timer)
+              this.Auth(res.token)
+              this.loginSuccess()
             }
           })
       }, 800)
     },
-    async refresQrcode () {
+    async refreshQrcode () {
       if (this.qrcodeInfo.isExpired) {
         clearInterval(this.timer)
         await this.getMiniAppQrcode()
         this.qrcodeMaskShow = false
-        this.getQrcodeInfo()
+        await this.getQrcodeInfo()
       }
     }
   }
