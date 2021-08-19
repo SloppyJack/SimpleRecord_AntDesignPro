@@ -28,39 +28,55 @@
         </a-row>
       </a-form>
     </div>
+    <div class="table-operator">
+      <a-button type="primary" icon="plus" @click="handleAdd">新建</a-button>
+    </div>
     <a-card :bordered="false">
       <s-table
         ref="table"
         :columns="columns"
         :data="loadData"
         :alert="false"
-        :rowKey="(record) => record.code"
+        rowKey="id"
       >
-        <template slot="operator">
-          <a-button @click="$refs.addForm.add(dictId)" icon="plus" type="primary">新增数据</a-button>
-        </template>
         <span slot="status" slot-scope="text">
           <a-badge :status="statusTypeFilter(text)" :text="statusFilter(text)" />
         </span>
         <span slot="action" slot-scope="text, record">
-          <a @click="$refs.editForm.edit(record)">编辑</a>
-          <a-divider type="vertical" />
-          <a-popconfirm placement="topRight" title="确认删除？" @confirm="() => sysDictDataDelete(record)">
-            <a>删除</a>
+          <a @click="handleEdit(record)">编辑</a>
+          <a-divider type="vertical"/>
+          <a-popconfirm
+            title="确定要删除吗?"
+            ok-text="确定"
+            cancel-text="取消"
+            @confirm="handleDel(record)"
+          >
+            <a href="#">删除</a>
           </a-popconfirm>
         </span>
       </s-table>
+      <dict-item-form
+        ref="dictItemModal"
+        :visible="form.show"
+        :loading="form.loading"
+        :title="form.title"
+        :model="form.mdl"
+        @cancel="handleFormCancel"
+        @ok="handleFormOk"
+      />
     </a-card>
   </a-modal>
 </template>
 <script>
 import { STable } from '@/components'
-import { getDictItemByPage, editDict } from '@/api/core/dictManage'
+import { getDictItemByPage, editDictItem, addDictItem, delDictItem } from '@/api/core/dictManage'
 import { statusFilter, statusTypeFilter } from '@/utils/businessUtil'
+import DictItemForm from './DictItemForm'
 
 export default {
   components: {
-    STable
+    STable,
+    DictItemForm
   },
   data () {
     return {
@@ -70,21 +86,28 @@ export default {
       // 表头
       columns: [
         {
-          title: '字典值',
+          title: '主键',
+          dataIndex: 'id'
+        },
+        {
+          title: '字典Id',
+          dataIndex: 'dictId'
+        },
+        {
+          title: '字典项文本',
+          dataIndex: 'text'
+        },
+        {
+          title: '字典项值',
           dataIndex: 'value'
         },
         {
-          title: '唯一编码',
-          dataIndex: 'code'
-        },
-        {
           title: '排序',
-          dataIndex: 'sort'
+          dataIndex: 'orderNo'
         },
         {
           title: '备注',
-          dataIndex: 'remark',
-          width: 200
+          dataIndex: 'remark'
         },
         {
           title: '状态',
@@ -110,7 +133,12 @@ export default {
           }
         })
       },
-      statusDict: []
+      form: {
+        show: false,
+        loading: false,
+        title: '',
+        mdl: null
+      }
     }
   },
   methods: {
@@ -131,20 +159,81 @@ export default {
       this.queryParam = {}
       this.visible = false
     },
-    sysDictDataDelete (record) {
-      editDict(record).then((res) => {
-        if (res.success) {
-          this.$message.success('删除成功')
-          this.$refs.table.refresh()
-        } else {
-          this.$message.error('删除失败：' + res.message)
-        }
-      }).catch((err) => {
-        this.$message.error('删除错误：' + err.message)
-      })
-    },
     handleOk () {
       this.$refs.table.refresh()
+    },
+    handleAdd () {
+      this.form.mdl = {
+        text: '',
+        value: '',
+        orderNo: '',
+        remark: ''
+      }
+      this.form.title = '新增字典项'
+      this.form.show = true
+    },
+    handleEdit (record) {
+      this.form.mdl = record
+      this.form.title = '编辑字典项'
+      this.form.show = true
+    },
+    handleFormCancel () {
+      this.form.show = false
+    },
+    handleFormOk () {
+      const form = this.$refs.dictItemModal.form
+      this.form.loading = true
+      form.validateFields((errors, values) => {
+        if (!errors) {
+          // 编辑
+          if (values.id > 0) {
+            editDictItem({
+              id: values.id,
+              dictId: values.dictId,
+              text: values.text,
+              value: values.value,
+              orderNo: values.orderNo,
+              remark: values.remark
+            }).then(res => {
+              this.form.loading = false
+              this.form.show = false
+              // 重置表单数据
+              form.resetFields()
+              // 刷新表格
+              this.$refs.table.refresh()
+              this.$message.info('编辑成功')
+            }).catch(() => {
+              this.form.loading = false
+            })
+          } else { // 新增
+            addDictItem({
+              dictId: this.dictId,
+              text: values.text,
+              value: values.value,
+              orderNo: values.orderNo,
+              remark: values.remark
+            }).then(res => {
+              this.form.loading = false
+              this.form.show = false
+              // 重置表单数据
+              form.resetFields()
+              // 刷新表格
+              this.$refs.table.refresh()
+              this.$message.info('新增成功')
+            }).catch(() => {
+              this.form.loading = false
+            })
+          }
+        } else {
+          this.form.loading = false
+        }
+      })
+    },
+    handleDel (record) {
+      delDictItem(record.id).then(() => {
+        this.$message.success('删除成功')
+        this.$refs.table.refresh()
+      })
     }
   }
 }

@@ -16,11 +16,11 @@
         <a-form-item v-show="model && model.id > 0" label="字典ID">
           <a-input v-decorator="['dictId']" disabled />
         </a-form-item>
-        <a-form-item label="字典名称">
-          <a-input v-decorator="['name', {rules: [{required: true, message: '请输入名称！'}]}]" />
+        <a-form-item label="字典项文本">
+          <a-input v-decorator="['text', {rules: [{required: true, message: '请输入字典项文本！'}]}]" />
         </a-form-item>
-        <a-form-item label="字典编码">
-          <a-input v-decorator="['code', {rules: [{required: true, message: '请输入编码！'}]}]" />
+        <a-form-item label="字典项值">
+          <a-input v-decorator="['value', {rules: [{required: true, message: '请输入字典项值！'}]}]" />
         </a-form-item>
         <a-form-item label="备注">
           <a-input v-decorator="['remark']" />
@@ -39,7 +39,7 @@ import pick from 'lodash.pick'
 import { Tree } from 'ant-design-vue'
 
 // 表单字段
-const fields = ['id', 'name', 'code', 'remark', 'orderNo']
+const fields = ['id', 'dictId', 'text', 'value', 'remark', 'orderNo']
 
 export default {
   components: {
@@ -88,9 +88,7 @@ export default {
 
     // 当 model 发生改变时，为表单设置值
     this.$watch('model', () => {
-      this.$nextTick(() => {
-        this.model && this.form.setFieldsValue(pick(this.model, fields))
-      })
+      this.model && this.form.setFieldsValue(pick(this.model, fields))
     })
   }
 }

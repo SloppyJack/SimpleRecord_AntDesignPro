@@ -109,6 +109,10 @@ export default {
       // 表头
       columns: [
         {
+          title: '主键',
+          dataIndex: 'id'
+        },
+        {
           title: '类型名称',
           dataIndex: 'name'
         },
@@ -122,8 +126,7 @@ export default {
         },
         {
           title: '备注',
-          dataIndex: 'remark',
-          width: 200
+          dataIndex: 'remark'
         },
         {
           title: '状态',
@@ -168,7 +171,12 @@ export default {
       this.dictForm.show = true
     },
     handleAdd () {
-      this.dictForm.mdl = null
+      this.dictForm.mdl = {
+        name: '',
+        code: '',
+        orderNo: '',
+        remark: ''
+      }
       this.dictForm.title = '新增字典'
       this.dictForm.show = true
     },
@@ -203,6 +211,7 @@ export default {
             addDict({
               name: values.name,
               code: values.code,
+              orderNo: values.orderNo,
               remark: values.remark
             }).then(res => {
               this.dictForm.loading = false
