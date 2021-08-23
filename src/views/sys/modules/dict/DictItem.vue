@@ -11,12 +11,12 @@
         <a-row :gutter="48">
           <a-col :md="8" :sm="24">
             <a-form-item label="字典值" >
-              <a-input v-model="queryParam.value" allow-clear placeholder="请输入字典值"/>
+              <a-input v-model="queryParam.text" allow-clear placeholder="请输入字典项文本"/>
             </a-form-item>
           </a-col>
           <a-col :md="8" :sm="24">
             <a-form-item label="唯一编码" >
-              <a-input v-model="queryParam.code" allow-clear placeholder="请输入唯一编码"/>
+              <a-input v-model="queryParam.value" allow-clear placeholder="请输入字典项值"/>
             </a-form-item>
           </a-col>
           <a-col :md="8" :sm="24">

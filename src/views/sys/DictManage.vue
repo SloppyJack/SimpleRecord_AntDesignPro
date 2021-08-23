@@ -39,6 +39,9 @@
         <span slot="status" slot-scope="text">
           <a-badge :status="statusTypeFilter(text)" :text="statusFilter(text)" />
         </span>
+        <span slot="isSysDefault" slot-scope="text">
+          <a-tag v-show="text === 1" color="green">系统内置</a-tag>
+        </span>
         <span slot="action" slot-scope="text, record">
           <a @click="$refs.dictItemModal.index(record)">字典</a>
           <a-divider type="vertical"/>
@@ -127,6 +130,11 @@ export default {
         {
           title: '备注',
           dataIndex: 'remark'
+        },
+        {
+          title: '是否系统内置',
+          dataIndex: 'isSysDefault',
+          scopedSlots: { customRender: 'isSysDefault' }
         },
         {
           title: '状态',
