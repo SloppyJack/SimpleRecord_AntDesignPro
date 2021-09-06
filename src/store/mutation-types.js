@@ -12,6 +12,10 @@ export const TOGGLE_WEAK = 'weak'
 export const TOGGLE_MULTI_TAB = 'multi_tab'
 export const APP_LANGUAGE = 'app_language'
 
+// business keys
+export const ACCOUNT_TYPE = 'accountType'
+export const RECORD_TYPE = 'recordType'
+
 export const CONTENT_WIDTH_TYPE = {
   Fluid: 'Fluid',
   Fixed: 'Fixed'

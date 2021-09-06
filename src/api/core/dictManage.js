@@ -9,7 +9,8 @@ const api = {
   resetDict: '/dict/reset/',
   addDictItem: '/dictItem/add',
   editDictItem: '/dictItem/edit',
-  delDictItem: '/dictItem/'
+  delDictItem: '/dictItem/',
+  getDictItems: '/dict/dictItems/'
 }
 
 /**
@@ -105,5 +106,15 @@ export function delDictItem (id) {
   return request({
     url: api.delDictItem + id,
     method: 'delete'
+  })
+}
+
+/**
+ * 通过code获取字典项
+ */
+export function getDictItems (code) {
+  return request({
+    url: api.getDictItems + code,
+    method: 'get'
   })
 }
