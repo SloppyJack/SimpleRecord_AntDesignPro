@@ -4,9 +4,7 @@
     :breadcrumb="false"
   >
     <a-list
-      rowKey="id"
-      :grid="{gutter: 24, lg: 3, md: 2, sm: 1, xs: 1}"
-      :dataSource="recordAccounts"
+      :grid="{gutter: 48, lg: 3, md: 2, sm: 1, xs: 1}"
     >
       <a-list-item>
         <a-button class="new-btn" type="dashed" @click="handleAdd">
@@ -14,7 +12,7 @@
           新增账户
         </a-button>
       </a-list-item>
-      <a-list-item slot="renderItem" slot-scope="item">
+      <a-list-item v-for="item in recordAccounts" :key="item.id">
         <a-card :hoverable="true">
           <a-card-meta>
             <a slot="title">{{ item.title }}</a>
@@ -158,12 +156,6 @@ export default {
   }
 }
 
-.card-avatar {
-  width: 48px;
-  height: 48px;
-  border-radius: 48px;
-}
-
 .ant-card-actions {
   background: #f7f9fa;
 
@@ -194,7 +186,7 @@ export default {
   background-color: #fff;
   border-radius: 2px;
   width: 100%;
-  height: 188px;
+  height: 140px;
 }
 
 .icon-size {
