@@ -1,31 +1,40 @@
 <template>
-  <page-header-wrapper
-    content="在这里您可以看到多个资产账户的概况"
-    :breadcrumb="false"
-  >
-    <a-list
-      :grid="{gutter: 48, lg: 3, md: 2, sm: 1, xs: 1}"
-    >
-      <a-list-item>
-        <a-button class="new-btn" type="dashed" @click="handleAdd">
-          <a-icon type="plus"/>
-          新增账户
-        </a-button>
-      </a-list-item>
-      <a-list-item v-for="item in recordAccounts" :key="item.id">
-        <a-card :hoverable="true">
-          <a-card-meta>
-            <a slot="title">{{ item.title }}</a>
-            <icon-font slot="avatar" type="custom-icon-xianjin" class="icon-size"/>
-            <div class="meta-content" slot="description">{{ item.content }}</div>
-          </a-card-meta>
-          <template class="ant-card-actions" slot="actions">
-            <a>操作一</a>
-            <a>操作二</a>
-          </template>
-        </a-card>
-      </a-list-item>
-    </a-list>
+  <page-header-wrapper content="在这里您可以看到多个资产账户的概况" :breadcrumb="false">
+    <a-row :gutter="16">
+      <a-col class="gutter-row" :span="8">
+        <a-list-item>
+          <a-button class="new-btn" type="dashed" @click="handleAdd">
+            <a-icon type="plus" />
+            新增账户
+          </a-button>
+        </a-list-item>
+      </a-col>
+      <a-col class="gutter-row" :span="8" v-for="item in recordAccounts" :key="item.id">
+        <div class="card-wrap">
+          <a-card :hoverable="true">
+            <div class="content-wrap">
+              <a-card-meta>
+                <a slot="title">{{ item.name }}</a>
+                <icon-font slot="avatar" type="custom-icon-xianjin" class="icon-size" />
+                <div class="meta-content" slot="description">{{ item.typeText }}</div>
+              </a-card-meta>
+              <div class="right-content">
+                <div class="amount">金额</div>
+                <div class="account-flow_wrap">
+                  <span>流入: 10</span>
+                  <a-divider type="vertical" />
+                  <span>流出: 10</span>
+                </div>
+              </div>
+            </div>
+            <template class="ant-card-actions" slot="actions">
+              <a>删除</a>
+              <a>修改</a>
+            </template>
+          </a-card>
+        </div>
+      </a-col>
+    </a-row>
     <capital-account-form
       ref="formModal"
       :visible="formShow"
@@ -46,31 +55,31 @@ import { addRecordAccount, getRecordAccounts } from '@/api/record/recordAccountM
 import { Icon } from 'ant-design-vue'
 
 const IconFont = Icon.createFromIconfontCN({
-  scriptUrl: '//at.alicdn.com/t/font_2064096_t32k0b706a.js'
+  scriptUrl: '//at.alicdn.com/t/font_2064096_t32k0b706a.js',
 })
 
 export default {
   components: {
     CapitalAccountForm,
-    IconFont
+    IconFont,
   },
-  data () {
+  data() {
     return {
       recordAccounts: [],
       mdl: {},
       formShow: false,
       formLoading: false,
-      formTitle: ''
+      formTitle: '',
     }
   },
   methods: {
     ...mapActions(['GetDictItems']),
-    handleAdd () {
+    handleAdd() {
       this.mdl = {}
       this.formTitle = '新增资产账户'
       this.formShow = true
     },
-    handleOk () {
+    handleOk() {
       const form = this.$refs.formModal.form
       this.formLoading = true
       form.validateFields((errors, values) => {
@@ -81,54 +90,92 @@ export default {
             addRecordAccount({
               type: values.type,
               name: values.name,
-              inNetAssets: values.inNetAssets ? 1 : 2
-            }).then(res => {
+              inNetAssets: values.inNetAssets ? 1 : 2,
+            })
+              .then((res) => {
                 this.formShow = false
                 this.formLoading = false
                 // 重置表单数据
                 form.resetFields()
                 this.$message.info('新增成功')
-              }
-            ).catch(() => {
-              this.formLoading = false
-            })
+              })
+              .catch(() => {
+                this.formLoading = false
+              })
           }
         } else {
           this.formLoading = false
         }
       })
     },
-    handleCancel () {
+    handleCancel() {
       this.formShow = false
     },
-    async getRecordAccounts () {
+    async getRecordAccounts() {
       // get recordAccounts
-      getRecordAccounts().then(res => {
+      getRecordAccounts().then((res) => {
         this.recordAccounts = res
       })
-    }
+    },
   },
   computed: {
     ...mapState({
-      accountType: state => state.dict.accountType
-    })
+      accountType: (state) => state.dict.accountType,
+    }),
   },
-  async mounted () {
+  async mounted() {
     // get dict values
     if (!this.accountType.length) {
       await this.GetDictItems(ACCOUNT_TYPE)
     }
     await this.getRecordAccounts()
-  }
+  },
 }
 </script>
 
 <style lang="less" scoped>
-@import "~@/components/index.less";
+@import '~@/components/index.less';
+
+.gutter-row {
+  margin-bottom: 16px;
+  & li {
+    padding: 0;
+  }
+}
+
+.card-wrap {
+  min-height: 140px;
+  display: flex;
+  align-items: center;
+  width: 100%;
+
+  .ant-card {
+    width: 100%;
+  }
+
+  .content-wrap {
+    display: flex;
+
+    .ant-card-meta {
+      flex: 1;
+    }
+
+    .right-content {
+      .amount {
+        text-align: right;
+        margin-bottom: 8px;
+      }
+      .account-flow_wrap {
+        text-align: right;
+        font-size: 12px;
+      }
+    }
+  }
+}
 
 .card-list {
   /deep/ .ant-card-body:hover {
-    .ant-card-meta-title>a {
+    .ant-card-meta-title > a {
       color: @primary-color;
     }
   }
@@ -136,10 +183,10 @@ export default {
   /deep/ .ant-card-meta-title {
     margin-bottom: 12px;
 
-    &>a {
+    & > a {
       display: inline-block;
       max-width: 100%;
-      color: rgba(0,0,0,.85);
+      color: rgba(0, 0, 0, 0.85);
     }
   }
 
@@ -171,7 +218,7 @@ export default {
     }
 
     a {
-      color: rgba(0, 0, 0, .45);
+      color: rgba(0, 0, 0, 0.45);
       line-height: 22px;
       display: inline-block;
       width: 100%;
@@ -192,5 +239,4 @@ export default {
 .icon-size {
   font-size: 48px;
 }
-
 </style>
