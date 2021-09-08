@@ -55,31 +55,31 @@ import { addRecordAccount, getRecordAccounts } from '@/api/record/recordAccountM
 import { Icon } from 'ant-design-vue'
 
 const IconFont = Icon.createFromIconfontCN({
-  scriptUrl: '//at.alicdn.com/t/font_2064096_t32k0b706a.js',
+  scriptUrl: '//at.alicdn.com/t/font_2064096_t32k0b706a.js'
 })
 
 export default {
   components: {
     CapitalAccountForm,
-    IconFont,
+    IconFont
   },
-  data() {
+  data () {
     return {
       recordAccounts: [],
       mdl: {},
       formShow: false,
       formLoading: false,
-      formTitle: '',
+      formTitle: ''
     }
   },
   methods: {
     ...mapActions(['GetDictItems']),
-    handleAdd() {
+    handleAdd () {
       this.mdl = {}
       this.formTitle = '新增资产账户'
       this.formShow = true
     },
-    handleOk() {
+    handleOk () {
       const form = this.$refs.formModal.form
       this.formLoading = true
       form.validateFields((errors, values) => {
@@ -90,7 +90,7 @@ export default {
             addRecordAccount({
               type: values.type,
               name: values.name,
-              inNetAssets: values.inNetAssets ? 1 : 2,
+              inNetAssets: values.inNetAssets ? 1 : 2
             })
               .then((res) => {
                 this.formShow = false
@@ -108,28 +108,28 @@ export default {
         }
       })
     },
-    handleCancel() {
+    handleCancel () {
       this.formShow = false
     },
-    async getRecordAccounts() {
+    async getRecordAccounts () {
       // get recordAccounts
       getRecordAccounts().then((res) => {
         this.recordAccounts = res
       })
-    },
+    }
   },
   computed: {
     ...mapState({
-      accountType: (state) => state.dict.accountType,
-    }),
+      accountType: (state) => state.dict.accountType
+    })
   },
-  async mounted() {
+  async mounted () {
     // get dict values
     if (!this.accountType.length) {
       await this.GetDictItems(ACCOUNT_TYPE)
     }
     await this.getRecordAccounts()
-  },
+  }
 }
 </script>
 
