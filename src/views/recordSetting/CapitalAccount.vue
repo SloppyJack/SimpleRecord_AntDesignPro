@@ -55,7 +55,7 @@ import { addRecordAccount, getRecordAccounts } from '@/api/record/recordAccountM
 import { Icon } from 'ant-design-vue'
 
 const IconFont = Icon.createFromIconfontCN({
-  scriptUrl: '//at.alicdn.com/t/font_2064096_t32k0b706a.js'
+  scriptUrl: '//at.alicdn.com/t/font_2064096_sy2ci1zr88.js'
 })
 
 export default {

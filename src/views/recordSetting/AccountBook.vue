@@ -1,18 +1,18 @@
 <template>
   <page-header-wrapper
     :breadcrumb="false"
-    content="tips：账本仅为记录账单的归处，与账户并无直接关联"
+    content="tips：账本仅为记录账单的归处，与资产账户并无直接关联"
   >
     <a-card :bordered="false">
       <a-row>
         <a-col :sm="8" :xs="24">
-          <info title="我的待办" value="8个任务" :bordered="true" />
+          <info title="默认账本" value="8个任务" :bordered="true" />
         </a-col>
         <a-col :sm="8" :xs="24">
-          <info title="本周任务平均处理时间" value="32分钟" :bordered="true" />
+          <info title="总支出" value="32分钟" :bordered="true" />
         </a-col>
         <a-col :sm="8" :xs="24">
-          <info title="本周完成任务数" value="24个" />
+          <info title="总收入" value="24个" />
         </a-col>
       </a-row>
     </a-card>
@@ -20,16 +20,7 @@
     <a-card
       style="margin-top: 24px"
       :bordered="false"
-      title="标准列表">
-
-      <div slot="extra">
-        <a-radio-group v-model="status">
-          <a-radio-button value="all">全部</a-radio-button>
-          <a-radio-button value="processing">进行中</a-radio-button>
-          <a-radio-button value="waiting">等待中</a-radio-button>
-        </a-radio-group>
-        <a-input-search style="margin-left: 16px; width: 272px;" />
-      </div>
+      title="账本列表">
 
       <div class="operate">
         <a-button type="dashed" style="width: 100%" icon="plus" @click="add">添加</a-button>
@@ -73,9 +64,10 @@
 </template>
 
 <script>
-// 演示如何使用 this.$dialog 封装 modal 组件
-import TaskForm from './modules/TaskForm'
+
+import RecordBookForm from './modules/RecordBookForm'
 import Info from './components/Info'
+// import { addRecordBook } from '@/api/record/recordBookManage'
 
 const data = []
 data.push({
@@ -133,7 +125,7 @@ data.push({
 export default {
   name: 'StandardList',
   components: {
-    TaskForm,
+    RecordBookForm,
     Info
   },
   data () {
@@ -144,33 +136,26 @@ export default {
   },
   methods: {
     add () {
-      this.$dialog(TaskForm,
-        // component props
+      this.$dialog(RecordBookForm,
         {
           record: {},
           on: {
-            ok () {
-              console.log('ok 回调')
-            },
-            cancel () {
-              console.log('cancel 回调')
-            },
-            close () {
-              console.log('modal close 回调')
+            // todo 拿到form中values
+            ok (values) {
+              console.log('2', values)
+              // addRecordBook()
             }
           }
         },
-        // modal props
         {
           title: '新增',
           width: 700,
-          centered: true,
-          maskClosable: false
+          centered: true
         })
     },
     edit (record) {
       console.log('record', record)
-      this.$dialog(TaskForm,
+      this.$dialog(RecordBookForm,
         // component props
         {
           record,
