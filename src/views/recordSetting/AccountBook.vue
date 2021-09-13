@@ -60,6 +60,17 @@
         </a-list-item>
       </a-list>
     </a-card>
+    <a-modal
+      title="操作"
+      :visible="visible"
+      :confirm-loading="confirmLoading"
+      @ok="handleOk"
+      @cancel="handleCancel"
+      :width="700"
+      centered
+    >
+      <RecordBookForm ref="recordForm" />
+    </a-modal>
   </page-header-wrapper>
 </template>
 
@@ -131,7 +142,9 @@ export default {
   data () {
     return {
       data,
-      status: 'all'
+      status: 'all',
+      visible: false,
+      confirmLoading: false
     }
   },
   methods: {
@@ -155,29 +168,39 @@ export default {
     },
     edit (record) {
       console.log('record', record)
-      this.$dialog(RecordBookForm,
-        // component props
-        {
-          record,
-          on: {
-            ok () {
-              console.log('ok 回调')
-            },
-            cancel () {
-              console.log('cancel 回调')
-            },
-            close () {
-              console.log('modal close 回调')
-            }
-          }
-        },
-        // modal props
-        {
-          title: '操作',
-          width: 700,
-          centered: true,
-          maskClosable: false
-        })
+      this.visible = true
+      // this.$dialog(RecordBookForm,
+      //   // component props
+      //   {
+      //     record,
+      //     on: {
+      //       ok () {
+      //         console.log('ok 回调')
+      //       },
+      //       cancel () {
+      //         console.log('cancel 回调')
+      //       },
+      //       close () {
+      //         console.log('modal close 回调')
+      //       }
+      //     }
+      //   },
+      //   // modal props
+      //   {
+      //     title: '操作',
+      //     width: 700,
+      //     centered: true,
+      //     maskClosable: false
+      //   })
+    },
+    handleOk () {
+      this.$refs.recordForm.onOk().then(data => {
+        console.log(data)
+        this.visible = false
+      })
+    },
+    handleCancel () {
+      this.visible = false
     }
   }
 }
