@@ -3,10 +3,19 @@ import request from '@/utils/request'
 const api = {
   add: '/recordBook',
   del: '/recordBook/',
-  edit: '/recordBook/'
+  edit: '/recordBook/',
+  page: '/recordBook/page'
 }
 
 export default api
+
+export function getRecordBooksByPage (data) {
+  return request({
+    url: api.page,
+    method: 'post',
+    data
+  })
+}
 
 export function addRecordBook (data) {
   return request({
