@@ -29,34 +29,24 @@
       <a-spin :spinning="loading">
         <a-list size="large" :pagination="pagination">
           <a-list-item :key="index" v-for="(item, index) in data">
-            <a-list-item-meta :description="item.description">
-              <a-avatar slot="avatar" size="large" shape="square" :src="item.avatar"/>
-              <a slot="title">{{ item.title }}</a>
+            <a-list-item-meta :description="item.name">
+              <icon-font slot="avatar" type="custom-icon-zhangben" class="icon-size" />
+              <a slot="title">{{ item.remark }}</a>
             </a-list-item-meta>
-            <div slot="actions">
-              <a @click="edit(item)">编辑</a>
+            <div v-if="item.isUserDefault">
+              <a-tag color="green">默认账户</a-tag>
             </div>
             <div slot="actions">
-              <a-dropdown>
-                <a-menu slot="overlay">
-                  <a-menu-item><a>编辑</a></a-menu-item>
-                  <a-menu-item><a>删除</a></a-menu-item>
-                </a-menu>
-                <a>更多<a-icon type="down"/></a>
-              </a-dropdown>
-            </div>
-            <div class="list-content">
-              <div class="list-content-item">
-                <span>Owner</span>
-                <p>{{ item.owner }}</p>
-              </div>
-              <div class="list-content-item">
-                <span>开始时间</span>
-                <p>{{ item.startAt }}</p>
-              </div>
-              <div class="list-content-item">
-                <a-progress :percent="item.progress.value" :status="!item.progress.status ? null : item.progress.status" style="width: 180px" />
-              </div>
+              <a @click="handleEdit(item)">修改</a>
+              <a-divider type="vertical" />
+              <a-popconfirm
+                title="确定要删除吗?"
+                ok-text="确定"
+                cancel-text="取消"
+                @confirm="handleDel(record)"
+              >
+                <a href="#">删除</a>
+              </a-popconfirm>
             </div>
           </a-list-item>
         </a-list>
@@ -79,7 +69,12 @@
 import { STable } from '@/components'
 import RecordBookForm from './modules/RecordBookForm'
 import Info from './components/Info'
-import { addRecordBook, getRecordBooksByPage } from '@/api/record/recordBookManage'
+import { addRecordBook, getRecordBooksByPage, editRecordBook } from '@/api/record/recordBookManage'
+import { Icon } from 'ant-design-vue'
+
+const IconFont = Icon.createFromIconfontCN({
+  scriptUrl: '//at.alicdn.com/t/font_2064096_sy2ci1zr88.js'
+})
 
 // 表头
 const columns = [
@@ -88,12 +83,8 @@ const columns = [
     dataIndex: 'id'
   },
   {
-    title: '类型名称',
+    title: '账单名称',
     dataIndex: 'name'
-  },
-  {
-    title: '唯一编码',
-    dataIndex: 'code'
   },
   {
     title: '排序',
@@ -105,8 +96,7 @@ const columns = [
   },
   {
     title: '是否系统内置',
-    dataIndex: 'isSysDefault',
-    scopedSlots: { customRender: 'isSysDefault' }
+    dataIndex: 'isUserDefault'
   },
   {
     title: '状态',
@@ -125,7 +115,8 @@ export default {
   components: {
     RecordBookForm,
     Info,
-    STable
+    STable,
+    IconFont
   },
   data () {
     return {
@@ -150,8 +141,14 @@ export default {
   },
   methods: {
     handleAdd () {
-      this.mdl = {}
+      this.$refs.formModal.form.resetFields()
       this.formTitle = '新增账本'
+      this.formShow = true
+    },
+    handleEdit (record) {
+      this.mdl = record
+      console.log(this.mdl)
+      this.formTitle = '编辑账本'
       this.formShow = true
     },
     handleOk () {
@@ -160,19 +157,33 @@ export default {
       form.validateFields((errors, values) => {
         if (!errors) {
           if (values.id > 0) {
-            console.log('编辑')
+            editRecordBook(values.id, {
+              name: values.name,
+              remark: values.remark,
+              isUserDefault: values.isUserDefault,
+              orderNo: values.orderNo
+            }).then(() => {
+              this.formShow = false
+              this.formLoading = false
+              // 重置表单数据
+              form.resetFields()
+              this.$message.info('修改成功')
+              this.loadData()
+            }).catch(() => {
+              this.formLoading = false
+            })
           } else {
             addRecordBook({
               name: values.name,
               remark: values.remark,
               orderNo: values.orderNo
-            })
-              .then((res) => {
+            }).then(() => {
                 this.formShow = false
                 this.formLoading = false
                 // 重置表单数据
                 form.resetFields()
                 this.$message.info('新增成功')
+                this.loadData()
               }).catch(() => {
                 this.formLoading = false
               })
@@ -183,13 +194,16 @@ export default {
       })
     },
     handleCancel () {
-      this.visible = false
+      this.formShow = false
     },
     async loadData () {
       this.loading = true
       const param = { pageNo: this.pagination.current, pageSize: this.pagination.pageSize }
       await getRecordBooksByPage(param).then((res) => {
         this.data = res.list
+        this.data.forEach((item) => {
+          item.isUserDefault = item.isUserDefault === 1
+        })
         this.pagination.current = res.pageNo
         this.pagination.total = res.total
         this.loading = false
@@ -197,6 +211,8 @@ export default {
         this.loading = false
       })
     }
+  },
+  computed: {
   },
   async mounted () {
     await this.loadData()
@@ -225,5 +241,9 @@ export default {
     margin-bottom: 0;
     line-height: 22px;
   }
+}
+
+.icon-size {
+  font-size: 48px;
 }
 </style>
