@@ -5,14 +5,11 @@
   >
     <a-card :bordered="false">
       <a-row>
-        <a-col :sm="8" :xs="24">
-          <info title="默认账本" value="8个任务" :bordered="true" />
+        <a-col :sm="12" :xs="24">
+          <info title="总支出" :desc="'下方账单的支出和'" value="32分钟" :bordered="true" />
         </a-col>
-        <a-col :sm="8" :xs="24">
-          <info title="总支出" value="32分钟" :bordered="true" />
-        </a-col>
-        <a-col :sm="8" :xs="24">
-          <info title="总收入" value="24个" />
+        <a-col :sm="12" :xs="24">
+          <info title="总收入" :desc="'下方账单的收入和'" value="24个" />
         </a-col>
       </a-row>
     </a-card>
@@ -147,7 +144,6 @@ export default {
     },
     handleEdit (record) {
       this.mdl = record
-      console.log(this.mdl)
       this.formTitle = '编辑账本'
       this.formShow = true
     },

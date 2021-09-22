@@ -1,6 +1,11 @@
 <template>
   <div class="header-info">
-    <span>{{ title }}</span>
+    <a-tooltip>
+      <template slot="title">
+        {{desc}}
+      </template>
+      <span>{{ title }}</span>
+    </a-tooltip>
     <p>{{ value }}</p>
     <em v-if="bordered" />
   </div>
@@ -11,6 +16,10 @@ export default {
   name: 'Info',
   props: {
     title: {
+      type: String,
+      default: ''
+    },
+    desc: {
       type: String,
       default: ''
     },

@@ -15,7 +15,7 @@
             <div class="content-wrap">
               <a-card-meta>
                 <a slot="title">{{ item.name }}</a>
-                <icon-font slot="avatar" type="custom-icon-xianjin" class="icon-size" />
+                <icon-font slot="avatar" :type="getAccountIcon(item.typeValue)" class="icon-size" />
                 <div class="meta-content" slot="description">{{ item.typeText }}</div>
               </a-card-meta>
               <div class="right-content">
@@ -58,6 +58,13 @@ const IconFont = Icon.createFromIconfontCN({
   scriptUrl: '//at.alicdn.com/t/font_2064096_sy2ci1zr88.js'
 })
 
+const iconMap = {
+  cash: 'custom-icon-_xianjin',
+  bankCard: 'custom-icon--yinhangqia',
+  financialAccount: 'custom-icon-jijinlicai',
+  payment: 'custom-icon-yingshouyingfulei'
+}
+
 export default {
   components: {
     CapitalAccountForm,
@@ -98,6 +105,7 @@ export default {
                 // 重置表单数据
                 form.resetFields()
                 this.$message.info('新增成功')
+                this.getRecordAccounts()
               })
               .catch(() => {
                 this.formLoading = false
@@ -116,6 +124,9 @@ export default {
       getRecordAccounts().then((res) => {
         this.recordAccounts = res
       })
+    },
+    getAccountIcon (code) {
+      return iconMap[code]
     }
   },
   computed: {

@@ -34,8 +34,8 @@ export function delRecordBook (id) {
 
 export function editRecordBook (id, data) {
   return request({
-    url: api.del + id,
-    method: 'delete',
+    url: api.edit + id,
+    method: 'put',
     data
   })
 }
