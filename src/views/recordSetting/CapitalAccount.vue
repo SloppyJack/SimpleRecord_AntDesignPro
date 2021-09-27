@@ -16,7 +16,10 @@
               <a-card-meta>
                 <a slot="title">{{ item.name }}</a>
                 <icon-font slot="avatar" :type="getAccountIcon(item.typeValue)" class="icon-size" />
-                <div class="meta-content" slot="description">{{ item.typeText }}</div>
+                <div class="meta-content" slot="description">
+                  {{ item.typeText }}
+                  <a-tag v-if="item.inNetAssets" color="green">净资产</a-tag>
+                </div>
               </a-card-meta>
               <div class="right-content">
                 <div class="amount">金额</div>
@@ -28,8 +31,15 @@
               </div>
             </div>
             <template class="ant-card-actions" slot="actions">
-              <a>删除</a>
-              <a>修改</a>
+              <a-popconfirm
+                title="确定要删除吗?"
+                ok-text="确定"
+                cancel-text="取消"
+                @confirm="handleDel(item)"
+              >
+                <a>删除</a>
+              </a-popconfirm>
+              <a @click="handleEdit(item)">修改</a>
             </template>
           </a-card>
         </div>
@@ -51,7 +61,7 @@
 import { mapState, mapActions } from 'vuex'
 import { ACCOUNT_TYPE } from '@/store/mutation-types'
 import CapitalAccountForm from './modules/CapitalAccountForm'
-import { addRecordAccount, getRecordAccounts } from '@/api/record/recordAccountManage'
+import { addRecordAccount, getRecordAccounts, editRecordAccount, delRecordAccount } from '@/api/record/recordAccountManage'
 import { Icon } from 'ant-design-vue'
 
 const IconFont = Icon.createFromIconfontCN({
@@ -82,8 +92,14 @@ export default {
   methods: {
     ...mapActions(['GetDictItems']),
     handleAdd () {
-      this.mdl = {}
+      // 重置表单数据
+      this.$refs.formModal.form.resetFields()
       this.formTitle = '新增资产账户'
+      this.formShow = true
+    },
+    handleEdit (record) {
+      this.mdl = record
+      this.formTitle = '修改资产账户'
       this.formShow = true
     },
     handleOk () {
@@ -92,28 +108,47 @@ export default {
       form.validateFields((errors, values) => {
         if (!errors) {
           if (values.id > 0) {
-            console.log('编辑')
+            editRecordAccount(values.id, {
+              type: values.type,
+              name: values.name,
+              inNetAssets: values.inNetAssets
+            }).then((res) => {
+              this.formShow = false
+              this.formLoading = false
+              // 重置表单数据
+              form.resetFields()
+              this.$message.info('修改成功')
+              this.getRecordAccounts()
+            }).catch(() => {
+              this.formLoading = false
+            })
           } else {
             addRecordAccount({
               type: values.type,
               name: values.name,
-              inNetAssets: values.inNetAssets ? 1 : 2
-            })
-              .then((res) => {
+              inNetAssets: values.inNetAssets
+            }).then((res) => {
                 this.formShow = false
                 this.formLoading = false
                 // 重置表单数据
                 form.resetFields()
                 this.$message.info('新增成功')
                 this.getRecordAccounts()
-              })
-              .catch(() => {
+            }).catch(() => {
                 this.formLoading = false
-              })
+            })
           }
         } else {
           this.formLoading = false
         }
+      })
+    },
+    handleDel (record) {
+      delRecordAccount(record.id).then((res) => {
+        this.$message.info('删除成功')
+        this.getRecordAccounts()
+      }).catch(() => {
+        this.formLoading = false
       })
     },
     handleCancel () {
@@ -123,6 +158,9 @@ export default {
       // get recordAccounts
       getRecordAccounts().then((res) => {
         this.recordAccounts = res
+        this.recordAccounts.forEach((item) => {
+          item.inNetAssets = item.inNetAssets === 1
+        })
       })
     },
     getAccountIcon (code) {
