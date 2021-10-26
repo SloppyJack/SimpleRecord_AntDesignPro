@@ -15,6 +15,12 @@ export const APP_LANGUAGE = 'app_language'
 // business keys
 export const ACCOUNT_TYPE = 'accountType'
 export const RECORD_TYPE = 'recordType'
+export const EXPEND_TYPE = 'expendType' // 支出
+export const INCOME_TYPE = 'incomeType' // 收入
+export const TRANSFER_TYPE = 'transferType' // 转账
+export const LOAN_TYPE = 'loanType' // 借贷
+export const IS_USER_DEFAULT = 1 // 用户默认
+export const IS_NOT_USER_DEFAULT = 2 // 非用户默认
 
 export const CONTENT_WIDTH_TYPE = {
   Fluid: 'Fluid',

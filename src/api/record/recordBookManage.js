@@ -4,7 +4,8 @@ const api = {
   add: '/recordBook',
   del: '/recordBook/',
   edit: '/recordBook/',
-  page: '/recordBook/page'
+  page: '/recordBook/page',
+  list: '/recordBook/list'
 }
 
 export default api
@@ -37,5 +38,12 @@ export function editRecordBook (id, data) {
     url: api.edit + id,
     method: 'put',
     data
+  })
+}
+
+export function getRecordBooks () {
+  return request({
+    url: api.list,
+    method: 'get'
   })
 }

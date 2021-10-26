@@ -2,7 +2,7 @@
   <div class="header-info">
     <a-tooltip>
       <template slot="title">
-        {{desc}}
+        {{ desc }}
       </template>
       <span>{{ title }}</span>
     </a-tooltip>

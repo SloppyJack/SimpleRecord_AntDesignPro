@@ -4,6 +4,7 @@ import Vuex from 'vuex'
 import app from './modules/app'
 import user from './modules/user'
 import dict from './modules/dict'
+import record from './modules/record'
 
 // 动态路由
 import permission from './modules/async-router'
@@ -16,7 +17,8 @@ export default new Vuex.Store({
     app,
     user,
     permission,
-    dict
+    dict,
+    record
   },
   state: {
 

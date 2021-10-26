@@ -2,7 +2,7 @@ import request from '@/utils/request'
 
 const api = {
   add: '/recordAccount',
-  getList: '/recordAccount/list',
+  getList: '/recordAccount',
   edit: '/recordAccount/',
   del: '/recordAccount/'
 }
@@ -18,7 +18,7 @@ export function addRecordAccount (data) {
 }
 
 /**
- * 获取字典项
+ * 获取资产账户
  */
 export function getRecordAccounts () {
   return request({

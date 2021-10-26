@@ -42,7 +42,7 @@
           <a-input v-decorator="menuTypeRule() === 'C' ? ['component', {rules: [{required: true}]}] : ['component']" />
         </a-form-item>
         <a-form-item v-show="menuTypeRule() !== 'F'" label="图标">
-          <a-input ref="menuIconInput" v-decorator="['iconName']" @click="() => {this.showIconSelect=true}" read-only>
+          <a-input ref="menuIconInput" v-decorator="['iconName']" @click="() => {this.showIconSelect=true}" :allowClear="true">
             <a-icon v-if="this.model && this.model.iconName" slot="prefix" :type="(this.model && this.model.iconName)||''" />
           </a-input>
           <a-modal
