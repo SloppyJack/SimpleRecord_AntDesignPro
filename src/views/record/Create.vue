@@ -42,7 +42,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['GetSpendCategoryList', 'GetRecordAccounts', 'GetRecordBooks']),
+    ...mapActions(['GetRecordCategoryList', 'GetRecordAccounts', 'GetRecordBooks']),
     handleSubmit (e) {
       // 取消submit事件的默认动作
       e.preventDefault()
@@ -70,7 +70,7 @@ export default {
   },
   async mounted () {
     // 获取记账类别
-    await this.GetSpendCategoryList()
+    await this.GetRecordCategoryList()
     // 获取资产账户
     await this.GetRecordAccounts()
     // 获取用户账单

@@ -56,7 +56,7 @@
 
 <script>
 import pick from 'lodash.pick'
-import { getSpendCategoryList } from '@/api/record/spendCategoryManage'
+import { getRecordCategoryList } from '@/api/record/recordCategoryManage'
 
 // 表单字段
 const fields = ['id', 'amount', 'spendCategoryId', 'occurTime', 'remarks']
@@ -98,7 +98,7 @@ export default {
   },
   created () {
     // 加载花费类别
-    getSpendCategoryList().then(res => {
+    getRecordCategoryList().then(res => {
       this.spendCategoryList = res
     })
 

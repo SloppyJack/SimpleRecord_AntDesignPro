@@ -1,21 +1,13 @@
 import request from '@/utils/request'
 
 const api = {
-  recordType: '/recordType',
-  createRecord: '/record',
+  createRecord: '/recordDetail',
   monthList: '/record/listByMonth',
   delRecord: '/record/',
   editRecord: '/record/'
 }
 
 export default api
-
-export function getRecordTypes () {
-  return request({
-    url: api.recordType,
-    method: 'get'
-  })
-}
 
 export function createRecord (data) {
   return request({

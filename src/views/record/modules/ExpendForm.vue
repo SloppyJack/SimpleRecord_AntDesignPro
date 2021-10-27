@@ -13,8 +13,8 @@
       label="支出类别"
       :labelCol="{lg: {span: 4}, sm: {span: 4}}"
       :wrapperCol="{lg: {span: 10}, sm: {span: 17} }">
-      <a-select v-decorator="['spendCategory',{ initialValue: spendCategoryList[0].id}, {rules: [{ required: true, message: '请选择支出类别' }]}]">
-        <a-select-option v-for="(item, index) in spendCategoryList" :key="index" :value="item.id" >{{ item.name }}</a-select-option>
+      <a-select v-decorator="['recordCategory', {rules: [{ required: true, message: '请选择支出类别' }]}]">
+        <a-select-option v-for="(item, index) in recordCategoryList" :key="index" :value="item.id" >{{ item.name }}</a-select-option>
       </a-select>
     </a-form-item>
     <a-form-item
@@ -71,6 +71,7 @@ import { mapState } from 'vuex'
 import { EXPEND_TYPE, IS_USER_DEFAULT } from '@/store/mutation-types'
 import { Icon } from 'ant-design-vue'
 import moment from 'moment'
+import { createRecord } from '@/api/record/recordManage'
 
 const IconFont = Icon.createFromIconfontCN({
   scriptUrl: '//at.alicdn.com/t/font_2064096_sy2ci1zr88.js'
@@ -102,15 +103,27 @@ export default {
       e.preventDefault()
       this.form.validateFields((err, values) => {
         if (!err) {
-          console.log('Received values of form: ', values)
+          const params = {
+            targetAccountId: values.recordAccount,
+            recordBookId: values.recordBook,
+            recordTypeCode: EXPEND_TYPE,
+            recordCategoryId: values.recordCategory,
+            amount: values.amount,
+            remark: values.remark
+          }
+          createRecord(params).then(res => {
+            debugger
+            // 重置表单数据
+            this.form.resetFields()
+            this.$message.info('记账成功')
+          })
         }
       })
-      console.log(this.defaultRecordBook)
     }
   },
   computed: {
     ...mapState({
-      spendCategoryList: (state) => state.record.spendCategoryList[EXPEND_TYPE],
+      recordCategoryList: (state) => state.record.recordCategoryList[EXPEND_TYPE],
       recordAccounts: (state) => state.record.recordAccounts,
       recordBooks: (state) => state.record.recordBooks
     }),

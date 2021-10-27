@@ -1,17 +1,17 @@
-import { getSpendCategoryList } from '@/api/record/spendCategoryManage'
+import { getRecordCategoryList } from '@/api/record/recordCategoryManage'
 import { getRecordAccounts } from '@/api/record/recordAccountManage'
 import { getRecordBooks } from '@/api/record/recordBookManage'
 
 const record = {
   state: {
-    spendCategoryList: {}, // 记账类别
+    recordCategoryList: {}, // 记账类别
     recordAccounts: [], // 记账账户列表,
     recordBooks: []
   },
 
   mutations: {
-    SET_SPEND_CATEGORY_LIST: (state, ret) => {
-      state.spendCategoryList = ret
+    SET_RECORD_CATEGORY_LIST: (state, ret) => {
+      state.recordCategoryList = ret
     },
     SET_RECORD_ACCOUNTS: (state, list) => {
       state.recordAccounts = list
@@ -22,9 +22,9 @@ const record = {
   },
 
   actions: {
-    async GetSpendCategoryList ({ commit }) {
+    async GetRecordCategoryList ({ commit }) {
       return new Promise((resolve, reject) => {
-        getSpendCategoryList().then(list => {
+        getRecordCategoryList().then(list => {
           const ret = {}
           // 获取结果后分类
           list.forEach((item, index) => {
@@ -34,7 +34,7 @@ const record = {
               ret[item.typeValue] = [item]
             }
           })
-          commit('SET_SPEND_CATEGORY_LIST', ret)
+          commit('SET_RECORD_CATEGORY_LIST', ret)
           resolve()
         }).catch(error => {
           reject(error)
