@@ -45,7 +45,7 @@
       label="记账日期"
       :labelCol="{lg: {span: 4}, sm: {span: 4}}"
       :wrapperCol="{lg: {span: 10}, sm: {span: 17} }">
-      <a-date-picker v-decorator="['buildTime',{ initialValue: moment()}, {rules: [{ required: true, message: '请选择起止日期' }]}]" style="width: 100%" />
+      <a-date-picker v-decorator="['occurTime',{ initialValue: moment()}, {rules: [{ required: true, message: '请选择起止日期' }]}]" style="width: 100%" />
     </a-form-item>
     <a-form-item
       label="备注"
@@ -109,6 +109,7 @@ export default {
             recordTypeCode: EXPEND_TYPE,
             recordCategoryId: values.recordCategory,
             amount: values.amount,
+            occurTime: values.occurTime,
             remark: values.remark
           }
           createRecord(params).then(res => {
