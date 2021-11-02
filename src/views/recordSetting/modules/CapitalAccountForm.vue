@@ -24,7 +24,7 @@
           <a-input v-decorator="['name', {rules: [{required: true, message: '请选择账户名称'}]}]" />
         </a-form-item>
         <a-form-item label="是否属于净资产">
-          <a-switch v-decorator="['inNetAssets', { valuePropName: 'checked' }, {rules: [{required: true, message: '请选择是否属于净资产'}]}]" />
+          <a-switch v-decorator="['inNetAssets',{ initialValue: false}, { valuePropName: 'checked' }, {rules: [{required: true, message: '请选择是否属于净资产'}]}]" />
         </a-form-item>
       </a-form>
     </a-spin>
