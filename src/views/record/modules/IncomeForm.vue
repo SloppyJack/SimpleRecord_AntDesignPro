@@ -1,93 +1,148 @@
 <template>
-  <a-form :form="form" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }">
-    <a-form-item v-show="model && model.id > 0" label="主键ID">
-      <a-input v-decorator="['id', {rules: [{required: true}]}]" disabled />
-    </a-form-item>
-    <a-form-item label="金额">
-      <a-input v-decorator="['amount', {rules: [{required: true, message: '请输入金额！'}]}]" />
-    </a-form-item>
-    <a-form-item label="类别">
-      <a-select
-        v-if="model && model.id > 0"
-        v-decorator="['spendCategoryId', {rules: [{required: true, message: '请选择类别！'}]}]"
-      >
-        <a-select-opt-group
-          v-for="item in spendCategoryList"
-          :key="item.recordTypeCode"
-        >
-          <span slot="label">{{ item.recordTypeName }}</span>
-          <a-select-option
-            v-for="item1 in item.list"
-            :key="item1.id"
-            :value="item1.id"
-          >
-            {{ item1.name }}
+  <a-spin :spinning="loading">
+    <a-form @submit="handleSubmit" :form="form">
+      <a-form-item
+        label="金额"
+        :labelCol="{lg: {span: 4}, sm: {span: 4}}"
+        :wrapperCol="{lg: {span: 10}, sm: {span: 17} }">
+        <a-input-number
+          :min="0"
+          :precision="2"
+          v-decorator="['amount',{rules: [{ required: true, message: '请输入金额' }]}]"/>
+      </a-form-item>
+      <a-form-item
+        label="收入类别"
+        :labelCol="{lg: {span: 4}, sm: {span: 4}}"
+        :wrapperCol="{lg: {span: 10}, sm: {span: 17} }">
+        <a-select v-decorator="['recordCategory', {rules: [{ required: true, message: '请选择收入类别' }]}]">
+          <a-select-option v-for="(item, index) in recordCategoryList" :key="index" :value="item.name" >{{ item.name }}</a-select-option>
+        </a-select>
+      </a-form-item>
+      <a-form-item
+        label="账户"
+        help="默认选择第一个账户"
+        :labelCol="{lg: {span: 4}, sm: {span: 4}}"
+        :wrapperCol="{lg: {span: 10}, sm: {span: 17} }">
+        <a-select v-decorator="['recordAccount',{ initialValue: recordAccounts[0].id}, {rules: [{ required: true, message: '请选择支出账户' }]}]">
+          <a-icon slot="suffixIcon" type="smile" />
+          <a-select-option v-for="(item, index) in recordAccounts" :key="index" :value="item.id" >
+            <span role="img" aria-label="China">
+              <icon-font :type="getAccountIcon(item.typeValue)" class="icon-size" />
+            </span>
+            {{ item.name }}
           </a-select-option>
-        </a-select-opt-group>
-      </a-select>
-    </a-form-item>
-    <a-form-item label="日期">
-      <a-date-picker
-        style="width: 100%"
-        format="YYYY-MM-DD"
-        v-decorator="['occurTime', { rules: [{ required: true, message: '请选择日期' }] }]"
-      />
-    </a-form-item>
-    <a-form-item label="备注">
-      <a-textarea
-        v-decorator="['remarks']"
-        placeholder="备注可选填"
-        auto-size
-      />
-    </a-form-item>
-  </a-form>
+        </a-select>
+      </a-form-item>
+      <a-form-item
+        label="账单"
+        help="默认为默认账单"
+        :labelCol="{lg: {span: 4}, sm: {span: 4}}"
+        :wrapperCol="{lg: {span: 10}, sm: {span: 17} }">
+        <a-select v-decorator="['recordBook',{ initialValue: defaultRecordBook.id}, {rules: [{ required: true, message: '请选择账单' }]}]">
+          <a-select-option v-for="(item, index) in recordBooks" :key="index" :value="item.id" >{{ item.name }}</a-select-option>
+        </a-select>
+      </a-form-item>
+      <a-form-item
+        label="记账日期"
+        :labelCol="{lg: {span: 4}, sm: {span: 4}}"
+        :wrapperCol="{lg: {span: 10}, sm: {span: 17} }">
+        <a-date-picker v-decorator="['occurTime',{ initialValue: moment()}, {rules: [{ required: true, message: '请选择起止日期' }]}]" style="width: 100%" />
+      </a-form-item>
+      <a-form-item
+        label="备注"
+        :labelCol="{lg: {span: 4}, sm: {span: 4}}"
+        :wrapperCol="{lg: {span: 10}, sm: {span: 17} }">
+        <a-textarea
+          rows="4"
+          v-decorator="['remark']" />
+      </a-form-item>
+      <a-form-item
+        :wrapperCol="{lg: {span: 16}, sm: {span: 23} }"
+        style="text-align: center"
+      >
+        <a-button htmlType="submit" type="primary">提交</a-button>
+        <a-button style="margin-left: 8px">保存</a-button>
+      </a-form-item>
+    </a-form>
+  </a-spin>
 </template>
 
 <script>
-import pick from 'lodash.pick'
-import { getRecordCategoryList } from '@/api/record/recordCategoryManage'
 
-// 表单字段
-const fields = ['id', 'amount', 'spendCategoryId', 'occurTime', 'remarks']
+import { mapState } from 'vuex'
+import { INCOME_TYPE, IS_USER_DEFAULT } from '@/store/mutation-types'
+import { Icon } from 'ant-design-vue'
+import moment from 'moment'
+import { createRecord } from '@/api/record/recordManage'
+
+const IconFont = Icon.createFromIconfontCN({
+  scriptUrl: '//at.alicdn.com/t/font_2064096_sy2ci1zr88.js'
+})
+
+const iconMap = {
+  cash: 'custom-icon-_xianjin',
+  bankCard: 'custom-icon--yinhangqia',
+  financialAccount: 'custom-icon-jijinlicai',
+  payment: 'custom-icon-yingshouyingfulei'
+}
 
 export default {
-  props: {
-    visible: {
-      type: Boolean,
-      required: true
-    },
-    loading: {
-      type: Boolean,
-      default: () => false
-    },
-    model: {
-      type: Object,
-      default: () => null
-    }
+  components: {
+    IconFont
   },
   data () {
     return {
       form: this.$form.createForm(this),
-      spendCategoryList: {}
+      loading: false
     }
   },
   methods: {
+    moment,
+    getAccountIcon (code) {
+      return iconMap[code]
+    },
+    handleSubmit (e) {
+      e.preventDefault()
+      this.form.validateFields((err, values) => {
+        if (!err) {
+          this.loading = true
+          const params = {
+            targetAccountId: values.recordAccount,
+            recordBookId: values.recordBook,
+            recordTypeCode: INCOME_TYPE,
+            recordCategory: values.recordCategory,
+            amount: values.amount,
+            occurTime: values.occurTime,
+            remark: values.remark
+          }
+          createRecord(params).then(res => {
+            // 重置表单数据
+            this.form.resetFields()
+            this.$message.info('记账成功')
+            this.loading = false
+          }).catch(e => {
+            this.loading = false
+          })
+        }
+      })
+    }
   },
-  filters: {
-  },
-  created () {
-    // 加载花费类别
-    getRecordCategoryList().then(res => {
-      this.spendCategoryList = res
-    })
-
-    // 防止表单未注册
-    fields.forEach(v => this.form.getFieldDecorator(v))
-
-    // 当 model 发生改变时，为表单设置值
-    this.$watch('model', () => {
-      this.model && this.form.setFieldsValue(pick(this.model, fields))
-    })
+  computed: {
+    ...mapState({
+      recordCategoryList: (state) => state.record.recordCategoryList[INCOME_TYPE],
+      recordAccounts: (state) => state.record.recordAccounts,
+      recordBooks: (state) => state.record.recordBooks
+    }),
+    defaultRecordBook () {
+      return this.recordBooks.find(n => n.isUserDefault === IS_USER_DEFAULT)
+    }
   }
 }
 </script>
+
+<style lang="less" scoped>
+
+.icon-size {
+  font-size: 18px;
+}
+</style>

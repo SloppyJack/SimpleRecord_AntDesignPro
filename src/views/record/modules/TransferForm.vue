@@ -11,27 +11,38 @@
           v-decorator="['amount',{rules: [{ required: true, message: '请输入金额' }]}]"/>
       </a-form-item>
       <a-form-item
-        label="支出类别"
-        :labelCol="{lg: {span: 4}, sm: {span: 4}}"
-        :wrapperCol="{lg: {span: 10}, sm: {span: 17} }">
-        <a-select v-decorator="['recordCategory', {rules: [{ required: true, message: '请选择支出类别' }]}]">
-          <a-select-option v-for="(item, index) in recordCategoryList" :key="index" :value="item.name" >{{ item.name }}</a-select-option>
-        </a-select>
-      </a-form-item>
-      <a-form-item
         label="账户"
-        help="默认选择第一个账户"
         :labelCol="{lg: {span: 4}, sm: {span: 4}}"
         :wrapperCol="{lg: {span: 10}, sm: {span: 17} }">
-        <a-select v-decorator="['recordAccount',{ initialValue: recordAccounts[0].id}, {rules: [{ required: true, message: '请选择支出账户' }]}]">
-          <a-icon slot="suffixIcon" type="smile" />
-          <a-select-option v-for="(item, index) in recordAccounts" :key="index" :value="item.id" >
-            <span role="img" aria-label="China">
-              <icon-font :type="getAccountIcon(item.typeValue)" class="icon-size" />
-            </span>
-            {{ item.name }}
-          </a-select-option>
-        </a-select>
+        <a-form-item
+          validate-status="validating"
+          help="请选择出账账户"
+          :style="{ display: 'inline-block', width: 'calc(50% - 12px)' }"
+        >
+          <a-select v-decorator="['sourceAccount']">
+            <a-icon slot="suffixIcon" type="smile" />
+            <a-select-option v-for="(item, index) in recordAccounts" :key="index" :value="item.id" >
+              <span role="img" aria-label="China">
+                <icon-font :type="getAccountIcon(item.typeValue)" class="icon-size" />
+              </span>
+              {{ item.name }}
+            </a-select-option>
+          </a-select>
+        </a-form-item>
+        <span :style="{ display: 'inline-block', width: '24px', textAlign: 'center' }">
+          👉
+        </span>
+        <a-form-item :style="{ display: 'inline-block', width: 'calc(50% - 12px)' }">
+          <a-select v-decorator="['targetAccount',{ initialValue: recordAccounts[0].id}]">
+            <a-icon slot="suffixIcon" type="smile" />
+            <a-select-option v-for="(item, index) in recordAccounts" :key="index" :value="item.id" >
+              <span role="img" aria-label="China">
+                <icon-font :type="getAccountIcon(item.typeValue)" class="icon-size" />
+              </span>
+              {{ item.name }}
+            </a-select-option>
+          </a-select>
+        </a-form-item>
       </a-form-item>
       <a-form-item
         label="账单"
@@ -57,12 +68,6 @@
           v-decorator="['remark']" />
       </a-form-item>
       <a-form-item
-        label="是否报销"
-        :labelCol="{lg: {span: 4}, sm: {span: 4}}"
-        :wrapperCol="{lg: {span: 10}, sm: {span: 17}}">
-        <a-switch v-decorator="['isRecoverable', { valuePropName: 'checked' }]" />
-      </a-form-item>
-      <a-form-item
         :wrapperCol="{lg: {span: 16}, sm: {span: 23} }"
         style="text-align: center"
       >
@@ -76,7 +81,7 @@
 <script>
 
 import { mapState } from 'vuex'
-import { EXPEND_TYPE, IS_USER_DEFAULT } from '@/store/mutation-types'
+import { TRANSFER_TYPE, IS_USER_DEFAULT } from '@/store/mutation-types'
 import { Icon } from 'ant-design-vue'
 import moment from 'moment'
 import { createRecord } from '@/api/record/recordManage'
@@ -113,14 +118,14 @@ export default {
         if (!err) {
           this.loading = true
           const params = {
-            targetAccountId: values.recordAccount,
+            sourceAccountId: values.sourceAccount,
+            targetAccountId: values.targetAccount,
             recordBookId: values.recordBook,
-            recordTypeCode: EXPEND_TYPE,
-            recordCategory: values.recordCategory,
+            recordTypeCode: TRANSFER_TYPE,
+            recordCategory: TRANSFER_TYPE,
             amount: values.amount,
             occurTime: values.occurTime,
-            remark: values.remark,
-            isRecoverable: values.isRecoverable
+            remark: values.remark
           }
           createRecord(params).then(res => {
             // 重置表单数据
@@ -136,7 +141,6 @@ export default {
   },
   computed: {
     ...mapState({
-      recordCategoryList: (state) => state.record.recordCategoryList[EXPEND_TYPE],
       recordAccounts: (state) => state.record.recordAccounts,
       recordBooks: (state) => state.record.recordBooks
     }),
