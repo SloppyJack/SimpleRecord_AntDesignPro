@@ -13,7 +13,7 @@
             <transfer-form/>
           </a-tab-pane>
           <a-tab-pane key="loanType" tab="借贷">
-            Content of Tab Pane 3
+            <loan-form/>
           </a-tab-pane>
         </a-tabs>
       </a-spin>
@@ -28,13 +28,15 @@ import { createRecord } from '@/api/record/recordManage'
 import ExpendForm from './modules/ExpendForm'
 import IncomeForm from './modules/IncomeForm'
 import TransferForm from './modules/TransferForm'
+import LoanForm from './modules/LoanForm'
 import { mapActions } from 'vuex'
 
 export default {
   components: {
     ExpendForm,
     IncomeForm,
-    TransferForm
+    TransferForm,
+    LoanForm
   },
   data () {
     return {

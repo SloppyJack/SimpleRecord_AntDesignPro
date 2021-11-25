@@ -14,6 +14,7 @@ export const APP_LANGUAGE = 'app_language'
 
 // business keys
 export const ACCOUNT_TYPE = 'accountType'
+export const PAYMENT_ACCOUNT = 'payment' // 应收应付
 export const RECORD_TYPE = 'recordType'
 export const EXPEND_TYPE = 'expendType' // 支出
 export const INCOME_TYPE = 'incomeType' // 收入

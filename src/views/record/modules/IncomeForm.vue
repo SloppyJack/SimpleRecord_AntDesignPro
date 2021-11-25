@@ -70,7 +70,7 @@
 <script>
 
 import { mapState } from 'vuex'
-import { INCOME_TYPE, IS_USER_DEFAULT } from '@/store/mutation-types'
+import { INCOME_TYPE, IS_USER_DEFAULT, PAYMENT_ACCOUNT } from '@/store/mutation-types'
 import { Icon } from 'ant-design-vue'
 import moment from 'moment'
 import { createRecord } from '@/api/record/recordManage'
@@ -130,7 +130,7 @@ export default {
   computed: {
     ...mapState({
       recordCategoryList: (state) => state.record.recordCategoryList[INCOME_TYPE],
-      recordAccounts: (state) => state.record.recordAccounts,
+      recordAccounts: (state) => state.record.recordAccounts.filter(n => n.typeValue !== PAYMENT_ACCOUNT),
       recordBooks: (state) => state.record.recordBooks
     }),
     defaultRecordBook () {

@@ -21,7 +21,7 @@
         >
           <a-select v-decorator="['sourceAccount']">
             <a-icon slot="suffixIcon" type="smile" />
-            <a-select-option v-for="(item, index) in recordAccounts" :key="index" :value="item.id" >
+            <a-select-option v-for="(item, index) in sourceAccounts" :key="index" :value="item.id" >
               <span role="img" aria-label="China">
                 <icon-font :type="getAccountIcon(item.typeValue)" class="icon-size" />
               </span>
@@ -33,9 +33,9 @@
           👉
         </span>
         <a-form-item :style="{ display: 'inline-block', width: 'calc(50% - 12px)' }">
-          <a-select v-decorator="['targetAccount',{ initialValue: recordAccounts[0].id}]">
+          <a-select v-decorator="['targetAccount',{ initialValue: targetAccounts[0].id}]">
             <a-icon slot="suffixIcon" type="smile" />
-            <a-select-option v-for="(item, index) in recordAccounts" :key="index" :value="item.id" >
+            <a-select-option v-for="(item, index) in targetAccounts" :key="index" :value="item.id" >
               <span role="img" aria-label="China">
                 <icon-font :type="getAccountIcon(item.typeValue)" class="icon-size" />
               </span>
@@ -141,7 +141,8 @@ export default {
   },
   computed: {
     ...mapState({
-      recordAccounts: (state) => state.record.recordAccounts.filter(n => n.typeValue !== PAYMENT_ACCOUNT),
+      sourceAccounts: (state) => state.record.recordAccounts.filter(n => n.typeValue === PAYMENT_ACCOUNT),
+      targetAccounts: (state) => state.record.recordAccounts.filter(n => n.typeValue !== PAYMENT_ACCOUNT),
       recordBooks: (state) => state.record.recordBooks
     }),
     defaultRecordBook () {
