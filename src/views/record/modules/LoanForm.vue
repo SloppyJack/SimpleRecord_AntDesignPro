@@ -81,7 +81,7 @@
 <script>
 
 import { mapState } from 'vuex'
-import { TRANSFER_TYPE, IS_USER_DEFAULT, PAYMENT_ACCOUNT } from '@/store/mutation-types'
+import { LOAN_TYPE, IS_USER_DEFAULT, PAYMENT_ACCOUNT } from '@/store/mutation-types'
 import { Icon } from 'ant-design-vue'
 import moment from 'moment'
 import { createRecord } from '@/api/record/recordManage'
@@ -121,8 +121,8 @@ export default {
             sourceAccountId: values.sourceAccount,
             targetAccountId: values.targetAccount,
             recordBookId: values.recordBook,
-            recordTypeCode: TRANSFER_TYPE,
-            recordCategory: TRANSFER_TYPE,
+            recordTypeCode: LOAN_TYPE,
+            recordCategory: LOAN_TYPE,
             amount: values.amount,
             occurTime: values.occurTime,
             remark: values.remark
