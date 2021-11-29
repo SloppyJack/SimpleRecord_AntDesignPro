@@ -1,7 +1,7 @@
 <template>
   <a-modal
     :title="title"
-    :width="640"
+    :width="800"
     :visible="visible"
     :confirmLoading="loading"
     @ok="() => { $emit('ok') }"

@@ -23,7 +23,7 @@
             <a-icon slot="suffixIcon" type="smile" />
             <a-select-option v-for="(item, index) in sourceAccounts" :key="index" :value="item.id" >
               <span role="img" aria-label="China">
-                <icon-font :type="getAccountIcon(item.typeValue)" class="icon-size" />
+                <my-icon-font :value="item.typeValue" class="icon-size" />
               </span>
               {{ item.name }}
             </a-select-option>
@@ -37,7 +37,7 @@
             <a-icon slot="suffixIcon" type="smile" />
             <a-select-option v-for="(item, index) in targetAccounts" :key="index" :value="item.id" >
               <span role="img" aria-label="China">
-                <icon-font :type="getAccountIcon(item.typeValue)" class="icon-size" />
+                <my-icon-font :value="item.typeValue" class="icon-size" />
               </span>
               {{ item.name }}
             </a-select-option>
@@ -82,24 +82,13 @@
 
 import { mapState } from 'vuex'
 import { LOAN_TYPE, IS_USER_DEFAULT, PAYMENT_ACCOUNT } from '@/store/mutation-types'
-import { Icon } from 'ant-design-vue'
 import moment from 'moment'
 import { createRecord } from '@/api/record/recordManage'
-
-const IconFont = Icon.createFromIconfontCN({
-  scriptUrl: '//at.alicdn.com/t/font_2064096_sy2ci1zr88.js'
-})
-
-const iconMap = {
-  cash: 'custom-icon-_xianjin',
-  bankCard: 'custom-icon--yinhangqia',
-  financialAccount: 'custom-icon-jijinlicai',
-  payment: 'custom-icon-yingshouyingfulei'
-}
+import MyIconFont from '@/components/MyIconFont/MyIconFont'
 
 export default {
   components: {
-    IconFont
+    MyIconFont
   },
   data () {
     return {
@@ -109,9 +98,6 @@ export default {
   },
   methods: {
     moment,
-    getAccountIcon (code) {
-      return iconMap[code]
-    },
     handleSubmit (e) {
       e.preventDefault()
       this.form.validateFields((err, values) => {

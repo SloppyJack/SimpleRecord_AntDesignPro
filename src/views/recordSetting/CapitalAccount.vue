@@ -15,7 +15,7 @@
             <div class="content-wrap">
               <a-card-meta>
                 <a slot="title">{{ item.name }}</a>
-                <icon-font slot="avatar" :type="getAccountIcon(item.typeValue)" class="icon-size" />
+                <my-icon-font slot="avatar" :value="item.typeValue" class="icon-size" />
                 <div class="meta-content" slot="description">
                   {{ item.typeText }}
                   <a-tag v-if="item.inNetAssets" color="green">净资产</a-tag>
@@ -62,23 +62,12 @@ import { mapState, mapActions } from 'vuex'
 import { ACCOUNT_TYPE } from '@/store/mutation-types'
 import CapitalAccountForm from './modules/CapitalAccountForm'
 import { addRecordAccount, getRecordAccounts, editRecordAccount, delRecordAccount } from '@/api/record/recordAccountManage'
-import { Icon } from 'ant-design-vue'
-
-const IconFont = Icon.createFromIconfontCN({
-  scriptUrl: '//at.alicdn.com/t/font_2064096_sy2ci1zr88.js'
-})
-
-const iconMap = {
-  cash: 'custom-icon-_xianjin',
-  bankCard: 'custom-icon--yinhangqia',
-  financialAccount: 'custom-icon-jijinlicai',
-  payment: 'custom-icon-yingshouyingfulei'
-}
+import MyIconFont from '@/components/MyIconFont/MyIconFont'
 
 export default {
   components: {
     CapitalAccountForm,
-    IconFont
+    MyIconFont
   },
   data () {
     return {
@@ -162,9 +151,6 @@ export default {
           item.inNetAssets = item.inNetAssets === 1
         })
       })
-    },
-    getAccountIcon (code) {
-      return iconMap[code]
     }
   },
   computed: {
@@ -285,7 +271,4 @@ export default {
   height: 140px;
 }
 
-.icon-size {
-  font-size: 48px;
-}
 </style>
