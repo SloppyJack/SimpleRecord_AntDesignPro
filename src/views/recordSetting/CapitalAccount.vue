@@ -100,7 +100,8 @@ export default {
             editRecordAccount(values.id, {
               type: values.type,
               name: values.name,
-              inNetAssets: values.inNetAssets
+              inNetAssets: values.inNetAssets,
+              orderNo: values.orderNo
             }).then((res) => {
               this.formShow = false
               this.formLoading = false
@@ -115,7 +116,8 @@ export default {
             addRecordAccount({
               type: values.type,
               name: values.name,
-              inNetAssets: values.inNetAssets
+              inNetAssets: values.inNetAssets,
+              orderNo: values.orderNo
             }).then((res) => {
                 this.formShow = false
                 this.formLoading = false

@@ -26,6 +26,9 @@
         <a-form-item label="是否属于净资产">
           <a-switch v-decorator="['inNetAssets', {rules: [{required: true, message: '请选择是否属于净资产'}], initialValue: true, valuePropName: 'checked' }]" />
         </a-form-item>
+        <a-form-item label="排序">
+          <a-input-number v-decorator="['orderNo', {rules: [{required: true, message: '请输入排序'}]}]"/>
+        </a-form-item>
       </a-form>
     </a-spin>
   </a-modal>
@@ -36,7 +39,7 @@ import pick from 'lodash.pick'
 import { mapState } from 'vuex'
 
 // 表单字段
-const fields = ['id', 'type', 'name', 'inNetAssets']
+const fields = ['id', 'type', 'name', 'inNetAssets', 'orderNo']
 
 export default {
   props: {

@@ -22,7 +22,7 @@
         <a-switch v-decorator="['isUserDefault', { valuePropName: 'checked' }]" />
       </a-form-item>
       <a-form-item label="排序">
-        <a-input-number v-decorator="['orderNo']"/>
+        <a-input-number v-decorator="['orderNo', {rules: [{required: true, message: '请输入排序'}]}]"/>
       </a-form-item>
     </a-form>
   </a-modal>

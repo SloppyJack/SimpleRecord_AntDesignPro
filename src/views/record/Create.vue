@@ -17,14 +17,12 @@
           </a-tab-pane>
         </a-tabs>
       </a-spin>
-      <a-button slot="tabBarExtraContent" type="primary" icon="right" @click="toMonthList">月账单</a-button>
+      <a-button slot="extra" type="primary" icon="right" @click="toMonthList">月账单</a-button>
     </a-card>
   </div>
 </template>
 
 <script>
-import moment from 'moment'
-import { createRecord } from '@/api/record/recordManage'
 import ExpendForm from './modules/ExpendForm'
 import IncomeForm from './modules/IncomeForm'
 import TransferForm from './modules/TransferForm'
@@ -40,33 +38,11 @@ export default {
   },
   data () {
     return {
-      loading: true,
-      form: this.$form.createForm(this),
-      selectOptions: []
+      loading: true
     }
   },
   methods: {
     ...mapActions(['GetRecordCategoryList', 'GetRecordAccounts', 'GetRecordBooks']),
-    handleSubmit (e) {
-      // 取消submit事件的默认动作
-      e.preventDefault()
-      this.form.validateFields((err, values) => {
-        if (!err) {
-          this.loading = true
-          const data = {
-            spendCategoryId: values.spendCategoryId,
-            amount: values.amount,
-            occurTime: moment(values.occurTime).format('YYYY-MM-DD'),
-            remarks: values.remarks
-          }
-          createRecord(data).then(res => {
-            this.$message.success('记账成功')
-            this.form.resetFields()
-            this.loading = false
-          })
-        }
-      })
-    },
     toMonthList () {
       // 跳转到月账单
       this.$router.push({ name: 'monthRecordList' })
