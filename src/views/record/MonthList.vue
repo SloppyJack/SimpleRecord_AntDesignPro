@@ -3,20 +3,22 @@
     <div class="table-page-search-wrapper">
       <a-form layout="inline">
         <a-row :gutter="48">
-          <a-col :md="8" :sm="24">
+          <a-col :md="6" :sm="18">
             <a-form-item label="月份">
-              <a-month-picker placeholder="选择月份" v-model="queryParam.date" :defaultValue="queryParam.date" :allowClear="false"/>
+              <a-month-picker placeholder="选择月份" v-model="queryParam.month" :defaultValue="queryParam.month" @change="changeMonth" :allowClear="false"/>
             </a-form-item>
           </a-col>
-          <a-col :md="8" :sm="24">
-            <a-form-item label="类型">
-              <a-select v-model="queryParam.recordTypeCode" placeholder="请选择">
-                <a-select-option value="expendType">支出</a-select-option>
-                <a-select-option value="incomeType">收入</a-select-option>
-              </a-select>
+          <a-col :md="6" :sm="18">
+            <a-form-item label="日期">
+              <a-date-picker placeholder="选择日期" v-model="queryParam.occurTime" :disabled-date="disabledDate" @openChange="datePickerOpen"/>
             </a-form-item>
           </a-col>
-          <a-col :md="8" :sm="24">
+          <a-col :md="6" :sm="18">
+            <a-form-item label="关键词">
+              <a-input v-model="queryParam.keyWord" />
+            </a-form-item>
+          </a-col>
+          <a-col :md="6" :sm="18">
             <span class="table-page-search-submitButtons">
               <a-button type="primary" @click="$refs.table.refresh(true)">查询</a-button>
             </span>
@@ -35,8 +37,6 @@
       rowKey="id"
       :columns="columns"
       :data="loadData"
-      :alert="true"
-      :rowSelection="rowSelection"
       showPagination="auto"
     >
       <span slot="remarks" slot-scope="text">
@@ -80,8 +80,8 @@ import RecordForm from './modules/RecordForm'
 
 const columns = [
   {
-    title: '记录Id',
-    dataIndex: 'id'
+    title: '日期',
+    dataIndex: 'occurTime'
   },
   {
     title: '金额',
@@ -98,10 +98,6 @@ const columns = [
     scopedSlots: { customRender: 'spendCategoryName' }
   },
   {
-    title: '日期',
-    dataIndex: 'occurTime'
-  },
-  {
     title: '操作',
     dataIndex: 'action',
     scopedSlots: { customRender: 'action' }
@@ -115,8 +111,8 @@ export default {
     RecordForm
   },
   data () {
-    this.columns = columns
     return {
+      columns,
       // edit model
       editFormShow: false,
       confirmEditLoading: false,
@@ -125,15 +121,18 @@ export default {
       queryParam: {
         // 对象内部属性需先定义，不然不会刷新
         recordTypeCode: '',
-        date: ''
+        month: null,
+        occurTime: null,
+        keyWord: ''
       },
       // 加载数据方法 必须为 Promise 对象
       loadData: parameter => {
         const params = {
-          'recordTypeCode': this.queryParam.recordTypeCode,
-          'date': moment(this.queryParam.date).format('YYYY-MM'),
-          'pageNo': parameter.pageNo,
-          'pageSize': parameter.pageSize
+          month: moment(this.queryParam.month).format('YYYY-MM'),
+          occurTime: this.queryParam.occurTime && moment(this.queryParam.occurTime).format('YYYY-MM-DD'),
+          keyWord: this.queryParam.keyWord,
+          pageNo: parameter.pageNo,
+          pageSize: parameter.pageSize
         }
         return getMonthList(params).then(res => {
           // 封装返回的数据，供s-table使用
@@ -149,8 +148,7 @@ export default {
     }
   },
   created () {
-    this.queryParam.date = moment(new Date().toLocaleDateString(), 'YYYY-MM')
-    this.queryParam.recordTypeCode = 'expendType'
+    this.queryParam.month = moment()
   },
   computed: {
     rowSelection () {
@@ -162,6 +160,20 @@ export default {
   },
   methods: {
     moment,
+    changeMonth (date, dateString) {
+      this.queryParam.occurTime = null
+    },
+    disabledDate (current) {
+      const currDate = moment(this.queryParam.month)
+      // Can not select days before today and today
+      return current < currDate.startOf('month') || current > currDate.endOf('month')
+    },
+    datePickerOpen (open) {
+      if (open && this.queryParam.occurTime === null) {
+        // init occurTime
+        this.queryParam.occurTime = moment(this.queryParam.month).startOf('month')
+      }
+    },
     handleAdd () {
       // 跳转到记账
       this.$router.push({ name: 'recordAdd' })

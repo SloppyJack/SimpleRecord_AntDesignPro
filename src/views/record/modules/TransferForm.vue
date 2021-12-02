@@ -83,7 +83,7 @@
 import { mapState } from 'vuex'
 import { TRANSFER_TYPE, IS_USER_DEFAULT, PAYMENT_ACCOUNT } from '@/store/mutation-types'
 import moment from 'moment'
-import { createRecord } from '@/api/record/recordManage'
+import { addRecordDetail } from '@/api/record/recordManage'
 import MyIconFont from '@/components/MyIconFont/MyIconFont'
 
 export default {
@@ -113,7 +113,7 @@ export default {
             occurTime: values.occurTime,
             remark: values.remark
           }
-          createRecord(params).then(res => {
+          addRecordDetail(params).then(res => {
             // 重置表单数据
             this.form.resetFields()
             this.$message.info('记账成功')

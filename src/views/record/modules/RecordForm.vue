@@ -56,7 +56,6 @@
 
 <script>
 import pick from 'lodash.pick'
-import { getRecordCategoryList } from '@/api/record/recordCategoryManage'
 
 // 表单字段
 const fields = ['id', 'amount', 'spendCategoryId', 'occurTime', 'remarks']
@@ -98,9 +97,9 @@ export default {
   },
   created () {
     // 加载花费类别
-    getRecordCategoryList().then(res => {
-      this.spendCategoryList = res
-    })
+    // getRecordCategoryList().then(res => {
+    //   this.spendCategoryList = res
+    // })
 
     // 防止表单未注册
     fields.forEach(v => this.form.getFieldDecorator(v))

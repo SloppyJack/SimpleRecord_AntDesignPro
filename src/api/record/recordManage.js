@@ -1,17 +1,17 @@
 import request from '@/utils/request'
 
 const api = {
-  createRecord: '/recordDetail',
-  monthList: '/record/listByMonth',
+  addRecordDetail: '/recordDetail',
+  monthList: '/recordDetail/monthList',
   delRecord: '/record/',
   editRecord: '/record/'
 }
 
 export default api
 
-export function createRecord (data) {
+export function addRecordDetail (data) {
   return request({
-    url: api.createRecord,
+    url: api.addRecordDetail,
     method: 'post',
     data: data
   })
