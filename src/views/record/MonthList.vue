@@ -119,8 +119,6 @@ export default {
       mdl: null,
       // 查询参数
       queryParam: {
-        // 对象内部属性需先定义，不然不会刷新
-        recordTypeCode: '',
         month: null,
         occurTime: null,
         keyWord: ''
