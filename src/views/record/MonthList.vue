@@ -38,25 +38,35 @@
       :columns="columns"
       :data="loadData"
       showPagination="auto"
+      bordered
     >
-      <span slot="remarks" slot-scope="text">
-        <ellipsis :length="8" tooltip>{{ text }}</ellipsis>
+      <span slot="amount" slot-scope="text">
+        <a-tag :color="text > 0 ? 'green' : 'red'">{{ text }}</a-tag>
       </span>
-      <span slot="spendCategoryName" slot-scope="text">
-        <a-tag :color="'green'">{{ text }}</a-tag>
+      <span slot="recordCategory" slot-scope="text">
+        <a-tag :color="'blue'">{{ text }}</a-tag>
+      </span>
+      <span slot="remark" slot-scope="text">
+        <ellipsis :length="10" tooltip>{{ text }}</ellipsis>
+      </span>
+      <span slot="description" slot-scope="text, record">
+        <ellipsis :length="45" tooltip>{{ buildDesc(record.recordTypeValue, record.sourceAccountName,
+                                                    record.targetAccountName, record.amount) }} </ellipsis>
       </span>
       <span slot="action" slot-scope="text, record">
         <template>
           <a @click="handleEdit(record)">修改</a>
-          <a-divider type="vertical" />
-          <a-popconfirm
-            title="确定要删除吗?"
-            ok-text="确定"
-            cancel-text="取消"
-            @confirm="handleDel(record)"
-          >
-            <a href="#">删除</a>
-          </a-popconfirm>
+          <span v-if="recordCanEdit(record.recordTypeValue)">
+            <a-divider type="vertical" />
+            <a-popconfirm
+              title="确定要删除吗?"
+              ok-text="确定"
+              cancel-text="取消"
+              @confirm="handleDel(record)"
+            >
+              <a href="#">删除</a>
+            </a-popconfirm>
+          </span>
         </template>
       </span>
     </s-table>
@@ -75,6 +85,7 @@
 import moment from 'moment'
 import { Ellipsis, STable } from '@/components'
 import { getMonthList, delRecord, editRecord } from '@/api/record/recordManage'
+import { buildDesc, recordCanEdit } from '@/utils/businessUtil'
 
 import RecordForm from './modules/RecordForm'
 
@@ -84,18 +95,32 @@ const columns = [
     dataIndex: 'occurTime'
   },
   {
-    title: '金额',
-    dataIndex: 'amount'
+    title: '账户',
+    dataIndex: 'recordAccountName'
   },
   {
-    title: '备注',
-    dataIndex: 'remarks',
-    scopedSlots: { customRender: 'remarks' }
+    title: '类型',
+    dataIndex: 'recordTypeText'
   },
   {
     title: '类别',
-    dataIndex: 'spendCategoryName',
-    scopedSlots: { customRender: 'spendCategoryName' }
+    dataIndex: 'recordCategory',
+    scopedSlots: { customRender: 'recordCategory' }
+  },
+  {
+    title: '金额',
+    dataIndex: 'amount',
+    scopedSlots: { customRender: 'amount' }
+  },
+  {
+    title: '备注',
+    dataIndex: 'remark',
+    scopedSlots: { customRender: 'remark' }
+  },
+  {
+    title: '描述',
+    dataIndex: 'description',
+    scopedSlots: { customRender: 'description' }
   },
   {
     title: '操作',
@@ -158,6 +183,8 @@ export default {
   },
   methods: {
     moment,
+    buildDesc,
+    recordCanEdit,
     changeMonth (date, dateString) {
       this.queryParam.occurTime = null
     },
