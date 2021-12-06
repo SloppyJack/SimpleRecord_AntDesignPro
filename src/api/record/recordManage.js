@@ -3,8 +3,8 @@ import request from '@/utils/request'
 const api = {
   addRecordDetail: '/recordDetail',
   monthList: '/recordDetail/monthList',
-  delRecord: '/record/',
-  editRecord: '/record/'
+  delRecord: '/recordDetail/',
+  editRecord: '/recordDetail/'
 }
 
 export default api

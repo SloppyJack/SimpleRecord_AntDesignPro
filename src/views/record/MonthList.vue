@@ -55,18 +55,18 @@
       </span>
       <span slot="action" slot-scope="text, record">
         <template>
-          <a @click="handleEdit(record)">修改</a>
           <span v-if="recordCanEdit(record.recordTypeValue)">
+            <a @click="handleEdit(record)">修改</a>
             <a-divider type="vertical" />
-            <a-popconfirm
-              title="确定要删除吗?"
-              ok-text="确定"
-              cancel-text="取消"
-              @confirm="handleDel(record)"
-            >
-              <a href="#">删除</a>
-            </a-popconfirm>
           </span>
+          <a-popconfirm
+            title="确定要删除吗?"
+            ok-text="确定"
+            cancel-text="取消"
+            @confirm="handleDel(record)"
+          >
+            <a href="#">删除</a>
+          </a-popconfirm>
         </template>
       </span>
     </s-table>
