@@ -39,11 +39,11 @@ export function buildDesc (recordType, sourceAccountName, targetAccountName, amo
         return '内部转账：由账户  ' + '【' + sourceAccountName + '】转入' + Math.abs(amount).toFixed(2) + '元'
       }
     default:
-      return null
+      return '无'
   }
 }
 
-// 记录是否可以编辑
-export function recordCanEdit (recordType) {
+// 是否为流转类型
+export function isTransferType (recordType) {
   return recordType && (recordType === EXPEND_TYPE || recordType === INCOME_TYPE)
 }

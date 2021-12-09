@@ -55,10 +55,8 @@
       </span>
       <span slot="action" slot-scope="text, record">
         <template>
-          <span v-if="recordCanEdit(record.recordTypeValue)">
-            <a @click="handleEdit(record)">修改</a>
-            <a-divider type="vertical" />
-          </span>
+          <a @click="handleEdit(record)">修改</a>
+          <a-divider type="vertical" />
           <a-popconfirm
             title="确定要删除吗?"
             ok-text="确定"
@@ -70,8 +68,9 @@
         </template>
       </span>
     </s-table>
-    <record-form
+    <edit-record-form
       ref="editModal"
+      v-if="loading"
       :visible="editFormShow"
       :loading="confirmEditLoading"
       :model="mdl"
@@ -85,9 +84,10 @@
 import moment from 'moment'
 import { Ellipsis, STable } from '@/components'
 import { getMonthList, delRecord, editRecord } from '@/api/record/recordManage'
-import { buildDesc, recordCanEdit } from '@/utils/businessUtil'
+import { buildDesc, isTransferType } from '@/utils/businessUtil'
 
-import RecordForm from './modules/RecordForm'
+import EditRecordForm from './modules/EditRecordForm'
+import { mapActions } from 'vuex'
 
 const columns = [
   {
@@ -133,7 +133,7 @@ export default {
   components: {
     STable,
     Ellipsis,
-    RecordForm
+    EditRecordForm
   },
   data () {
     return {
@@ -142,6 +142,7 @@ export default {
       editFormShow: false,
       confirmEditLoading: false,
       mdl: null,
+      loading: false,
       // 查询参数
       queryParam: {
         month: null,
@@ -165,26 +166,17 @@ export default {
             'data': res.list
           }
         })
-      },
-      selectedRowKeys: [],
-      selectedRows: []
+      }
     }
   },
   created () {
     this.queryParam.month = moment()
   },
-  computed: {
-    rowSelection () {
-      return {
-        selectedRowKeys: this.selectedRowKeys,
-        onChange: this.onSelectChange
-      }
-    }
-  },
   methods: {
+    ...mapActions(['GetRecordCategoryList', 'GetRecordAccounts', 'GetRecordBooks']),
     moment,
     buildDesc,
-    recordCanEdit,
+    isTransferType,
     changeMonth (date, dateString) {
       this.queryParam.occurTime = null
     },
@@ -204,9 +196,11 @@ export default {
       this.$router.push({ name: 'recordAdd' })
     },
     handleEdit (record) {
-      // 格式化时间
-      record.occurTime = moment(record.occurTime)
       this.mdl = { ...record }
+      // 日期格式化
+      this.mdl.occurTime = moment(record.occurTime)
+      // 金额取绝对值
+      this.mdl.amount = Math.abs(this.mdl.amount)
       this.editFormShow = true
     },
     handleEditOk () {
@@ -245,11 +239,16 @@ export default {
     },
     handleEditCancel () {
       this.editFormShow = false
-    },
-    onSelectChange (selectedRowKeys, selectedRows) {
-      this.selectedRowKeys = selectedRowKeys
-      this.selectedRows = selectedRows
     }
+  },
+  async mounted () {
+    // 获取记账类别
+    await this.GetRecordCategoryList()
+    // 获取资产账户
+    await this.GetRecordAccounts()
+    // 获取用户账单
+    await this.GetRecordBooks()
+    this.loading = true
   }
 }
 </script>

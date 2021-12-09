@@ -15,24 +15,9 @@
         <a-form-item label="金额">
           <a-input v-decorator="['amount', {rules: [{required: true, message: '请输入金额！'}]}]" />
         </a-form-item>
-        <a-form-item label="类别">
-          <a-select
-            v-if="model && model.id > 0"
-            v-decorator="['spendCategoryId', {rules: [{required: true, message: '请选择类别！'}]}]"
-          >
-            <a-select-opt-group
-              v-for="item in spendCategoryList"
-              :key="item.recordTypeCode"
-            >
-              <span slot="label">{{ item.recordTypeName }}</span>
-              <a-select-option
-                v-for="item1 in item.list"
-                :key="item1.id"
-                :value="item1.id"
-              >
-                {{ item1.name }}
-              </a-select-option>
-            </a-select-opt-group>
+        <a-form-item label="支出类别">
+          <a-select v-decorator="['recordCategory', {rules: [{ required: true, message: '请选择支出类别' }]}]">
+            <a-select-option v-for="(item, index) in recordCategoryList[model && model.recordTypeValue]" :key="index" :value="item.name" >{{ item.name }}</a-select-option>
           </a-select>
         </a-form-item>
         <a-form-item label="日期">
@@ -44,7 +29,7 @@
         </a-form-item>
         <a-form-item label="备注">
           <a-textarea
-            v-decorator="['remarks']"
+            v-decorator="['remark']"
             placeholder="备注可选填"
             auto-size
           />
@@ -56,9 +41,10 @@
 
 <script>
 import pick from 'lodash.pick'
+import { mapState } from 'vuex'
 
 // 表单字段
-const fields = ['id', 'amount', 'spendCategoryId', 'occurTime', 'remarks']
+const fields = ['id', 'amount', 'recordCategory', 'targetAccountId', 'recordBookId', 'recordTypeCode', 'occurTime', 'remark', 'isRecoverable']
 
 export default {
   props: {
@@ -87,20 +73,19 @@ export default {
           sm: { span: 13 }
         }
       },
-      form: this.$form.createForm(this),
-      spendCategoryList: {}
+      form: this.$form.createForm(this)
     }
   },
   methods: {
   },
-  filters: {
+  computed: {
+    ...mapState({
+      recordCategoryList: (state) => state.record.recordCategoryList,
+      recordAccounts: (state) => state.record.recordAccounts,
+      recordBooks: (state) => state.record.recordBooks
+    })
   },
-  created () {
-    // 加载花费类别
-    // getRecordCategoryList().then(res => {
-    //   this.spendCategoryList = res
-    // })
-
+  async mounted () {
     // 防止表单未注册
     fields.forEach(v => this.form.getFieldDecorator(v))
 
