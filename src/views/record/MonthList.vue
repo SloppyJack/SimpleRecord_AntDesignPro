@@ -84,7 +84,7 @@
 import moment from 'moment'
 import { Ellipsis, STable } from '@/components'
 import { getMonthList, delRecord, editRecord } from '@/api/record/recordManage'
-import { buildDesc, isTransferType } from '@/utils/businessUtil'
+import { buildDesc } from '@/utils/businessUtil'
 
 import EditRecordForm from './modules/EditRecordForm'
 import { mapActions } from 'vuex'
@@ -176,7 +176,6 @@ export default {
     ...mapActions(['GetRecordCategoryList', 'GetRecordAccounts', 'GetRecordBooks']),
     moment,
     buildDesc,
-    isTransferType,
     changeMonth (date, dateString) {
       this.queryParam.occurTime = null
     },
@@ -209,10 +208,14 @@ export default {
       form.validateFields((errors, values) => {
         if (!errors) {
           editRecord(values.id, {
+            sourceAccountId: this.mdl.sourceAccountId,
+            targetAccountId: values.recordAccountId,
+            recordBookId: values.recordBookId,
+            recordTypeCode: this.mdl.recordTypeValue,
+            recordCategory: values.recordCategory,
             amount: values.amount,
-            spendCategoryId: values.spendCategoryId,
             occurTime: moment(values.occurTime).format('YYYY-MM-DD'),
-            remarks: values.remarks
+            remark: values.remark
           }).then(res => {
               this.editFormShow = false
               this.confirmEditLoading = false

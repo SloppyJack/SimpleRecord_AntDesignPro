@@ -15,9 +15,25 @@
         <a-form-item label="金额">
           <a-input v-decorator="['amount', {rules: [{required: true, message: '请输入金额！'}]}]" />
         </a-form-item>
-        <a-form-item label="支出类别">
-          <a-select v-decorator="['recordCategory', {rules: [{ required: true, message: '请选择支出类别' }]}]">
+        <a-form-item v-show="showFlag" label="类别">
+          <a-select v-decorator="['recordCategory', {rules: [{ required: true, message: '请选择类别' }]}]">
             <a-select-option v-for="(item, index) in recordCategoryList[model && model.recordTypeValue]" :key="index" :value="item.name" >{{ item.name }}</a-select-option>
+          </a-select>
+        </a-form-item>
+        <a-form-item v-show="showFlag" label="账户">
+          <a-select v-decorator="['recordAccountId', {rules: [{ required: true, message: '请选择支出账户' }]}]">
+            <a-icon slot="suffixIcon" type="smile" />
+            <a-select-option v-for="(item, index) in recordAccounts" :key="index" :value="item.id" >
+              <span role="img" aria-label="China">
+                <my-icon-font :value="item.typeValue" class="icon-size" />
+              </span>
+              {{ item.name }}
+            </a-select-option>
+          </a-select>
+        </a-form-item>
+        <a-form-item label="账单">
+          <a-select v-decorator="['recordBookId', {rules: [{ required: true, message: '请选择账单' }]}]">
+            <a-select-option v-for="(item, index) in recordBooks" :key="index" :value="item.id" >{{ item.name }}</a-select-option>
           </a-select>
         </a-form-item>
         <a-form-item label="日期">
@@ -42,11 +58,17 @@
 <script>
 import pick from 'lodash.pick'
 import { mapState } from 'vuex'
+import MyIconFont from '@/components/MyIconFont/MyIconFont'
+import { PAYMENT_ACCOUNT } from '@/store/mutation-types'
+import { isTransferType } from '@/utils/businessUtil'
 
 // 表单字段
-const fields = ['id', 'amount', 'recordCategory', 'targetAccountId', 'recordBookId', 'recordTypeCode', 'occurTime', 'remark', 'isRecoverable']
+const fields = ['id', 'amount', 'recordCategory', 'recordAccountId', 'recordBookId', 'recordTypeCode', 'occurTime', 'remark', 'isRecoverable']
 
 export default {
+  components: {
+    MyIconFont
+  },
   props: {
     visible: {
       type: Boolean,
@@ -81,9 +103,12 @@ export default {
   computed: {
     ...mapState({
       recordCategoryList: (state) => state.record.recordCategoryList,
-      recordAccounts: (state) => state.record.recordAccounts,
+      recordAccounts: (state) => state.record.recordAccounts.filter(n => n.typeValue !== PAYMENT_ACCOUNT), // 账户不为应收应付
       recordBooks: (state) => state.record.recordBooks
-    })
+    }),
+    showFlag () {
+      return this.model !== null && isTransferType(this.model.recordTypeValue)
+    }
   },
   async mounted () {
     // 防止表单未注册
@@ -96,3 +121,10 @@ export default {
   }
 }
 </script>
+
+<style lang="less" scoped>
+
+.icon-size {
+  font-size: 18px;
+}
+</style>

@@ -26,9 +26,9 @@
       <a-spin :spinning="loading">
         <a-list size="large" :pagination="pagination">
           <a-list-item :key="index" v-for="(item, index) in data">
-            <a-list-item-meta :description="item.name">
+            <a-list-item-meta :description="item.remark">
               <icon-font slot="avatar" type="custom-icon-zhangben" class="icon-size" />
-              <a slot="title">{{ item.remark }}</a>
+              <a slot="title">{{ item.name }}</a>
             </a-list-item-meta>
             <div v-if="item.isUserDefault">
               <a-tag color="green">默认账户</a-tag>

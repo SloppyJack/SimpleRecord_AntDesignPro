@@ -5,7 +5,7 @@ const api = {
   del: '/recordBook/',
   edit: '/recordBook/',
   page: '/recordBook/page',
-  list: '/recordBook/list'
+  list: '/recordBook'
 }
 
 export default api
