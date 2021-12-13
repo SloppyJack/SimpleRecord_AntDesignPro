@@ -4,7 +4,8 @@ const api = {
   addRecordDetail: '/recordDetail',
   monthList: '/recordDetail/monthList',
   delRecord: '/recordDetail/',
-  editRecord: '/recordDetail/'
+  editRecord: '/recordDetail/',
+  recoverableList: '/recordDetail/recoverable'
 }
 
 export default api
@@ -36,6 +37,14 @@ export function editRecord (id, params) {
   return request({
     url: api.editRecord + id,
     method: 'put',
+    data: params
+  })
+}
+
+export function getRecoverableList (params) {
+  return request({
+    url: api.recoverableList,
+    method: 'post',
     data: params
   })
 }

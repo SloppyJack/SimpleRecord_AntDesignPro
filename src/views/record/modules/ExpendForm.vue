@@ -57,10 +57,20 @@
           v-decorator="['remark']" />
       </a-form-item>
       <a-form-item
-        label="是否报销"
+        label="报销"
         :labelCol="{lg: {span: 4}, sm: {span: 4}}"
         :wrapperCol="{lg: {span: 10}, sm: {span: 17}}">
-        <a-switch v-decorator="['isRecoverable', { valuePropName: 'checked' }]" />
+        <a-radio-group v-decorator="['recoverableStatus', {initialValue: 1}]">
+          <a-radio-button value="1">
+            非报销
+          </a-radio-button>
+          <a-radio-button value="2">
+            待报销
+          </a-radio-button>
+          <a-radio-button value="3">
+            已报销
+          </a-radio-button>
+        </a-radio-group>
       </a-form-item>
       <a-form-item
         :wrapperCol="{lg: {span: 16}, sm: {span: 23} }"
@@ -106,7 +116,7 @@ export default {
             amount: values.amount,
             occurTime: values.occurTime,
             remark: values.remark,
-            isRecoverable: values.isRecoverable
+            recoverableStatus: values.recoverableStatus
           }
           addRecordDetail(params).then(res => {
             // 重置表单数据

@@ -47,3 +47,27 @@ export function buildDesc (recordType, sourceAccountName, targetAccountName, amo
 export function isTransferType (recordType) {
   return recordType && (recordType === EXPEND_TYPE || recordType === INCOME_TYPE)
 }
+
+// 报销文本
+export function recoverableText (recoverableStatus) {
+  switch (recoverableStatus) {
+    case 2:
+      return '待报销'
+    case 3:
+      return '已报销'
+    default:
+      return '非报销'
+  }
+}
+
+// 报销颜色
+export function recoverableColor (recoverableStatus) {
+  switch (recoverableStatus) {
+    case 2:
+      return 'orange'
+    case 3:
+      return 'green'
+    default:
+      return ''
+  }
+}

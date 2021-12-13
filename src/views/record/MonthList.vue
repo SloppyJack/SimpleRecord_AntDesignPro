@@ -53,6 +53,9 @@
         <ellipsis :length="45" tooltip>{{ buildDesc(record.recordTypeValue, record.sourceAccountName,
                                                     record.targetAccountName, record.amount) }} </ellipsis>
       </span>
+      <span slot="recoverableStatus" slot-scope="text">
+        <a-tag :color="recoverableColor(text)">{{ recoverableText(text) }}</a-tag>
+      </span>
       <span slot="action" slot-scope="text, record">
         <template>
           <a @click="handleEdit(record)">修改</a>
@@ -84,7 +87,7 @@
 import moment from 'moment'
 import { Ellipsis, STable } from '@/components'
 import { getMonthList, delRecord, editRecord } from '@/api/record/recordManage'
-import { buildDesc } from '@/utils/businessUtil'
+import { buildDesc, recoverableText, recoverableColor } from '@/utils/businessUtil'
 
 import EditRecordForm from './modules/EditRecordForm'
 import { mapActions } from 'vuex'
@@ -121,6 +124,11 @@ const columns = [
     title: '描述',
     dataIndex: 'description',
     scopedSlots: { customRender: 'description' }
+  },
+  {
+    title: '报销',
+    dataIndex: 'recoverableStatus',
+    scopedSlots: { customRender: 'recoverableStatus' }
   },
   {
     title: '操作',
@@ -176,6 +184,8 @@ export default {
     ...mapActions(['GetRecordCategoryList', 'GetRecordAccounts', 'GetRecordBooks']),
     moment,
     buildDesc,
+    recoverableText,
+    recoverableColor,
     changeMonth (date, dateString) {
       this.queryParam.occurTime = null
     },
