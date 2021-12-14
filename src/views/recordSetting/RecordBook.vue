@@ -6,10 +6,10 @@
     <a-card :bordered="false">
       <a-row>
         <a-col :sm="12" :xs="24">
-          <info title="总支出" :desc="'下方账单的支出和'" value="32分钟" :bordered="true" />
+          <info title="总支出" :desc="'下方账单的支出和'" value="32¥" :bordered="true" />
         </a-col>
         <a-col :sm="12" :xs="24">
-          <info title="总收入" :desc="'下方账单的收入和'" value="24个" />
+          <info title="总收入" :desc="'下方账单的收入和'" value="24¥" />
         </a-col>
       </a-row>
     </a-card>

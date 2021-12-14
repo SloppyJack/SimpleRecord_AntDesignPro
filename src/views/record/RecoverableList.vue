@@ -1,7 +1,7 @@
 <template>
   <a-card :bordered="false">
     <div class="table-operator">
-      <a-button type="primary" icon="check" @click="handleAdd">报销所选</a-button>
+      <a-button type="primary" icon="check" @click="handleBatchEdit">报销所选</a-button>
     </div>
     <s-table
       ref="table"
@@ -35,7 +35,7 @@
 <script>
 import moment from 'moment'
 import { Ellipsis, STable } from '@/components'
-import { getRecoverableList } from '@/api/record/recordManage'
+import { getRecoverableList, recoverRecords } from '@/api/record/recordManage'
 
 import { mapActions } from 'vuex'
 
@@ -111,10 +111,24 @@ export default {
   methods: {
     ...mapActions(['GetRecordCategoryList', 'GetRecordAccounts', 'GetRecordBooks']),
     moment,
-    handleAdd () {
+    handleBatchEdit () {
       // 跳转到记账
+      recoverRecords(this.selectedRowKeys).then(res => {
+          // 刷新表格
+          this.$refs.table.refresh()
+          this.$message.info('批量报销成功')
+        }
+      )
     },
     handleEdit (record) {
+      const arr = []
+      arr.push(record.id)
+      recoverRecords(arr).then(res => {
+          // 刷新表格
+          this.$refs.table.refresh()
+          this.$message.info('报销成功')
+        }
+      )
     },
     onSelectChange (selectedRowKeys, selectedRows) {
       this.selectedRowKeys = selectedRowKeys
