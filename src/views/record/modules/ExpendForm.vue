@@ -2,6 +2,14 @@
   <a-spin :spinning="loading">
     <a-form @submit="handleSubmit" :form="form">
       <a-form-item
+        label="支出类别"
+        :labelCol="{lg: {span: 4}, sm: {span: 4}}"
+        :wrapperCol="{lg: {span: 10}, sm: {span: 17} }">
+        <a-select v-decorator="['recordCategory', {rules: [{ required: true, message: '请选择支出类别' }]}]">
+          <a-select-option v-for="(item, index) in recordCategoryList" :key="index" :value="item.name" >{{ item.name }}</a-select-option>
+        </a-select>
+      </a-form-item>
+      <a-form-item
         label="金额"
         :labelCol="{lg: {span: 4}, sm: {span: 4}}"
         :wrapperCol="{lg: {span: 10}, sm: {span: 17} }">
@@ -9,14 +17,6 @@
           :min="0"
           :precision="2"
           v-decorator="['amount',{rules: [{ required: true, message: '请输入金额' }]}]"/>
-      </a-form-item>
-      <a-form-item
-        label="支出类别"
-        :labelCol="{lg: {span: 4}, sm: {span: 4}}"
-        :wrapperCol="{lg: {span: 10}, sm: {span: 17} }">
-        <a-select v-decorator="['recordCategory', {rules: [{ required: true, message: '请选择支出类别' }]}]">
-          <a-select-option v-for="(item, index) in recordCategoryList" :key="index" :value="item.name" >{{ item.name }}</a-select-option>
-        </a-select>
       </a-form-item>
       <a-form-item
         label="账户"
