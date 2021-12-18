@@ -1,5 +1,16 @@
 <template>
   <page-header-wrapper content="在这里您可以看到多个资产账户的概况" :breadcrumb="false">
+    <!-- TODO 三列显示总资产、总负债、净资产 -->
+    <a-card :bordered="false">
+      <a-row>
+        <a-col :sm="12" :xs="24">
+          <info title="总支出" :desc="'下方账单的支出和'" value="32¥" :bordered="true" />
+        </a-col>
+        <a-col :sm="12" :xs="24">
+          <info title="总收入" :desc="'下方账单的收入和'" value="24¥" />
+        </a-col>
+      </a-row>
+    </a-card>
     <a-row :gutter="16">
       <a-col class="gutter-row" :span="8">
         <a-list-item>
@@ -22,11 +33,11 @@
                 </div>
               </a-card-meta>
               <div class="right-content">
-                <div class="amount">金额</div>
+                <div class="amount">余额：{{ (item.inflow - Math.abs(item.outflow)).toFixed(2) }}</div>
                 <div class="account-flow_wrap">
-                  <span>流入: 10</span>
+                  <span>流入: {{ item.inflow }}</span>
                   <a-divider type="vertical" />
-                  <span>流出: 10</span>
+                  <span>流出: {{ Math.abs(item.outflow) }}</span>
                 </div>
               </div>
             </div>
@@ -61,7 +72,7 @@
 import { mapState, mapActions } from 'vuex'
 import { ACCOUNT_TYPE } from '@/store/mutation-types'
 import CapitalAccountForm from './modules/CapitalAccountForm'
-import { addRecordAccount, getRecordAccounts, editRecordAccount, delRecordAccount } from '@/api/record/recordAccountManage'
+import { addRecordAccount, getRecordAccountStatistics, editRecordAccount, delRecordAccount } from '@/api/record/recordAccountManage'
 import MyIconFont from '@/components/MyIconFont/MyIconFont'
 
 export default {
@@ -108,7 +119,7 @@ export default {
               // 重置表单数据
               form.resetFields()
               this.$message.info('修改成功')
-              this.getRecordAccounts()
+              this.getRecordAccountStatistics()
             }).catch(() => {
               this.formLoading = false
             })
@@ -124,7 +135,7 @@ export default {
                 // 重置表单数据
                 form.resetFields()
                 this.$message.info('新增成功')
-                this.getRecordAccounts()
+                this.getRecordAccountStatistics()
             }).catch(() => {
                 this.formLoading = false
             })
@@ -137,7 +148,7 @@ export default {
     handleDel (record) {
       delRecordAccount(record.id).then((res) => {
         this.$message.info('删除成功')
-        this.getRecordAccounts()
+        this.getRecordAccountStatistics()
       }).catch(() => {
         this.formLoading = false
       })
@@ -145,9 +156,9 @@ export default {
     handleCancel () {
       this.formShow = false
     },
-    async getRecordAccounts () {
+    async getRecordAccountStatistics () {
       // get recordAccounts
-      getRecordAccounts().then((res) => {
+      getRecordAccountStatistics().then((res) => {
         this.recordAccounts = res
         this.recordAccounts.forEach((item) => {
           item.inNetAssets = item.inNetAssets === 1
@@ -165,7 +176,7 @@ export default {
     if (!this.accountType.length) {
       await this.GetDictItems(ACCOUNT_TYPE)
     }
-    await this.getRecordAccounts()
+    await this.getRecordAccountStatistics()
   }
 }
 </script>
