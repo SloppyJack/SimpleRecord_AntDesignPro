@@ -11,7 +11,7 @@
         </a-col>
       </a-row>
     </a-card>
-    <a-row :gutter="16">
+    <a-row :style="{ marginTop: '20px' }" :gutter="16">
       <a-col class="gutter-row" :span="8">
         <a-list-item>
           <a-button class="new-btn" type="dashed" @click="handleAdd">
@@ -74,11 +74,13 @@ import { ACCOUNT_TYPE } from '@/store/mutation-types'
 import CapitalAccountForm from './modules/CapitalAccountForm'
 import { addRecordAccount, getRecordAccountStatistics, editRecordAccount, delRecordAccount } from '@/api/record/recordAccountManage'
 import MyIconFont from '@/components/MyIconFont/MyIconFont'
+import Info from './components/Info'
 
 export default {
   components: {
     CapitalAccountForm,
-    MyIconFont
+    MyIconFont,
+    Info
   },
   data () {
     return {
