@@ -3,11 +3,14 @@
     <!-- TODO 三列显示总资产、总负债、净资产 -->
     <a-card :bordered="false">
       <a-row>
-        <a-col :sm="12" :xs="24">
-          <info title="总支出" :desc="'下方账单的支出和'" value="32¥" :bordered="true" />
+        <a-col :sm="8" :xs="16">
+          <info title="总资产" desc="下方账户（非应收/应付）的资产总和" :value="totalAssets + '¥'" :bordered="true" />
         </a-col>
-        <a-col :sm="12" :xs="24">
-          <info title="总收入" :desc="'下方账单的收入和'" value="24¥" />
+        <a-col :sm="8" :xs="16">
+          <info title="总负债" desc="下方应收/应付账户资产总和" :value="totalLiabilities + '¥'" />
+        </a-col>
+        <a-col :sm="8" :xs="16">
+          <info title="净资产" desc="总资产 - 总负债" :value="totalAssets - totalLiabilities + '¥'" />
         </a-col>
       </a-row>
     </a-card>
@@ -70,7 +73,7 @@
 
 <script>
 import { mapState, mapActions } from 'vuex'
-import { ACCOUNT_TYPE } from '@/store/mutation-types'
+import { ACCOUNT_TYPE, PAYMENT_ACCOUNT } from '@/store/mutation-types'
 import CapitalAccountForm from './modules/CapitalAccountForm'
 import { addRecordAccount, getRecordAccountStatistics, editRecordAccount, delRecordAccount } from '@/api/record/recordAccountManage'
 import MyIconFont from '@/components/MyIconFont/MyIconFont'
@@ -171,7 +174,21 @@ export default {
   computed: {
     ...mapState({
       accountType: (state) => state.dict.accountType
-    })
+    }),
+    totalAssets () {
+      let amount = 0.0
+      this.recordAccounts.filter(n => n.typeValue !== PAYMENT_ACCOUNT).forEach(n => {
+        amount += n.inflow - Math.abs(n.outflow)
+      })
+      return amount
+    },
+    totalLiabilities () {
+      let amount = 0.0
+      this.recordAccounts.filter(n => n.typeValue === PAYMENT_ACCOUNT).forEach(n => {
+        amount += n.inflow - Math.abs(n.outflow)
+      })
+      return amount < 0 ? amount : 0
+    }
   },
   async mounted () {
     // get dict values

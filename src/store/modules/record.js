@@ -1,6 +1,7 @@
 import { getRecordCategoryList } from '@/api/record/recordCategoryManage'
 import { getRecordAccounts } from '@/api/record/recordAccountManage'
 import { getRecordBooks } from '@/api/record/recordBookManage'
+import { EXPEND_TYPE } from '@/store/mutation-types'
 
 const record = {
   state: {
@@ -22,44 +23,72 @@ const record = {
   },
 
   actions: {
-    async GetRecordCategoryList ({ commit }) {
+    async GetRecordCategoryList ({ commit, rootState }) {
       return new Promise((resolve, reject) => {
-        getRecordCategoryList().then(list => {
-          const ret = {}
-          // 获取结果后分类
-          list.forEach((item, index) => {
-            if (item.typeValue in ret) {
-              ret[item.typeValue].push(item)
-            } else {
-              ret[item.typeValue] = [item]
-            }
+        if (rootState.record.recordCategoryList[EXPEND_TYPE]) {
+          console.log('record 中已有recordCategoryList')
+          resolve()
+        } else {
+          getRecordCategoryList().then(list => {
+            const ret = {}
+            // 获取结果后分类
+            list.forEach((item, index) => {
+              if (item.typeValue in ret) {
+                ret[item.typeValue].push(item)
+              } else {
+                ret[item.typeValue] = [item]
+              }
+            })
+            commit('SET_RECORD_CATEGORY_LIST', ret)
+            resolve()
+          }).catch(error => {
+            reject(error)
           })
-          commit('SET_RECORD_CATEGORY_LIST', ret)
-          resolve()
-        }).catch(error => {
-          reject(error)
-        })
+        }
       })
     },
-    GetRecordAccounts ({ commit }) {
+    GetRecordAccounts ({ commit, rootState }) {
       return new Promise((resolve, reject) => {
-        getRecordAccounts().then(ret => {
-          commit('SET_RECORD_ACCOUNTS', ret)
+        if (rootState.record.recordAccounts.length > 1) {
+          console.log('record 中已有recordAccounts')
           resolve()
-        }).catch(error => {
-          reject(error)
-        })
+        } else {
+          getRecordAccounts().then(ret => {
+            commit('SET_RECORD_ACCOUNTS', ret)
+            resolve()
+          }).catch(error => {
+            reject(error)
+          })
+        }
       })
     },
-    GetRecordBooks ({ commit }) {
+    GetRecordBooks ({ commit, rootState }) {
       return new Promise((resolve, reject) => {
-        getRecordBooks().then(ret => {
-          commit('SET_RECORD_BOOKS', ret)
+        if (rootState.record.recordBooks.length > 1) {
+          console.log('record 中已有recordBooks')
           resolve()
-        }).catch(error => {
-          reject(error)
-        })
+        } else {
+          getRecordBooks().then(ret => {
+            commit('SET_RECORD_BOOKS', ret)
+            resolve()
+          }).catch(error => {
+            reject(error)
+          })
+        }
       })
+    },
+    // 初始化的一些操作
+    ResetRecordCategoryList ({ commit }) {
+      commit('SET_RECORD_CATEGORY_LIST', {})
+    },
+    ResetRecordAccounts ({ commit }) {
+      return new Promise((resolve, reject) => {
+        commit('SET_RECORD_ACCOUNTS', [])
+        resolve()
+      })
+    },
+    ResetRecordBooks ({ commit }) {
+      commit('SET_RECORD_BOOKS', [])
     }
   }
 }

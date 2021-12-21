@@ -30,7 +30,7 @@
           <a-select v-decorator="['sourceAccount', { initialValue: sourceAccounts[0] && sourceAccounts[0].id}]">
             <a-icon slot="suffixIcon" type="smile" />
             <a-select-option v-for="(item, index) in sourceAccounts" :key="index" :value="item.id" >
-              <span role="img" aria-label="China">
+              <span>
                 <my-icon-font :value="item.typeValue" class="icon-size" />
               </span>
               {{ item.name }}
@@ -46,7 +46,7 @@
           <a-select v-decorator="['targetAccount',{ initialValue: targetAccounts[0] && targetAccounts[0].id}]">
             <a-icon slot="suffixIcon" type="smile" />
             <a-select-option v-for="(item, index) in targetAccounts" :key="index" :value="item.id" >
-              <span role="img" aria-label="China">
+              <span>
                 <my-icon-font :value="item.typeValue" class="icon-size" />
               </span>
               {{ item.name }}

@@ -3,17 +3,6 @@
     :breadcrumb="false"
     content="tips：账本仅为记录账单的归处，与资产账户并无直接关联"
   >
-    <a-card :bordered="false">
-      <a-row>
-        <a-col :sm="12" :xs="24">
-          <info title="总支出" :desc="'下方账单的支出和'" value="32¥" :bordered="true" />
-        </a-col>
-        <a-col :sm="12" :xs="24">
-          <info title="总收入" :desc="'下方账单的收入和'" value="24¥" />
-        </a-col>
-      </a-row>
-    </a-card>
-
     <a-card
       style="margin-top: 24px"
       :bordered="false"
@@ -27,11 +16,24 @@
         <a-list size="large" :pagination="pagination">
           <a-list-item :key="index" v-for="(item, index) in data">
             <a-list-item-meta :description="item.remark">
-              <icon-font slot="avatar" type="custom-icon-zhangben" class="icon-size" />
+              <my-icon-font slot="avatar" value="recordBook" class="icon-size" />
               <a slot="title">{{ item.name }}</a>
             </a-list-item-meta>
             <div v-if="item.isUserDefault">
               <a-tag color="green">默认账户</a-tag>
+            </div>
+            <div :style="{ width: 'calc(50% - 12px)' }">
+              <a-row type="flex" :gutter="16" justify="space-around">
+                <a-col :span="8">
+                  结余：{{ (item.incomeTotal - Math.abs(item.expendTotal)).toFixed(2) }} ¥
+                </a-col>
+                <a-col :span="8">
+                  收入：{{ item.incomeTotal }} ¥
+                </a-col>
+                <a-col :span="8">
+                  支出：{{ item.expendTotal }} ¥
+                </a-col>
+              </a-row>
             </div>
             <div slot="actions">
               <a @click="handleEdit(item)">修改</a>
@@ -67,11 +69,7 @@ import { STable } from '@/components'
 import RecordBookForm from './modules/RecordBookForm'
 import Info from './components/Info'
 import { addRecordBook, getRecordBooksByPage, editRecordBook } from '@/api/record/recordBookManage'
-import { Icon } from 'ant-design-vue'
-
-const IconFont = Icon.createFromIconfontCN({
-  scriptUrl: '//at.alicdn.com/t/font_2064096_sy2ci1zr88.js'
-})
+import MyIconFont from '@/components/MyIconFont/MyIconFont'
 
 // 表头
 const columns = [
@@ -113,7 +111,7 @@ export default {
     RecordBookForm,
     Info,
     STable,
-    IconFont
+    MyIconFont
   },
   data () {
     return {

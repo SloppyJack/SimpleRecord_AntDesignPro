@@ -24,7 +24,7 @@
           <a-select v-decorator="['recordAccountId', {rules: [{ required: true, message: '请选择支出账户' }]}]">
             <a-icon slot="suffixIcon" type="smile" />
             <a-select-option v-for="(item, index) in recordAccounts" :key="index" :value="item.id" >
-              <span role="img" aria-label="China">
+              <span>
                 <my-icon-font :value="item.typeValue" class="icon-size" />
               </span>
               {{ item.name }}

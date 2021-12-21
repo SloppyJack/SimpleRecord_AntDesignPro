@@ -1,4 +1,5 @@
 import request from '@/utils/request'
+import store from '@/store'
 
 const api = {
   add: '/recordAccount',
@@ -11,6 +12,7 @@ const api = {
 export default api
 
 export function addRecordAccount (data) {
+  store.dispatch('ResetRecordAccounts')
   return request({
     url: api.add,
     method: 'post',
@@ -29,6 +31,7 @@ export function getRecordAccounts () {
 }
 
 export function editRecordAccount (id, data) {
+  store.dispatch('ResetRecordAccounts')
   return request({
     url: api.edit + id,
     method: 'put',
@@ -37,6 +40,7 @@ export function editRecordAccount (id, data) {
 }
 
 export function delRecordAccount (id) {
+  store.dispatch('ResetRecordAccounts')
   return request({
     url: api.del + id,
     method: 'delete'
