@@ -36,6 +36,8 @@
               </a-row>
             </div>
             <div slot="actions">
+              <a @click="toMonthBookList(item.id)">账本详情</a>
+              <a-divider type="vertical" />
               <a @click="handleEdit(item)">修改</a>
               <a-divider type="vertical" />
               <a-popconfirm
@@ -71,41 +73,6 @@ import Info from './components/Info'
 import { addRecordBook, getRecordBooksByPage, editRecordBook } from '@/api/record/recordBookManage'
 import MyIconFont from '@/components/MyIconFont/MyIconFont'
 
-// 表头
-const columns = [
-  {
-    title: '主键',
-    dataIndex: 'id'
-  },
-  {
-    title: '账单名称',
-    dataIndex: 'name'
-  },
-  {
-    title: '排序',
-    dataIndex: 'orderNo'
-  },
-  {
-    title: '备注',
-    dataIndex: 'remark'
-  },
-  {
-    title: '是否系统内置',
-    dataIndex: 'isUserDefault'
-  },
-  {
-    title: '状态',
-    dataIndex: 'status',
-    scopedSlots: { customRender: 'status' }
-  },
-  {
-    title: '操作',
-    width: '150px',
-    dataIndex: 'action',
-    scopedSlots: { customRender: 'action' }
-  }
-]
-
 export default {
   components: {
     RecordBookForm,
@@ -116,7 +83,6 @@ export default {
   data () {
     return {
       data: [],
-      columns,
       pagination: {
         current: 1,
         pageSize: 10,
@@ -204,6 +170,10 @@ export default {
       }).catch(() => {
         this.loading = false
       })
+    },
+    toMonthBookList (recordBookId) {
+      // 跳转到月账本
+      this.$router.push({ name: 'monthBookList', params: { recordBookId: recordBookId } })
     }
   },
   computed: {

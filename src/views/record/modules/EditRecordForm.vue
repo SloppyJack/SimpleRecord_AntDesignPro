@@ -31,8 +31,8 @@
             </a-select-option>
           </a-select>
         </a-form-item>
-        <a-form-item label="账单">
-          <a-select v-decorator="['recordBookId', {rules: [{ required: true, message: '请选择账单' }]}]">
+        <a-form-item label="账本">
+          <a-select v-decorator="['recordBookId', {rules: [{ required: true, message: '请选择账本' }]}]">
             <a-select-option v-for="(item, index) in recordBooks" :key="index" :value="item.id" >{{ item.name }}</a-select-option>
           </a-select>
         </a-form-item>

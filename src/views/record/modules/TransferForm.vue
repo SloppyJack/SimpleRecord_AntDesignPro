@@ -45,11 +45,11 @@
         </a-form-item>
       </a-form-item>
       <a-form-item
-        label="账单"
-        help="默认为默认账单"
+        label="账本"
+        help="默认为默认账本"
         :labelCol="{lg: {span: 4}, sm: {span: 4}}"
         :wrapperCol="{lg: {span: 10}, sm: {span: 17} }">
-        <a-select v-decorator="['recordBook',{ initialValue: defaultRecordBook.id}, {rules: [{ required: true, message: '请选择账单' }]}]">
+        <a-select v-decorator="['recordBook',{ initialValue: defaultRecordBook.id}, {rules: [{ required: true, message: '请选择账本' }]}]">
           <a-select-option v-for="(item, index) in recordBooks" :key="index" :value="item.id" >{{ item.name }}</a-select-option>
         </a-select>
       </a-form-item>

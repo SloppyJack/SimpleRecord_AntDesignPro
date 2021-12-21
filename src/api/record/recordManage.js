@@ -2,7 +2,7 @@ import request from '@/utils/request'
 
 const api = {
   addRecordDetail: '/recordDetail',
-  monthList: '/recordDetail/monthList',
+  monthBookList: '/recordDetail/monthBookList',
   delRecord: '/recordDetail/',
   editRecord: '/recordDetail/',
   recoverableList: '/recordDetail/recoverable',
@@ -19,9 +19,9 @@ export function addRecordDetail (data) {
   })
 }
 
-export function getMonthList (params) {
+export function getMonthBookList (params) {
   return request({
-    url: api.monthList,
+    url: api.monthBookList,
     method: 'post',
     data: params
   })

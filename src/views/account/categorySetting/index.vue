@@ -74,7 +74,7 @@
 <script>
 import moment from 'moment'
 import { Ellipsis, STable } from '@/components'
-import { getMonthList, delRecord, editRecord } from '@/api/record/recordManage'
+import { getMonthBookList, delRecord, editRecord } from '@/api/record/recordManage'
 
 import RecordForm from './modules/RecordForm'
 
@@ -135,7 +135,7 @@ export default {
           'pageNo': parameter.pageNo,
           'pageSize': parameter.pageSize
         }
-        return getMonthList(params).then(res => {
+        return getMonthBookList(params).then(res => {
           // 封装返回的数据，供s-table使用
           return {
             'pageNo': parameter.pageNo,

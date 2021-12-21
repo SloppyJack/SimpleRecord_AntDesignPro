@@ -17,7 +17,7 @@
           </a-tab-pane>
         </a-tabs>
       </a-spin>
-      <a-button slot="extra" type="primary" icon="right" @click="toMonthList">月账单</a-button>
+      <a-button slot="extra" type="primary" icon="right" @click="toMonthBookList">月账本</a-button>
     </a-card>
   </div>
 </template>
@@ -43,9 +43,9 @@ export default {
   },
   methods: {
     ...mapActions(['GetRecordCategoryList', 'GetRecordAccounts', 'GetRecordBooks']),
-    toMonthList () {
-      // 跳转到月账单
-      this.$router.push({ name: 'monthRecordList' })
+    toMonthBookList () {
+      // 跳转到月账本
+      this.$router.push({ name: 'monthBookList' })
     }
   },
   async mounted () {
@@ -53,7 +53,7 @@ export default {
     await this.GetRecordCategoryList()
     // 获取资产账户
     await this.GetRecordAccounts()
-    // 获取用户账单
+    // 获取用户账本
     await this.GetRecordBooks()
     // 取消loading
     this.loading = false

@@ -3,22 +3,29 @@
     <div class="table-page-search-wrapper">
       <a-form layout="inline">
         <a-row :gutter="48">
-          <a-col :md="6" :sm="18">
+          <a-col :span="5">
+            <a-form-item label="账本">
+              <a-select  v-model='queryParam.recordBookId' :allowClear="true">
+                <a-select-option v-for="(item, index) in recordBooks" :key="index" :value="item.id" >{{ item.name }}</a-select-option>
+              </a-select>
+            </a-form-item>
+          </a-col>
+          <a-col :span="5">
             <a-form-item label="月份">
               <a-month-picker placeholder="选择月份" v-model="queryParam.month" :defaultValue="queryParam.month" @change="changeMonth" :allowClear="false"/>
             </a-form-item>
           </a-col>
-          <a-col :md="6" :sm="18">
+          <a-col :span="5">
             <a-form-item label="日期">
               <a-date-picker placeholder="选择日期" v-model="queryParam.occurTime" :disabled-date="disabledDate" @openChange="datePickerOpen"/>
             </a-form-item>
           </a-col>
-          <a-col :md="6" :sm="18">
+          <a-col :span="5">
             <a-form-item label="关键词">
               <a-input v-model="queryParam.keyWord" />
             </a-form-item>
           </a-col>
-          <a-col :md="6" :sm="18">
+          <a-col :span="4">
             <span class="table-page-search-submitButtons">
               <a-button type="primary" @click="$refs.table.refresh(true)">查询</a-button>
             </span>
@@ -86,11 +93,11 @@
 <script>
 import moment from 'moment'
 import { Ellipsis, STable } from '@/components'
-import { getMonthList, delRecord, editRecord } from '@/api/record/recordManage'
+import { getMonthBookList, delRecord, editRecord } from '@/api/record/recordManage'
 import { buildDesc, recoverableText, recoverableColor } from '@/utils/businessUtil'
 
 import EditRecordForm from './modules/EditRecordForm'
-import { mapActions } from 'vuex'
+import { mapActions, mapState } from 'vuex'
 
 const columns = [
   {
@@ -153,6 +160,7 @@ export default {
       loading: false,
       // 查询参数
       queryParam: {
+        recordBookId: null,
         month: null,
         occurTime: null,
         keyWord: ''
@@ -160,13 +168,14 @@ export default {
       // 加载数据方法 必须为 Promise 对象
       loadData: parameter => {
         const params = {
+          recordBookId: this.queryParam.recordBookId,
           month: moment(this.queryParam.month).format('YYYY-MM'),
           occurTime: this.queryParam.occurTime && moment(this.queryParam.occurTime).format('YYYY-MM-DD'),
           keyWord: this.queryParam.keyWord,
           pageNo: parameter.pageNo,
           pageSize: parameter.pageSize
         }
-        return getMonthList(params).then(res => {
+        return getMonthBookList(params).then(res => {
           // 封装返回的数据，供s-table使用
           return {
             'pageNo': parameter.pageNo,
@@ -179,6 +188,8 @@ export default {
   },
   created () {
     this.queryParam.month = moment()
+    const { recordBookId } = this.$route.params
+    this.queryParam.recordBookId = recordBookId
   },
   methods: {
     ...mapActions(['GetRecordCategoryList', 'GetRecordAccounts', 'GetRecordBooks']),
@@ -254,12 +265,17 @@ export default {
       this.editFormShow = false
     }
   },
+  computed: {
+    ...mapState({
+      recordBooks: (state) => state.record.recordBooks
+    })
+  },
   async mounted () {
     // 获取记账类别
     await this.GetRecordCategoryList()
     // 获取资产账户
     await this.GetRecordAccounts()
-    // 获取用户账单
+    // 获取用户账本
     await this.GetRecordBooks()
     this.loading = true
   }

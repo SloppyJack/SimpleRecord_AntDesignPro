@@ -18,7 +18,7 @@
       <a-form-item label="备注">
         <a-textarea v-decorator="['remark']" placeholder="备注可选填" />
       </a-form-item>
-      <a-form-item v-if="model && model.id > 0" label="默认账单">
+      <a-form-item v-if="model && model.id > 0" label="默认账本">
         <a-switch v-decorator="['isUserDefault', { valuePropName: 'checked' }]" />
       </a-form-item>
       <a-form-item label="排序">
