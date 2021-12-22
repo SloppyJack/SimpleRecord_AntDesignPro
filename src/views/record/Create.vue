@@ -17,7 +17,7 @@
           </a-tab-pane>
         </a-tabs>
       </a-spin>
-      <a-button slot="extra" type="primary" icon="right" @click="toMonthBookList">月账本</a-button>
+      <a-button slot="extra" type="primary" icon="right" @click="toMonthBookRecords">月账本</a-button>
     </a-card>
   </div>
 </template>
@@ -43,9 +43,9 @@ export default {
   },
   methods: {
     ...mapActions(['GetRecordCategoryList', 'GetRecordAccounts', 'GetRecordBooks']),
-    toMonthBookList () {
+    toMonthBookRecords () {
       // 跳转到月账本
-      this.$router.push({ name: 'monthBookList' })
+      this.$router.push({ name: 'monthBookRecords' })
     }
   },
   async mounted () {

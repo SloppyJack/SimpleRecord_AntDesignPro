@@ -37,7 +37,7 @@
               style="margin-bottom: 24px;"
               :bordered="false"
               title="本月消费前三">
-              <a slot="extra" @click="toMonthBookList">全部</a>
+              <a slot="extra" @click="toMonthBookRecords">全部</a>
               <a-list item-layout="vertical" :data-source="spendCategories">
                 <a-list-item slot="renderItem" slot-scope="item">
                   <a-list-item-meta
@@ -125,9 +125,9 @@ export default {
         this.spendCategories = res
       })
     },
-    toMonthBookList () {
+    toMonthBookRecords () {
       // 跳转到月账本
-      this.$router.push({ name: 'monthBookList' })
+      this.$router.push({ name: 'monthBookRecords' })
     },
     toRecordAdd () {
       // 跳转到记账

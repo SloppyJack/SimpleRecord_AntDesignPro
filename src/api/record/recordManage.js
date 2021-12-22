@@ -2,11 +2,12 @@ import request from '@/utils/request'
 
 const api = {
   addRecordDetail: '/recordDetail',
-  monthBookList: '/recordDetail/monthBookList',
+  monthBookRecords: '/recordDetail/monthBookRecords',
   delRecord: '/recordDetail/',
   editRecord: '/recordDetail/',
   recoverableList: '/recordDetail/recoverable',
-  recoverRecords: '/recordDetail/recover'
+  recoverRecords: '/recordDetail/recover',
+  monthAccountRecords: '/recordDetail/monthAccountRecords'
 }
 
 export default api
@@ -19,9 +20,9 @@ export function addRecordDetail (data) {
   })
 }
 
-export function getMonthBookList (params) {
+export function getMonthBookRecords (params) {
   return request({
-    url: api.monthBookList,
+    url: api.monthBookRecords,
     method: 'post',
     data: params
   })
@@ -55,5 +56,14 @@ export function recoverRecords (arr) {
     url: api.recoverRecords,
     method: 'put',
     data: arr
+  })
+}
+
+export function getMonthAccountRecords (params) {
+  console.log('request', params)
+  return request({
+    url: api.monthAccountRecords,
+    method: 'post',
+    data: params
   })
 }

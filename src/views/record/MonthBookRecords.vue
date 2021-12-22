@@ -5,7 +5,7 @@
         <a-row :gutter="48">
           <a-col :span="5">
             <a-form-item label="账本">
-              <a-select  v-model='queryParam.recordBookId' :allowClear="true">
+              <a-select v-model="queryParam.recordBookId" :allowClear="true">
                 <a-select-option v-for="(item, index) in recordBooks" :key="index" :value="item.id" >{{ item.name }}</a-select-option>
               </a-select>
             </a-form-item>
@@ -93,7 +93,7 @@
 <script>
 import moment from 'moment'
 import { Ellipsis, STable } from '@/components'
-import { getMonthBookList, delRecord, editRecord } from '@/api/record/recordManage'
+import { getMonthBookRecords, delRecord, editRecord } from '@/api/record/recordManage'
 import { buildDesc, recoverableText, recoverableColor } from '@/utils/businessUtil'
 
 import EditRecordForm from './modules/EditRecordForm'
@@ -175,7 +175,7 @@ export default {
           pageNo: parameter.pageNo,
           pageSize: parameter.pageSize
         }
-        return getMonthBookList(params).then(res => {
+        return getMonthBookRecords(params).then(res => {
           // 封装返回的数据，供s-table使用
           return {
             'pageNo': parameter.pageNo,

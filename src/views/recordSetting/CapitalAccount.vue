@@ -26,7 +26,7 @@
       <a-col class="gutter-row" :span="8" v-for="item in recordAccounts" :key="item.id">
         <div class="card-wrap">
           <a-card :hoverable="true">
-            <div class="content-wrap">
+            <div @click="toMonthAccountRecords(item.id)" class="content-wrap">
               <a-card-meta>
                 <a slot="title">{{ item.name }}</a>
                 <my-icon-font slot="avatar" :value="item.typeValue" class="icon-size" />
@@ -169,6 +169,10 @@ export default {
           item.inNetAssets = item.inNetAssets === 1
         })
       })
+    },
+    toMonthAccountRecords (recordAccountId) {
+      // 跳转到账户流水
+      this.$router.push({ name: 'monthAccountRecords', params: { recordAccountId: recordAccountId } })
     }
   },
   computed: {
@@ -177,7 +181,7 @@ export default {
     }),
     totalAssets () {
       let amount = 0.0
-      this.recordAccounts.filter(n => n.typeValue !== PAYMENT_ACCOUNT).forEach(n => {
+      this.recordAccounts.filter(n => n.typeValue !== PAYMENT_ACCOUNT && n.inNetAssets).forEach(n => {
         amount += n.inflow - Math.abs(n.outflow)
       })
       return amount

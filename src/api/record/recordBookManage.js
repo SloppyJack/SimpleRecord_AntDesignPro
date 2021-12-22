@@ -1,4 +1,5 @@
 import request from '@/utils/request'
+import store from '@/store'
 
 const api = {
   add: '/recordBook',
@@ -19,6 +20,7 @@ export function getRecordBooksByPage (data) {
 }
 
 export function addRecordBook (data) {
+  store.dispatch('ResetRecordBooks')
   return request({
     url: api.add,
     method: 'post',
@@ -27,6 +29,8 @@ export function addRecordBook (data) {
 }
 
 export function delRecordBook (id) {
+  store.dispatch('ResetRecordBooks')
+
   return request({
     url: api.del + id,
     method: 'delete'
@@ -34,6 +38,7 @@ export function delRecordBook (id) {
 }
 
 export function editRecordBook (id, data) {
+  store.dispatch('ResetRecordBooks')
   return request({
     url: api.edit + id,
     method: 'put',

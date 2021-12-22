@@ -36,7 +36,7 @@
               </a-row>
             </div>
             <div slot="actions">
-              <a @click="toMonthBookList(item.id)">账本详情</a>
+              <a @click="toMonthBookRecords(item.id)">账本详情</a>
               <a-divider type="vertical" />
               <a @click="handleEdit(item)">修改</a>
               <a-divider type="vertical" />
@@ -171,9 +171,9 @@ export default {
         this.loading = false
       })
     },
-    toMonthBookList (recordBookId) {
+    toMonthBookRecords (recordBookId) {
       // 跳转到月账本
-      this.$router.push({ name: 'monthBookList', params: { recordBookId: recordBookId } })
+      this.$router.push({ name: 'monthBookRecords', params: { recordBookId: recordBookId } })
     }
   },
   computed: {
