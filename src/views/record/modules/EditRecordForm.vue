@@ -10,10 +10,13 @@
     <a-spin :spinning="loading">
       <a-form :form="form" v-bind="formLayout">
         <a-form-item v-show="model && model.id > 0" label="主键ID">
-          <a-input v-decorator="['id', {rules: [{required: true}]}]" disabled />
+          <a-input v-decorator="['id']" disabled />
         </a-form-item>
         <a-form-item label="金额">
-          <a-input v-decorator="['amount', {rules: [{required: true, message: '请输入金额！'}]}]" />
+          <a-input-number
+            :min="0"
+            :precision="2"
+            v-decorator="['amount', {rules: [{required: true, message: '请输入金额！'}]}]" />
         </a-form-item>
         <a-form-item v-show="showFlag" label="类别">
           <a-select v-decorator="['recordCategory', {rules: [{ required: true, message: '请选择类别' }]}]">

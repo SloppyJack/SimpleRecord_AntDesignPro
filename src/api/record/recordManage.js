@@ -60,7 +60,6 @@ export function recoverRecords (arr) {
 }
 
 export function getMonthAccountRecords (params) {
-  console.log('request', params)
   return request({
     url: api.monthAccountRecords,
     method: 'post',

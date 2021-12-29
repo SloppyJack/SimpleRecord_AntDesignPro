@@ -103,6 +103,7 @@ export default {
   methods: {
     handleAdd () {
       this.$refs.formModal.form.resetFields()
+      this.mdl = {}
       this.formTitle = '新增账本'
       this.formShow = true
     },

@@ -67,7 +67,7 @@
                                                     record.targetAccountName, record.amount) }} </ellipsis>
       </span>
       <span slot="recoverableStatus" slot-scope="text">
-        <a-tag v-if="text && text !== 1" :color="recoverableColor(text)">{{ recoverableText(text) }}</a-tag>
+        <a-tag v-if="text && text !== 1" :color="recoverableColor(text)">npm{{ recoverableText(text) }}</a-tag>
       </span>
       <span slot="action" slot-scope="text, record">
         <template>
@@ -183,7 +183,6 @@ export default {
           pageNo: parameter.pageNo,
           pageSize: parameter.pageSize
         }
-        console.log('before request', params)
         return getMonthAccountRecords(params).then(res => {
           // 封装返回的数据，供s-table使用
           return {
@@ -198,7 +197,7 @@ export default {
   created () {
     this.queryParam.month = moment()
     const { recordAccountId } = this.$route.params
-    this.queryParam.recordAccountId = recordAccountId
+    this.queryParam.recordAccountId = recordAccountId || this.recordAccounts.length && this.recordAccounts[0].id
   },
   methods: {
     ...mapActions(['GetRecordCategoryList', 'GetRecordAccounts', 'GetRecordBooks']),

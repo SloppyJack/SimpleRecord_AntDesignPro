@@ -99,6 +99,7 @@ export default {
     handleAdd () {
       // 重置表单数据
       this.$refs.formModal.form.resetFields()
+      this.mdl = {}
       this.formTitle = '新增资产账户'
       this.formShow = true
     },

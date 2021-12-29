@@ -121,7 +121,7 @@ export default {
         const sourceData = []
         res.forEach((item, index) => {
           sourceData.push({
-            item: item.spendCategoryName,
+            item: item.recordCategory,
             count: item.total
           })
         })

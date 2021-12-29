@@ -244,7 +244,7 @@ export default {
   },
   methods: {
     handleAdd () {
-      this.createMdl = null
+      this.createMdl = {}
       this.createFormShow = true
     },
     handleEdit (record) {
