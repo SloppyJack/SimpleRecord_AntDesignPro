@@ -1,4 +1,5 @@
 import request from '@/utils/request'
+import store from '@/store'
 
 const api = {
   getRecordCategoryList: '/recordCategory',
@@ -30,6 +31,7 @@ export function getRecordCategoryByPage (data) {
  * 初始化类别
  */
 export function resetRecordCategory () {
+  store.dispatch('ResetRecordCategoryList')
   return request({
     url: api.reset,
     method: 'put'
@@ -38,6 +40,7 @@ export function resetRecordCategory () {
 
 // 编辑
 export function editRecordCategory (id, data) {
+  store.dispatch('ResetRecordCategoryList')
   return request({
     url: api.edit + id,
     method: 'put',
@@ -46,6 +49,7 @@ export function editRecordCategory (id, data) {
 }
 
 export function addRecordCategory (data) {
+  store.dispatch('ResetRecordCategoryList')
   return request({
     url: api.add,
     method: 'post',
@@ -54,6 +58,7 @@ export function addRecordCategory (data) {
 }
 
 export function delRecordCategory (id) {
+  store.dispatch('ResetRecordCategoryList')
   return request({
     url: api.edit + id,
     method: 'delete'
