@@ -15,7 +15,7 @@ const iconMap = {
   networkAccount: 'custom-icon-weixinzhifubao',
   financialAccount: 'custom-icon-jijinlicai',
   payment: 'custom-icon-yingshouyingfulei',
-  'recordBook': 'custom-icon-zhangdan-'
+  recordBook: 'custom-icon-zhangdan-'
 }
 
 export default {

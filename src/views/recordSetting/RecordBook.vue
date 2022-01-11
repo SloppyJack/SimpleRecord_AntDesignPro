@@ -88,8 +88,9 @@ export default {
         pageSize: 10,
         hideOnSinglePage: true,
         total: 0,
-        onChange: cur => {
-          this.current = cur
+        onChange: (page, pageSize) => {
+          this.pagination.current = page
+          this.pagination.pageSize = pageSize
           this.loadData()
         }
       },
@@ -160,6 +161,7 @@ export default {
     async loadData () {
       this.loading = true
       const param = { pageNo: this.pagination.current, pageSize: this.pagination.pageSize }
+      console.log(param)
       await getRecordBooksByPage(param).then((res) => {
         this.data = res.list
         this.data.forEach((item) => {

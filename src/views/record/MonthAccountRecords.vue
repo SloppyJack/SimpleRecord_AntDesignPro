@@ -67,7 +67,7 @@
                                                     record.targetAccountName, record.amount) }} </ellipsis>
       </span>
       <span slot="recoverableStatus" slot-scope="text">
-        <a-tag v-if="text && text !== 1" :color="recoverableColor(text)">npm{{ recoverableText(text) }}</a-tag>
+        <a-tag v-if="text && text !== 1" :color="recoverableColor(text)">{{ recoverableText(text) }}</a-tag>
       </span>
       <span slot="action" slot-scope="text, record">
         <template>

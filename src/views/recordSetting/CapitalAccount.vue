@@ -185,14 +185,14 @@ export default {
       this.recordAccounts.filter(n => n.typeValue !== PAYMENT_ACCOUNT && n.inNetAssets).forEach(n => {
         amount += n.inflow - Math.abs(n.outflow)
       })
-      return amount
+      return amount.toFixed(2)
     },
     totalLiabilities () {
       let amount = 0.0
       this.recordAccounts.filter(n => n.typeValue === PAYMENT_ACCOUNT).forEach(n => {
         amount += n.inflow - Math.abs(n.outflow)
       })
-      return amount < 0 ? amount : 0
+      return amount < 0 ? amount.toFixed(2) : 0
     }
   },
   async mounted () {
