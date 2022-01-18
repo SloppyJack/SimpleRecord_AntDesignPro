@@ -28,10 +28,10 @@
                   结余：{{ (item.incomeTotal - Math.abs(item.expendTotal)).toFixed(2) }} ¥
                 </a-col>
                 <a-col :span="8">
-                  收入：{{ item.incomeTotal }} ¥
+                  收入：{{ Math.abs(item.incomeTotal).toFixed(2) }} ¥
                 </a-col>
                 <a-col :span="8">
-                  支出：{{ item.expendTotal }} ¥
+                  支出：{{ Math.abs(item.expendTotal).toFixed(2) }} ¥
                 </a-col>
               </a-row>
             </div>
@@ -161,7 +161,6 @@ export default {
     async loadData () {
       this.loading = true
       const param = { pageNo: this.pagination.current, pageSize: this.pagination.pageSize }
-      console.log(param)
       await getRecordBooksByPage(param).then((res) => {
         this.data = res.list
         this.data.forEach((item) => {

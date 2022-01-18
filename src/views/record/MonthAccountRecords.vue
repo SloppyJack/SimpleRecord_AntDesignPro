@@ -4,7 +4,7 @@
       <a-form layout="inline">
         <a-row :gutter="48">
           <a-col :span="5">
-            <a-form-item label="账本">
+            <a-form-item label="账户">
               <a-select v-model="queryParam.recordAccountId" :allowClear="true">
                 <a-icon slot="suffixIcon" type="smile" />
                 <a-select-option v-for="(item, index) in recordAccounts" :key="index" :value="item.id" >
@@ -196,8 +196,6 @@ export default {
   },
   created () {
     this.queryParam.month = moment()
-    const { recordAccountId } = this.$route.params
-    this.queryParam.recordAccountId = recordAccountId || this.recordAccounts.length && this.recordAccounts[0].id
   },
   methods: {
     ...mapActions(['GetRecordCategoryList', 'GetRecordAccounts', 'GetRecordBooks']),
@@ -237,6 +235,7 @@ export default {
       form.validateFields((errors, values) => {
         if (!errors) {
           editRecord(values.id, {
+            recordBookId: values.recordBookId,
             sourceAccountId: this.mdl.sourceAccountId,
             targetAccountId: values.recordAccountId,
             recordAccountId: values.recordAccountId,
@@ -285,6 +284,8 @@ export default {
     await this.GetRecordAccounts()
     // 获取用户账本
     await this.GetRecordBooks()
+    const { recordAccountId } = this.$route.params
+    this.queryParam.recordAccountId = recordAccountId || this.recordAccounts.length && this.recordAccounts[0].id
     this.loading = true
   }
 }

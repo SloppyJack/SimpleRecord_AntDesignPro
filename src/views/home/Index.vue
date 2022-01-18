@@ -60,7 +60,7 @@
             <a-card title="快速开始 / 便捷导航" style="margin-bottom: 24px" :bordered="false" :body-style="{padding: 0}">
               <div class="item-group">
                 <a @click="toRecordAdd">记账</a>
-                <a @click="toRecordAnalysis">图标分析</a>
+                <a @click="toRecordAnalysis">图表分析</a>
               </div>
             </a-card>
           </a-col>
