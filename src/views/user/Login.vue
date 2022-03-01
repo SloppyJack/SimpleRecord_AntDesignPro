@@ -26,7 +26,7 @@
             <a-input
               size="large"
               type="text"
-              placeholder="账户：root"
+              placeholder="账户："
               v-decorator="[
                 'username',
                 {rules: [{ required: true, message: '请输入用户名' }], validateTrigger: 'change'}
@@ -39,7 +39,7 @@
           <a-form-item>
             <a-input-password
               size="large"
-              placeholder="密码：Abcd1234"
+              placeholder="密码："
               v-decorator="[
                 'password',
                 {rules: [{ required: true, message: '请输入密码' }], validateTrigger: 'blur'}
