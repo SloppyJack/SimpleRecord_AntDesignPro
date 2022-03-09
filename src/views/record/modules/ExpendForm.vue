@@ -60,7 +60,7 @@
         label="报销"
         :labelCol="{lg: {span: 4}, sm: {span: 4}}"
         :wrapperCol="{lg: {span: 10}, sm: {span: 17}}">
-        <a-radio-group v-decorator="['recoverableStatus']" default-value="1">
+        <a-radio-group v-decorator="['recoverableStatus', {initialValue: '1', valuePropName: 'defaultValue'}]" >
           <a-radio-button value="1">
             非报销
           </a-radio-button>
