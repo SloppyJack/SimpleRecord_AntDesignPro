@@ -5,7 +5,7 @@
         <a-row :gutter="48">
           <a-col :md="8" :sm="24">
             <a-form-item label="类型">
-              <a-select v-model="recordTypeCode" placeholder="请选择">
+              <a-select v-model="recordTypeCode" placeholder="请选择" :allowClear="true">
                 <a-select-option value="expendType">支出</a-select-option>
                 <a-select-option value="incomeType">收入</a-select-option>
               </a-select>
@@ -16,6 +16,15 @@
           <a-col :md="8" :sm="24">
             <span class="table-page-search-submitButtons">
               <a-button type="primary" @click="$refs.table.refresh(true)">查询</a-button>
+              <a-popconfirm
+                style="margin-left: 8px"
+                title="确定将类别重置为初始状态吗？"
+                ok-text="确定"
+                cancel-text="取消"
+                @confirm="resetCategory"
+              >
+                <a-button type="danger">重置类别</a-button>
+              </a-popconfirm>
             </span>
           </a-col>
         </a-row>
@@ -32,7 +41,7 @@
       rowKey="id"
       :columns="columns"
       :data="loadData"
-      :pageSize="30"
+      :pageSize="10"
       bordered
     >
       <span slot="typeText" slot-scope="text, record">
@@ -67,7 +76,7 @@
 <script>
 import moment from 'moment'
 import { Ellipsis, STable } from '@/components'
-import { getRecordCategoryByPage, delRecordCategory, editRecordCategory, addRecordCategory } from '@/api/record/recordCategoryManage'
+import { getRecordCategoryByPage, delRecordCategory, editRecordCategory, addRecordCategory, resetRecordCategory } from '@/api/record/recordCategoryManage'
 
 import CategoryForm from './modules/CategoryForm'
 
@@ -186,6 +195,13 @@ export default {
     },
     handleEditCancel () {
       this.formShow = false
+    },
+    resetCategory () {
+      resetRecordCategory().then(res => {
+        // 刷新表格
+        this.$refs.table.refresh()
+        this.$message.info('重置成功')
+      })
     }
   }
 }
