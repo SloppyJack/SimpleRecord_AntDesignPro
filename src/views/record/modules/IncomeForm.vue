@@ -75,6 +75,9 @@ import moment from 'moment'
 import { addRecordDetail } from '@/api/record/recordManage'
 import MyIconFont from '@/components/MyIconFont/MyIconFont'
 
+// 重置表单字段
+const resetFields = ['recordCategory', 'amount', 'recordAccount', 'recordBook', 'remark']
+
 export default {
   components: {
     MyIconFont
@@ -103,7 +106,7 @@ export default {
           }
           addRecordDetail(params).then(res => {
             // 重置表单数据
-            this.form.resetFields()
+            this.form.resetFields(resetFields)
             this.$message.info('记账成功')
             this.loading = false
           }).catch(e => {
