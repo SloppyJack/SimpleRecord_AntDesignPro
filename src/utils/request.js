@@ -49,6 +49,7 @@ request.interceptors.request.use(config => {
   if (token) {
     config.headers['token'] = token
   }
+  config.headers['req-platform'] = 'browser'
   return config
 }, errorHandler)
 
