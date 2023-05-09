@@ -41,7 +41,7 @@
               <a-list item-layout="vertical" :data-source="spendCategories">
                 <a-list-item slot="renderItem" slot-scope="item">
                   <a-list-item-meta
-                    :description="'金额：' + item.total"
+                    :description="item.recordCategory + '：' + item.total + '￥'"
                   >
                     <div slot="title">{{ item.spendCategoryName }}</div>
                   </a-list-item-meta>
